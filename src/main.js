@@ -34,5 +34,6 @@ const shapeNames = [ 'i', 'j', 'l', 'o', 's', 't', 'z' ];
 const tetrominoNames = shapeNames.map(name => `tetromino-${name}`);
 
 function exponentialDecay(a, target, decay, dt) {
+    // "Lerp smoothing is broken" https://www.youtube.com/watch?v=LSNQuFEDOyQ&t=2982s
     return target + (a - target) * Math.exp(-decay * dt);
 }
