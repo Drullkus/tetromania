@@ -5,6 +5,8 @@ class Initialize extends Phaser.Scene {
 
     preload() {
         this.load.image('block', './assets/block.png');
+        this.load.image('controller-circle', './assets/controller-circle.png');
+        this.load.image('controller-line', './assets/controller-line.png');
 
         tetrominoNames.forEach(tetrominoName => {
             this.load.image(tetrominoName, `./assets/${tetrominoName}.png`);
@@ -14,6 +16,6 @@ class Initialize extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start('physicsTestScene');
+        this.scene.start('physicsBoxScene');
     }
 }

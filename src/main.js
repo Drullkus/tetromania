@@ -1,5 +1,6 @@
 /*
 Citations:
+    Expoential Decay function "Lerp smoothing is broken" https://www.youtube.com/watch?v=LSNQuFEDOyQ&t=2982s
     Favicon https://www.w3schools.com/html/html_favicon.asp
     jsconfig https://code.visualstudio.com/docs/languages/jsconfig
     PhysicsEditor tutorial https://www.codeandweb.com/physicseditor/tutorials/how-to-create-physics-shapes-for-phaser-3-and-matterjs
@@ -14,7 +15,7 @@ const config = {
     width: 800,
     height: 600,
     useTicker: true,
-    scene: [ Initialize, PhysicsTest ],
+    scene: [ Initialize, PhysicsBox, ControlInterface ],
     parent: 'tetromania',
     pixelArt: true,
     physics: {
@@ -31,3 +32,7 @@ const { height: gameHeight, width: gameWidth } = game.config;
 
 const shapeNames = [ 'i', 'j', 'l', 'o', 's', 't', 'z' ];
 const tetrominoNames = shapeNames.map(name => `tetromino-${name}`);
+
+function exponentialDecay(a, target, decay, dt) {
+    return target + (a - target) * Math.exp(-decay * dt);
+}
