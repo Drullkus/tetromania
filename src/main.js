@@ -14,7 +14,7 @@ const config = {
     width: 800,
     height: 600,
     useTicker: true,
-    scene: [ Initialize ],
+    scene: [ Initialize, PhysicsTest ],
     parent: 'tetromania',
     pixelArt: true,
     physics: {
