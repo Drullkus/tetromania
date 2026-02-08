@@ -1,0 +1,25 @@
+{
+	"truster": {
+		"label": "truster",
+		"isStatic": false,
+		"density": 100,
+		"restitution": 0,
+		"friction": 1,
+		"frictionAir": 0,
+		"frictionStatic": 1,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "",
+				"isSensor": false,
+				"vertices": [
+					[ { "x":0, "y":96 }, { "x":64, "y":96 }, { "x":64, "y":0 }, { "x":0, "y":0 } ]
+				]
+			}
+		]
+	}
+}

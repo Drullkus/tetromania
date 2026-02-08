@@ -13,6 +13,15 @@ class PhysicsBox extends Phaser.Scene {
             });
         });
 
+        const technologyCollisions = this.cache.json.get('technology_collision');
+
+        this.thruster = this.matter.add.sprite(gameWidth * 0.5, gameHeight * 0.5, 'thruster', 0, {
+            shape: technologyCollisions['thruster'],
+            isStatic: true
+        });
+
+        this.thruster.body;
+
         this.matter.world.setBounds(0, 0, gameWidth, gameHeight, 9001);
         this.matter.world.disableGravity();
 
