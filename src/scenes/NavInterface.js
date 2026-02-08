@@ -1,6 +1,6 @@
 class NavInterface extends Phaser.Scene {
     constructor() {
-        super('controlInterfaceScene');
+        super('navInterfaceScene');
     }
 
     create() {

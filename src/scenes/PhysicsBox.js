@@ -16,8 +16,8 @@ class PhysicsBox extends Phaser.Scene {
         this.matter.world.setBounds(0, 0, gameWidth, gameHeight, 9001);
         this.matter.world.disableGravity();
 
-        this.scene.launch('controlInterfaceScene');
-        this.controlUi = this.game.scene.getScene('controlInterfaceScene');
+        this.scene.launch('navInterfaceScene');
+        this.controlUi = this.game.scene.getScene('navInterfaceScene');
     }
 
     update(_time, deltaMillis) {
