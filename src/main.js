@@ -1,4 +1,6 @@
 /*
+Estimate time spent: 3h
+
 Citations:
     Expoential Decay function "Lerp smoothing is broken" https://www.youtube.com/watch?v=LSNQuFEDOyQ&t=2982s
     Favicon https://www.w3schools.com/html/html_favicon.asp
@@ -15,7 +17,7 @@ const config = {
     width: 800,
     height: 600,
     useTicker: true,
-    scene: [ Initialize, PhysicsBox, ControlInterface ],
+    scene: [ Initialize, PhysicsBox, NavInterface ],
     parent: 'tetromania',
     pixelArt: true,
     physics: {
