@@ -20,8 +20,6 @@ class PhysicsBox extends Phaser.Scene {
             isStatic: true
         });
 
-        this.thruster.body;
-
         this.matter.world.setBounds(0, 0, gameWidth, gameHeight, 9001);
         this.matter.world.disableGravity();
 
