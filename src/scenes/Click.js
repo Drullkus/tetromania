@@ -25,6 +25,11 @@ class Click extends Phaser.Scene {
         this.matter.world.disableGravity();
 
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
+            if (!(bodyA.gameObject && bodyB.gameObject)) {
+                // world bounds has no gameObject
+                return;
+            }
+
             if (bodyA.gameObject.ship) {
                 this.collide(event, bodyA.gameObject, bodyB.gameObject);
             } else if (bodyB.gameObject.ship) {
@@ -36,8 +41,9 @@ class Click extends Phaser.Scene {
     }
 
     collide(event, ship, tetromino) {
-        // console.log(tetromino);
-        this.angleAcceptable(tetromino.body);
+        if (this.angleAcceptable(tetromino.body)) {
+            console.log("TODO do click");
+        }
     }
 
     angleAcceptable(body) {
