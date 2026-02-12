@@ -9,6 +9,7 @@ Citations:
     Phaser Matter example (with permission from Nick) https://github.com/Nick-Marigo/Matter-Physics/tree/main
     Tetrominos https://en.wikipedia.org/wiki/Tetromino
 */
+"use strict";
 
 const urlQueryParams = new URLSearchParams(window.location.search);
 
@@ -17,7 +18,7 @@ const config = {
     width: 800,
     height: 600,
     useTicker: true,
-    scene: [ Initialize, PhysicsBox, NavInterface ],
+    scene: [ Initialize, PhysicsBox, Click, NavInterface ],
     parent: 'tetromania',
     pixelArt: true,
     physics: {
@@ -39,3 +40,8 @@ function exponentialDecay(a, target, decay, dt) {
     // "Lerp smoothing is broken" https://www.youtube.com/watch?v=LSNQuFEDOyQ&t=2982s
     return target + (a - target) * Math.exp(-decay * dt);
 }
+
+// https://stackoverflow.com/a/4467559
+function mod(a, b) {
+    return ((a % b) + b) % b;
+};

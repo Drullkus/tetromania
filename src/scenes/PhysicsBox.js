@@ -8,7 +8,7 @@ class PhysicsBox extends Phaser.Scene {
         const tetrominoCollisions = this.cache.json.get('tetromino_collision');
 
         this.tetrominoes = tetrominoNames.map((tetrominoName, index) => {
-            return this[tetrominoName] = this.matter.add.sprite(150 * (index % 4) + 75, 150 * Math.floor(index / 4) + 75, tetrominoName, 0, {
+            return this.matter.add.sprite(150 * (index % 4) + 75, 150 * Math.floor(index / 4) + 75, tetrominoName, 0, {
                 shape: tetrominoCollisions[tetrominoName]
             });
         });
@@ -32,13 +32,13 @@ class PhysicsBox extends Phaser.Scene {
         const speed = 8 * deltaSeconds;
         const motionDelta = this.controlUi.getControlDelta();
 
-        const deltaX = motionDelta.deltaX * speed;
-        const deltaY = motionDelta.deltaY * speed;
+        const deltaX = motionDelta.controlDX * speed;
+        const deltaY = motionDelta.controlDY * speed;
         
         this.tetrominoes.forEach(tetromino => {
-            // tetromino.setVelocity(deltaX * speed, deltaY * speed);
-            tetromino.x += deltaX * speed;
-            tetromino.y += deltaY * speed;
+            // tetromino.setVelocity(deltaX, deltaY);
+            tetromino.x += deltaX;
+            tetromino.y += deltaY;
         });
     }
 }

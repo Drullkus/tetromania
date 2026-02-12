@@ -34,8 +34,8 @@ class Controller extends Phaser.GameObjects.Sprite {
 
     getControlDelta() {
         return {
-            deltaX: this.x - this.affixX,
-            deltaY: this.y - this.affixY
+            controlDX: this.x - this.affixX,
+            controlDY: this.y - this.affixY
         };
     }
 }
