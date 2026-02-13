@@ -38,18 +38,24 @@ class Click extends Phaser.Scene {
         });
 
         this.angleInfo = this.add.text(0, 0);
+
+        const gui = new dat.GUI();
+
+        gui.add(this.tetrominoZ.body, 'angle').listen();
     }
 
     collide(event, ship, tetromino) {
         if (this.angleAcceptable(tetromino.body)) {
             console.log("TODO do click");
+
+            // TODO Glue to Thruster
         }
     }
 
     angleAcceptable(body) {
-        const realigned = body.angle + Math.PI * 0.25;
-        const radiansFromQuarter = mod(realigned, Math.PI * 0.5) - Math.PI * 0.25;
-        const accepted = Math.abs(radiansFromQuarter) <= Math.PI * 0.0625; // 1/16ths of a circle
+        const realigned = body.angle + radiansEigth;
+        const radiansFromQuarter = mod(realigned, Math.PI * 0.5) - radiansEigth
+        const accepted = Math.abs(radiansFromQuarter) <= radiansThirtySecond;
         return accepted;
     }
 

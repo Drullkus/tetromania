@@ -11,6 +11,11 @@ Citations:
 */
 "use strict";
 
+const radiansQuarter = Math.PI * 0.5; // 1/4 of a circle
+const radiansEigth = Math.PI * 0.25;
+const radiansSixteenth = Math.PI * 0.125;
+const radiansThirtySecond = Math.PI * 0.0625; // 1/32 of a circle
+
 const urlQueryParams = new URLSearchParams(window.location.search);
 
 const config = {
