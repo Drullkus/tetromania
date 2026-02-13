@@ -4,7 +4,7 @@ class Click extends Phaser.Scene {
     }
 
     create() {
-        this.tetrominoCollisions = this.cache.json.get('tetromino_collision');
+        const tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const technologyCollisions = this.cache.json.get('technology_collision');
 
         this.matter.add.mouseSpring(); // Allow mouse to pick up and drag objects
@@ -16,7 +16,7 @@ class Click extends Phaser.Scene {
         this.thruster.ship = true;
 
         this.tetrominoL = this.matter.add.sprite(200, 200, 'tetromino-l', 0, {
-            shape: this.tetrominoCollisions['tetromino-l']
+            shape: tetrominoCollisions['tetromino-l']
         });
         this.tetrominoL.ship = false;
         this.tetrominoL.body.angle = 0.01;
@@ -74,13 +74,11 @@ class Click extends Phaser.Scene {
         this.acceptingInfo.text = `angleAcceptable(tetromino.body) = ${this.angleAcceptable(this.tetrominoL.body)}`;
         this.angleInfo.text = `tetromino.body.angle [deg] = ${this.tetrominoL.angle.toFixed(2)} (Radians ${mod(this.tetrominoL.body.angle, Math.PI * 2.0).toFixed(2)})`;
 
-        extractUnits(this.tetrominoL).forEach(({ x, y }) => {
-            this.bodyInfo.text = `tetromino.body: ${x} ${y}`;
+        getBlockLattice(this.tetrominoL).forEach(({ x, y }) => {
             this.emitter.emitParticleAt(x, y, 1);
         });
 
-        extractUnits(this.thruster).forEach(({ x, y }) => {
-            this.bodyInfo.text = `tetromino.body: ${x} ${y}`;
+        getBlockLattice(this.thruster).forEach(({ x, y }) => {
             this.emitter.emitParticleAt(x, y, 1);
         });
     }

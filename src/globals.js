@@ -26,7 +26,7 @@ function mod(a, b) {
  * Extract units of a tetromino body. Registers a point for every center of 32-wide units in the body.
  * Returns a list of grid-cell center positions, all located in scene space.
  * */
-function extractUnits(tetromino) {
+function getBlockLattice(tetromino) {
     // Get angle
     const angle = tetromino.body.angle;
 
@@ -55,11 +55,12 @@ function extractUnits(tetromino) {
 
     // "Crawl" for scene positions of each block in the tetromino
     const positions = [];
-
+    // Loop over entire lattice within sprite bounds
     for (let tileY = 0.5; tileY < tileHeight; tileY++) {
         for (let tileX = 0.5; tileX < tileWidth; tileX++) {
             const rotatedX = mat2.multiplyVectorX(tileX, tileY) * tetrominoUnitSize + offsetFromPivotToTopLeftX;
             const rotatedY = mat2.multiplyVectorY(tileX, tileY) * tetrominoUnitSize + offsetFromPivotToTopLeftY;
+            // Include only if lattice point actually contained inside physical body
             if (tetromino.scene.matter.containsPoint(tetromino.body, rotatedX, rotatedY)) {
                 positions.push({ x: rotatedX, y: rotatedY });
             }
