@@ -4,7 +4,7 @@ class Click extends Phaser.Scene {
     }
 
     create() {
-        const tetrominoCollisions = this.cache.json.get('tetromino_collision');
+        this.tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const technologyCollisions = this.cache.json.get('technology_collision');
 
         this.matter.add.mouseSpring(); // Allow mouse to pick up and drag objects
@@ -15,14 +15,22 @@ class Click extends Phaser.Scene {
         });
         this.thruster.ship = true;
 
-        this.tetrominoZ = this.matter.add.sprite(200, 200, 'tetromino-z', 0, {
-            shape: tetrominoCollisions['tetromino-z']
+        this.tetrominoL = this.matter.add.sprite(200, 200, 'tetromino-l', 0, {
+            shape: this.tetrominoCollisions['tetromino-l']
         });
-        this.tetrominoZ.ship = false;
-        this.tetrominoZ.body.angle = 0.001;
+        this.tetrominoL.ship = false;
+        this.tetrominoL.body.angle = 0.01;
 
         this.matter.world.setBounds(0, 0, gameWidth, gameHeight, 9001);
         this.matter.world.disableGravity();
+
+        this.emitter = this.add.particles(0, 0, 'tetromino-j', {
+            lifespan: 100,
+            speed: 0,
+            scale: 0.125,
+            color: [ 0x888888, 0 ],
+            emitting: false,
+        });
 
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             if (!(bodyA.gameObject && bodyB.gameObject)) {
@@ -37,12 +45,14 @@ class Click extends Phaser.Scene {
             }
         });
 
-        this.angleInfo = this.add.text(0, 0);
+        this.acceptingInfo = this.add.text(0, 0);
+        this.angleInfo = this.add.text(0, 20);
+        this.bodyInfo = this.add.text(0, 40);
 
         // https://github.com/dataarts/dat.gui/blob/master/API.md
         const gui = new dat.GUI();
 
-        gui.add(this.tetrominoZ.body, 'angle').listen();
+        gui.add(this.tetrominoL.body, 'angle').listen();
     }
 
     collide(event, ship, tetromino) {
@@ -61,6 +71,17 @@ class Click extends Phaser.Scene {
     }
 
     update() {
-        this.angleInfo.text = `angleAcceptable(tetromino.body) = ${this.angleAcceptable(this.tetrominoZ.body)}`;
+        this.acceptingInfo.text = `angleAcceptable(tetromino.body) = ${this.angleAcceptable(this.tetrominoL.body)}`;
+        this.angleInfo.text = `tetromino.body.angle [deg] = ${this.tetrominoL.angle.toFixed(2)} (Radians ${mod(this.tetrominoL.body.angle, Math.PI * 2.0).toFixed(2)})`;
+
+        extractUnits(this.tetrominoL).forEach(({ x, y }) => {
+            this.bodyInfo.text = `tetromino.body: ${x} ${y}`;
+            this.emitter.emitParticleAt(x, y, 1);
+        });
+
+        extractUnits(this.thruster).forEach(({ x, y }) => {
+            this.bodyInfo.text = `tetromino.body: ${x} ${y}`;
+            this.emitter.emitParticleAt(x, y, 1);
+        });
     }
 }
