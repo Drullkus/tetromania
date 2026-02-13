@@ -1,7 +1,7 @@
 // For testing physics
 class PhysicsBox extends Phaser.Scene {
     constructor() {
-        super('physicsBoxScene');
+        super('physicsBoxDevScene');
     }
 
     create() {

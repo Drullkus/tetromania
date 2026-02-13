@@ -19,6 +19,6 @@ class Initialize extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start('clickScene');
+        this.scene.start('clickDevScene');
     }
 }

@@ -1,6 +1,6 @@
-class Click extends Phaser.Scene {
+class Rotate extends Phaser.Scene {
     constructor() {
-        super('clickDevScene');
+        super('rotateDevScene');
     }
 
     create() {

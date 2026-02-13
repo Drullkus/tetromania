@@ -32,7 +32,6 @@ function getBlockLattice(tetromino) {
 
     // Construct rotation matrix
     const mat2 = Matrix2.rotationMatrix(angle);
-    const mat2Inverted = Matrix2.rotationMatrix(-angle);
 
     // Tetromino's sprite dimensions
     const tetrominoWidth = tetromino.width;
