@@ -9,14 +9,6 @@ Citations:
     Phaser Matter example (with permission from Nick) https://github.com/Nick-Marigo/Matter-Physics/tree/main
     Tetrominos https://en.wikipedia.org/wiki/Tetromino
 */
-"use strict";
-
-const radiansQuarter = Math.PI * 0.5; // 1/4 of a circle
-const radiansEigth = Math.PI * 0.25;
-const radiansSixteenth = Math.PI * 0.125;
-const radiansThirtySecond = Math.PI * 0.0625; // 1/32 of a circle
-
-const urlQueryParams = new URLSearchParams(window.location.search);
 
 const config = {
     type: Phaser.WEBGL,
@@ -37,16 +29,3 @@ const config = {
 const game = new Phaser.Game(config);
 
 const { height: gameHeight, width: gameWidth } = game.config;
-
-const shapeNames = [ 'i', 'j', 'l', 'o', 's', 't', 'z' ];
-const tetrominoNames = shapeNames.map(name => `tetromino-${name}`);
-
-function exponentialDecay(a, target, decay, dt) {
-    // "Lerp smoothing is broken" https://www.youtube.com/watch?v=LSNQuFEDOyQ&t=2982s
-    return target + (a - target) * Math.exp(-decay * dt);
-}
-
-// https://stackoverflow.com/a/4467559
-function mod(a, b) {
-    return ((a % b) + b) % b;
-};
