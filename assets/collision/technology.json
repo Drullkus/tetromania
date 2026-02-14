@@ -1,6 +1,6 @@
 {
-	"truster": {
-		"label": "truster",
+	"thruster": {
+		"label": "thruster",
 		"isStatic": false,
 		"density": 100,
 		"restitution": 0,
