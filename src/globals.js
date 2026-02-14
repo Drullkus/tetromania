@@ -1,5 +1,7 @@
 "use strict";
 
+const radiansFull = Math.PI * 2.0;
+const radiansHalf = Math.PI;
 const radiansQuarter = Math.PI / 2.0; // 1/4 of a circle
 const radiansEigth = Math.PI / 4.0;
 const radiansSixteenth = Math.PI / 8.0;
@@ -20,7 +22,19 @@ function exponentialDecay(a, target, decay, dt) {
 /** True modulo, as JS's % remainder operator can make negatives. https://stackoverflow.com/a/4467559 */
 function mod(a, b) {
     return ((a % b) + b) % b;
-};
+}
+
+/** Gets cardinal angle from body, returning 0, PI/2 (90 deg), PI (180 deg), or 3PI/2 (270 deg) */
+function getCardinalAngle(body) {
+    return Math.trunc(mod(body.angle - radiansEigth, radiansFull) / radiansQuarter) * radiansQuarter;
+}
+
+/** Determines if the tetromino is elible to connect with ship */
+function angleAcceptable(body) {
+    if (!body) return 0;
+    const radiansInsideQuarter = mod(body.angle + radiansEigth, radiansQuarter) - radiansEigth;
+    return Math.abs(radiansInsideQuarter) <= radiansThirtySecond;
+}
 
 /**
  * Extract units of a tetromino body. Registers a point for every center of 32-wide units in the body.

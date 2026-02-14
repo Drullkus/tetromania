@@ -7,19 +7,22 @@ class Click extends Phaser.Scene {
         const tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const technologyCollisions = this.cache.json.get('technology_collision');
 
-        this.matter.add.mouseSpring(); // Allow mouse to pick up and drag objects
+        this.thruster = this.add.sprite(0, 0, 'thruster', 0);
 
-        this.thruster = this.matter.add.sprite(gameWidth * 0.5, gameHeight * 0.5, 'thruster', 0, {
+        this.playerShip = this.add.container(gameWidth * 0.5, gameHeight * 0.5, [this.thruster]);
+        this.playerShip.setSize(this.thruster.width, this.thruster.height);
+        this.physicsContainer = this.matter.add.gameObject(this.playerShip, {
             shape: technologyCollisions['thruster'],
             isStatic: true
         });
-        this.thruster.ship = true;
+        this.physicsContainer.ship = true;
 
-        this.tetrominoL = this.matter.add.sprite(200, 200, 'tetromino-l', 0, {
+        this.tetrominoL = this.matter.add.sprite(350, 350, 'tetromino-l', 0, {
             shape: tetrominoCollisions['tetromino-l']
         });
+
+        this.tetrominoL.setBelow(this.playerShip);
         this.tetrominoL.ship = false;
-        this.tetrominoL.body.angle = 0.01;
 
         this.matter.world.setBounds(0, 0, gameWidth, gameHeight, 9001);
         this.matter.world.disableGravity();
@@ -31,6 +34,7 @@ class Click extends Phaser.Scene {
             color: [ 0x888888, 0 ],
             emitting: false,
         });
+        this.emitter.setDepth(100);
 
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             if (!(bodyA.gameObject && bodyB.gameObject)) {
@@ -49,36 +53,54 @@ class Click extends Phaser.Scene {
         this.angleInfo = this.add.text(0, 20);
         this.bodyInfo = this.add.text(0, 40);
 
+        this.scene.launch('navInterfaceScene');
+        this.controlUi = this.game.scene.getScene('navInterfaceScene');
+
         // https://github.com/dataarts/dat.gui/blob/master/API.md
         const gui = new dat.GUI();
 
         gui.add(this.tetrominoL.body, 'angle').listen();
     }
 
-    collide(event, ship, tetromino) {
-        if (this.angleAcceptable(tetromino.body)) {
-            console.log("TODO do click");
+    collide(event, shipContainer, tetromino) {
+        if (angleAcceptable(tetromino.body)) {
+            console.log("Collided!");
 
-            // TODO Glue to Thruster
+            // tetrominoBody.gameObject.x = 0;
+            // tetrominoBody.gameObject.y = 0;
+            this.matter.world.remove(tetromino); // Remove from simulation
+
+            // Readd for display & update
+            this.add.existing(tetromino);
+            tetromino.setBelow(shipContainer);
+
+            this.physicsContainer.add(tetromino);
+            tetromino.addToDisplayList(); // Adding to physics list removes from renderer, re-add
         }
     }
 
-    angleAcceptable(body) {
-        const realigned = body.angle + radiansEigth;
-        const radiansFromQuarter = mod(realigned, Math.PI * 0.5) - radiansEigth
-        const accepted = Math.abs(radiansFromQuarter) <= radiansThirtySecond;
-        return accepted;
-    }
-
-    update() {
-        this.acceptingInfo.text = `angleAcceptable(tetromino.body) = ${this.angleAcceptable(this.tetrominoL.body)}`;
+    update(_time, deltaMillis) {
+        this.acceptingInfo.text = `angleAcceptable(tetromino.body) = ${angleAcceptable(this.tetrominoL.body)}`;
         this.angleInfo.text = `tetromino.body.angle [deg] = ${this.tetrominoL.angle.toFixed(2)} (Radians ${mod(this.tetrominoL.body.angle, Math.PI * 2.0).toFixed(2)})`;
+        this.bodyInfo.text = `tetromino.body angle if connected: ${getCardinalAngle(this.tetrominoL.body)}`;
+
+        const deltaSeconds = deltaMillis * 0.001;
+        const speed = 8 * deltaSeconds;
+        const motionDelta = this.controlUi.getControlDelta();
+
+        const deltaX = motionDelta.controlDX * speed;
+        const deltaY = motionDelta.controlDY * speed;
+
+        if (!this.physicsContainer.exists(this.tetrominoL)) {
+            this.tetrominoL.x += deltaX;
+            this.tetrominoL.y += deltaY;
+        }
 
         getBlockLattice(this.tetrominoL).forEach(({ x, y }) => {
             this.emitter.emitParticleAt(x, y, 1);
         });
 
-        getBlockLattice(this.thruster).forEach(({ x, y }) => {
+        getBlockLattice(this.physicsContainer).forEach(({ x, y }) => {
             this.emitter.emitParticleAt(x, y, 1);
         });
     }
