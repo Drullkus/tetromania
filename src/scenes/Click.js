@@ -20,6 +20,7 @@ class Click extends Phaser.Scene {
         this.tetrominoL = this.matter.add.sprite(350, 350, 'tetromino-l', 0, {
             shape: tetrominoCollisions['tetromino-l']
         });
+        this.tetrominoL.setAngle(5);
 
         this.tetrominoL.setBelow(this.playerShip);
         this.tetrominoL.ship = false;
@@ -70,19 +71,25 @@ class Click extends Phaser.Scene {
             // tetrominoBody.gameObject.y = 0;
             this.matter.world.remove(tetromino); // Remove from simulation
 
+            tetromino.setAngle(snapCardinalAngleDegrees(tetromino));
+
             // Readd for display & update
             this.add.existing(tetromino);
             tetromino.setBelow(shipContainer);
 
             this.physicsContainer.add(tetromino);
             tetromino.addToDisplayList(); // Adding to physics list removes from renderer, re-add
+
+            // TODO Shift to "snap" collision
+            tetromino.x = 0;
+            tetromino.y = 0;
         }
     }
 
     update(_time, deltaMillis) {
         this.acceptingInfo.text = `angleAcceptable(tetromino.body) = ${angleAcceptable(this.tetrominoL.body)}`;
         this.angleInfo.text = `tetromino.body.angle [deg] = ${this.tetrominoL.angle.toFixed(2)} (Radians ${mod(this.tetrominoL.body.angle, Math.PI * 2.0).toFixed(2)})`;
-        this.bodyInfo.text = `tetromino.body angle if connected: ${getCardinalAngle(this.tetrominoL.body)}`;
+        this.bodyInfo.text = `tetromino angle if connected: ${snapCardinalAngleDegrees(this.tetrominoL)}`;
 
         const deltaSeconds = deltaMillis * 0.001;
         const speed = 8 * deltaSeconds;

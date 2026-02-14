@@ -7,6 +7,13 @@ const radiansEigth = Math.PI / 4.0;
 const radiansSixteenth = Math.PI / 8.0;
 const radiansThirtySecond = Math.PI / 16.0; // 1/32 of a circle
 
+const degreesFull = 360.0
+const degreesHalf = 180.0;
+const degreesQuarter = 90.0;
+const degreesEigth = 45.0;
+const degreesSixteenth = 22.5;
+const degreesThirtySecond = 11.25;
+
 const shapeNames = [ 'i', 'j', 'l', 'o', 's', 't', 'z' ];
 const tetrominoNames = shapeNames.map(name => `tetromino-${name}`);
 
@@ -24,9 +31,14 @@ function mod(a, b) {
     return ((a % b) + b) % b;
 }
 
-/** Gets cardinal angle from body, returning 0, PI/2 (90 deg), PI (180 deg), or 3PI/2 (270 deg) */
-function getCardinalAngle(body) {
-    return Math.trunc(mod(body.angle - radiansEigth, radiansFull) / radiansQuarter) * radiansQuarter;
+/** Gets cardinal angle from object, returning 0, 90, 180, 270 */
+function snapCardinalAngleDegrees(gameObject) {
+    return mod(Math.round(gameObject.angle / degreesQuarter) * degreesQuarter, degreesFull);
+}
+
+/** Gets cardinal angle from object, returning 0, PI/2, PI, or 3PI/2 */
+function snapCardinalAngleRadians(gameObject) {
+    return mod(Math.round(gameObject.angle / radiansQuarter) * radiansQuarter, radiansFull);
 }
 
 /** Determines if the tetromino is elible to connect with ship */
@@ -81,4 +93,13 @@ function getBlockLattice(tetromino) {
     }
 
     return positions;
+}
+
+/**
+ * Snaps tetromino to the ship container
+ */
+function snapPieceToShip(shipContainer, tetromino) {
+    // TODO get origin of tetromino to ship container
+    // TODO offset vector where X and Y are less than tetrominoUnitSize (32)
+    // TODO return container-relative offset vector that lines the piece to first piece in the container list
 }
