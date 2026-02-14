@@ -77,12 +77,12 @@ class Click extends Phaser.Scene {
             this.add.existing(tetromino);
             tetromino.setBelow(shipContainer);
 
-            this.physicsContainer.add(tetromino);
-            tetromino.addToDisplayList(); // Adding to physics list removes from renderer, re-add
+            this.playerShip.add(tetromino);
+            this.matter.world.add(tetromino.body);
 
             // TODO Shift to "snap" collision
-            tetromino.x = 0;
-            tetromino.y = 0;
+            tetromino.displayOriginX += shipContainer.x;
+            tetromino.displayOriginY += shipContainer.y;
         }
     }
 
