@@ -9,7 +9,7 @@ class Click extends Phaser.Scene {
 
         this.matter.add.mouseSpring(); // Allow mouse to pick up and drag objects
 
-        this.playerShip = new SpaceShip(this, gameWidth * 0.5, gameHeight * 0.5), technologyCollisions['thruster'];
+        this.playerShip = new ShipContainer(this, gameWidth * 0.5, gameHeight * 0.5), technologyCollisions['thruster'];
         this.playerShip.onShip = true;
 
         const thrusterCentroid = partCentroids['thruster'];

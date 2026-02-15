@@ -9,15 +9,17 @@ class Alignment extends Phaser.Scene {
 
         this.matter.add.mouseSpring(); // Allow mouse to pick up and drag objects
 
-        this.playerShip = new SpaceShip(this, gameWidth * 0.5, gameHeight * 0.5), technologyCollisions['thruster'];
+        this.playerShip = new ShipContainer(this, gameWidth * 0.5, gameHeight * 0.5), technologyCollisions['thruster'];
         this.playerShip.onShip = true;
 
         const thrusterCentroid = partCentroids['thruster'];
         const tetrominoLCentroid = partCentroids['tetromino-l'];
 
-        this.tetrominoL = this.matter.add.sprite(gameWidth * 0.5 + tetrominoLCentroid.x - thrusterCentroid.x - 36, gameHeight * 0.5 + tetrominoLCentroid.y - thrusterCentroid.y + 36, 'tetromino-l', 0, {
+        const distance = 8;
+        this.tetrominoL = this.matter.add.sprite(gameWidth * 0.5 + tetrominoLCentroid.x - thrusterCentroid.x - 32 - distance, gameHeight * 0.5 + tetrominoLCentroid.y - thrusterCentroid.y + 32 + distance, 'tetromino-l', 0, {
             shape: tetrominoCollisions['tetromino-l']
         });
+        this.tetrominoL.angle = 2.0;
         this.playerShip.integratePart(this.tetrominoL);
 
         this.matter.world.setBounds(0, 0, gameWidth, gameHeight, 9001);
@@ -61,5 +63,8 @@ class Alignment extends Phaser.Scene {
 
     update(_time, deltaMillis) {
         this.playerShip.update(deltaMillis);
+
+        const tetrominoMin = getSpriteXYFromLerpUV(this.tetrominoL, 0, 0);
+        this.emitterI.emitParticleAt(tetrominoMin.x, tetrominoMin.y, 1);
     }
 }
