@@ -32,13 +32,13 @@ class Initialize extends Phaser.Scene {
                 shape: collisions[tetrominoName]
             });
 
-            partCentroids[tetrominoName] = tetromino.body.centerOffset;
+            partCentroids[tetrominoName] = new Phaser.Math.Vector2(tetromino.body.centerOffset);
 
             tetromino.destroy();
         });
 
         window.partCentroids = partCentroids;
 
-        this.scene.start('constraintDevScene');
+        this.scene.start('clickDevScene');
     }
 }

@@ -31,10 +31,10 @@ class Click extends Phaser.Scene {
         this.matter.world.disableGravity();
 
         this.emitter = this.add.particles(0, 0, 'tetromino-j', {
-            lifespan: 100,
+            lifespan: 25,
             speed: 0,
             scale: 0.125,
-            color: [ 0x888888, 0 ],
+            color: [ 0xFF_FF_FF, 0 ],
             emitting: false,
         });
         this.emitter.setDepth(100);
