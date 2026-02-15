@@ -60,9 +60,14 @@ function angleAcceptable(body) {
 function getSpritePosition(gameObject, lerpU, lerpV) {
     const mat2 = Matrix2.rotationMatrix(gameObject.angle * degreesToRadians);
 
+    const center = {
+        x: gameObject.body.centerOfMass.x,
+        y: gameObject.body.centerOfMass.y
+    }
+
     return new Phaser.Math.Vector2(
-        gameObject.x - mat2.multiplyVectorX(lerpU * gameObject.width, lerpV * gameObject.height),
-        gameObject.y - mat2.multiplyVectorY(lerpU * gameObject.width, lerpV * gameObject.height)
+        gameObject.x - mat2.multiplyVectorX((center.x - lerpU) * gameObject.width, (center.y - lerpV) * gameObject.height),
+        gameObject.y - mat2.multiplyVectorY((center.x - lerpU) * gameObject.width, (center.y - lerpV) * gameObject.height)
     );
 }
 

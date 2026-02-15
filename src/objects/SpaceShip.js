@@ -51,14 +51,11 @@ class SpaceShip extends Phaser.GameObjects.Container {
     }
 
     update() {
-        // this.emitterJ.emitParticleAt(this.x, this.y, 1);
+         this.emitterJ.emitParticleAt(this.x, this.y, 1);
 
-        getBlockLattice(this).forEach(({ x, y }) => {
-            this.emitterS.emitParticleAt(x, y, 1);
-        });
-
-        const centerOffset = this.body.centerOffset;
-        this.emitterT.emitParticleAt(centerOffset.x, centerOffset.y, 1);
+         getBlockLattice(this).forEach(({ x, y }) => {
+             this.emitterS.emitParticleAt(x, y, 1);
+         });
 
         const minBoundMass = getSpritePosition(this, 0, 0);
         this.emitterL.emitParticleAt(minBoundMass.x, minBoundMass.y, 1);
@@ -66,6 +63,7 @@ class SpaceShip extends Phaser.GameObjects.Container {
         const maxBoundMass = getSpritePosition(this, 1, 1);
         this.emitterZ.emitParticleAt(maxBoundMass.x, maxBoundMass.y, 1);
 
+        // Important or else the sprites will not rotate
         this.parts.forEach(part => part.object.body.angle = degreesToRadians * (this.angle + part.rotationDegrees));
     }
 }

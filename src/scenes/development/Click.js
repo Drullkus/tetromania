@@ -18,11 +18,12 @@ class Click extends Phaser.Scene {
         this.tetrominoL = this.matter.add.sprite(gameWidth * 0.5 + tetrominoLCentroid.x - thrusterCentroid.x - 32, gameHeight * 0.5 + tetrominoLCentroid.y - thrusterCentroid.y + 32, 'tetromino-l', 0, {
             shape: tetrominoCollisions['tetromino-l']
         });
-        // this.playerShip.integratePart(this.tetrominoL);
+        //this.playerShip.integratePart(this.tetrominoL);
 
         this.matter.world.setBounds(0, 0, gameWidth, gameHeight, 9001);
         this.matter.world.disableGravity();
 
+        // FIXME Why does moving this out of the lambda into a class function reference, cause `this` to change to the World object inside the closure?
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             if (!(bodyA.gameObject && bodyB.gameObject)) {
                 // world bounds has no gameObject
@@ -30,9 +31,9 @@ class Click extends Phaser.Scene {
             }
 
             if (bodyA.gameObject.onShip) {
-                this.collide(event, bodyA.gameObject, bodyB.gameObject);
+                this.collideWithShip(event, bodyA.gameObject, bodyB.gameObject);
             } else if (bodyB.gameObject.onShip) {
-                this.collide(event, bodyB.gameObject, bodyA.gameObject);
+                this.collideWithShip(event, bodyB.gameObject, bodyA.gameObject);
             }
         });
 
@@ -66,7 +67,7 @@ class Click extends Phaser.Scene {
         });
     }
 
-    collide(event, shipContainer, tetromino) {
+    collideWithShip(_event, shipContainer, tetromino) {
         if (angleAcceptable(tetromino.body)) {
             shipContainer.integratePart(tetromino);
         }
