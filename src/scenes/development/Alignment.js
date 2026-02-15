@@ -16,11 +16,11 @@ class Alignment extends Phaser.Scene {
         const tetrominoLCentroid = partCentroids['tetromino-l'];
 
         const distance = 8;
-        this.tetrominoL = this.matter.add.sprite( gameWidth * 0.5 + tetrominoLCentroid.x - thrusterCentroid.x - 32 - distance, gameHeight * 0.5 + tetrominoLCentroid.y - thrusterCentroid.y + 32 + distance, 'tetromino-l', 0, {
+        this.tetrominoL = this.matter.add.sprite(gameWidth * 0.5 + tetrominoLCentroid.x - thrusterCentroid.x - 32 - distance, gameHeight * 0.5 + tetrominoLCentroid.y - thrusterCentroid.y + 32 + distance, 'tetromino-l', 0, {
             shape: tetrominoCollisions['tetromino-l']
         });
-        this.tetrominoL.angle = 2.0;
-        //this.playerShip.integratePart(this.tetrominoL);
+        //this.tetrominoL.angle = 2.0;
+        // this.playerShip.integratePart(this.tetrominoL);
 
         this.matter.world.setBounds(0, 0, gameWidth, gameHeight, 9001);
         this.matter.world.disableGravity();
@@ -64,7 +64,12 @@ class Alignment extends Phaser.Scene {
     update(_time, deltaMillis) {
         this.playerShip.update(deltaMillis);
 
-        const tetrominoMin = getSpriteXYFromLerpUV(this.tetrominoL, 0, 0);
-        this.emitterI.emitParticleAt(tetrominoMin.x, tetrominoMin.y, 1);
+        this.emitterT.emitParticleAt(this.tetrominoL.x, this.tetrominoL.y, 1);
+
+        const minBoundLerp = getSpriteXYFromLerpUV(this.tetrominoL, 0, 0);
+        this.emitterL.emitParticleAt(minBoundLerp.x, minBoundLerp.y, 1);
+
+        const maxBoundLerp = getSpriteXYFromLerpUV(this.tetrominoL, 1, 1);
+        this.emitterJ.emitParticleAt(maxBoundLerp.x, maxBoundLerp.y, 1);
     }
 }

@@ -58,33 +58,18 @@ function angleAcceptable(body) {
  * Useful for calculating relative positioning between rotatable bodies.
  */
 function getSpriteXYFromLerpUV(gameObject, lerpU, lerpV) {
-    const mat2 = Matrix2.rotationMatrix(gameObject.angle * degreesToRadians);
-
-    const center = {
-        x: gameObject.body.centerOfMass.x,
-        y: gameObject.body.centerOfMass.y
-    }
-
-    return new Phaser.Math.Vector2(
-        gameObject.x - mat2.multiplyVectorX((center.x - lerpU) * gameObject.width, (center.y - lerpV) * gameObject.height),
-        gameObject.y - mat2.multiplyVectorY((center.x - lerpU) * gameObject.width, (center.y - lerpV) * gameObject.height)
+    const center = new Phaser.Math.Vector2(
+        gameObject.body.centerOfMass.x,
+        gameObject.body.centerOfMass.y
     );
-}
 
-function getSpriteXYFromPixelOffset(gameObject, pixelU, pixelV) {
-    const mat2 = Matrix2.rotationMatrix(gameObject.angle * degreesToRadians);
-
-    const halfWidth = gameObject.width * 0.5;
-    const halfHeight = gameObject.height * 0.5;
-
-    const spriteLerp = {
-        x: gameObject.body.centerOfMass.x - halfWidth + pixelU,
-        y: gameObject.body.centerOfMass.y - halfHeight + pixelV
-    }
+    center.subtract({x: lerpU, y: lerpV})
+        .multiply({x: gameObject.width, y: gameObject.height})
+        .rotate(gameObject.angle * degreesToRadians);
 
     return new Phaser.Math.Vector2(
-        gameObject.x + mat2.multiplyVectorX(spriteLerp.x, spriteLerp.y),
-        gameObject.y + mat2.multiplyVectorY(spriteLerp.x, spriteLerp.y)
+        gameObject.x - center.x,
+        gameObject.y - center.y
     );
 }
 
@@ -149,15 +134,14 @@ function getContainerGridCoords(shipContainer, tetromino) {
 
     const degreesSnapped = snapCardinalAngleDegrees(tetromino.angle);
 
-    const tetrominoMin = getSpriteXYFromPixelOffset(tetromino, 0, 0);
-    const shipMin = getSpriteXYFromPixelOffset(shipContainer, 0, 0);
+    const offset = getSpriteXYFromLerpUV(tetromino, 0, 0).subtract(getSpriteXYFromLerpUV(shipContainer, 0, 0)).scale(1.0 / tetrominoUnitSize);
 
-    const putGridX = Math.round((tetrominoMin.x - shipMin.x) / tetrominoUnitSize);
-    const putGridY = Math.round((tetrominoMin.y - shipMin.y) / tetrominoUnitSize);
+    offset.x = Math.round(offset.x);
+    offset.y = Math.round(offset.y);
 
     return {
-        x: putGridX,
-        y: putGridY,
+        x: offset.x,
+        y: offset.y,
         rotationDegrees: snapCardinalAngleDegrees(degreesSnapped) // Snapped to 0, 90, 180, or 270
     };
 }
@@ -165,16 +149,11 @@ function getContainerGridCoords(shipContainer, tetromino) {
 /** Snaps tetromino to the ship-container grid */
 function snapToContainerGrid(shipContainer, tetromino) {
     const unitPlacement = getContainerGridCoords(shipContainer, tetromino);
-    console.log('unitPlacement', unitPlacement);
-    console.log('shipContainer.body.centerOffset', shipContainer.body.centerOffset);
-    console.log('tetromino.body.centerOffset', tetromino.body.centerOffset);
 
     // copy grid placement data to use as vector in positioning the tetromino
     const offset = new Phaser.Math.Vector2(unitPlacement).scale(tetrominoUnitSize);
-    console.log('offset before', offset);
     offset.subtract(shipContainer.body.centerOffset);
     offset.add(tetromino.body.centerOffset);
-    console.log('offset after', offset);
     
     // Now that offset is the cumulative difference between the ship centerOffset and
     // Where the centerOffset of the tetromino should go, rotate before adding scene-space
@@ -182,30 +161,8 @@ function snapToContainerGrid(shipContainer, tetromino) {
     offset.rotate(angleRadians);
     offset.add(shipContainer);
 
-    
-    console.log('tetromino.x,y before', tetromino.x, tetromino.y);
-
-    tetromino.x = offset.x;
-    tetromino.y = offset.y;
-    
-    console.log('tetromino.x,y after', tetromino.x, tetromino.y);
-
-    // tetromino.body.angle = angleRadians;
-
-    // const sceneCoordFromUnitCoord = getSpriteXYFromPixelOffset(shipContainer, unitPlacement.x * tetrominoUnitSize, unitPlacement.y * tetrominoUnitSize).subtract(tetromino);
-    // console.log('sceneCoordFromUnitCoord 1', sceneCoordFromUnitCoord);
-
-    // const tetrominoPixelOffset = new Phaser.Math.Vector2(tetromino.body.centerOffset);
-    // tetrominoPixelOffset.rotate(angleRadians);
-    // console.log('tetrominoPixelOffset', tetrominoPixelOffset);
-
-    // sceneCoordFromUnitCoord.add(tetrominoPixelOffset)
-    // console.log('sceneCoordFromUnitCoord 2', sceneCoordFromUnitCoord);
-    // 
-    // console.log('diff', sceneCoordFromUnitCoord.x, sceneCoordFromUnitCoord.y);
-
-    // tetromino.x += Math.round(sceneCoordFromUnitCoord.x);
-    // tetromino.y += Math.round(sceneCoordFromUnitCoord.y);
+    tetromino.x = Math.round(offset.x);
+    tetromino.y = Math.round(offset.y);
 
     return unitPlacement;
 }

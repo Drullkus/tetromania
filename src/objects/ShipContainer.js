@@ -15,7 +15,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.body.centerOffset = { x: 0, y: 0 };
         this.body.centerOfMass = { x: 0.5, y: 0.5 };
 
-        this.integratePart(scene.matter.add.sprite(x, y, 'thruster', 0, { shape: thrusterShape}));
+        this.integratePart(scene.matter.add.sprite(x, y, 'thruster', 0, { shape: thrusterShape }));
 
         console.groupEnd('construct ShipContainer');
 
@@ -25,6 +25,8 @@ class ShipContainer extends Phaser.GameObjects.Container {
     }
 
     integratePart(gameObject) {
+        this.reorient();
+
         // console.log('pre-integratePart x, y', this.x, this.y);
         // console.log('pre-integratePart centerOffset', this.body.centerOffset);
         // console.log('pre-integratePart centerOfMass', this.body.centerOfMass);
@@ -35,8 +37,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
         const unitPlacement = snapToContainerGrid(this, gameObject);
 
         gameObject.angle = unitPlacement.rotationDegrees;
-
-        // console.log('unitPlacement', unitPlacement);
 
         this.shipParts.push({
             object: gameObject,
@@ -56,33 +56,34 @@ class ShipContainer extends Phaser.GameObjects.Container {
         
         this.body.centerOffset = new Phaser.Math.Vector2(width, height).scale(0.5); // Update centerOffset so that it's not in worldspace
 
+        this.reorient();
+
         // console.log('post-integratePart x, y', this.x, this.y);
         // console.log('post-integratePart centerOffset', this.body.centerOffset);
         // console.log('post-integratePart centerOfMass', this.body.centerOfMass);
         // console.log('post-integratePart width, height', this.width, this.height);
     }
 
-    update() {
+    reorient() {
         this.x = Math.round(this.x);
         this.y = Math.round(this.y);
+        this.angle = snapCardinalAngleDegrees(this.angle);
+    }
 
-         this.emitterJ.emitParticleAt(this.x, this.y, 1);
+    update() {
+        this.reorient();
 
-         getBlockLattice(this).forEach(({ x, y }) => {
-             this.emitterS.emitParticleAt(x, y, 1);
-         });
+        this.emitterT.emitParticleAt(this.x, this.y, 1);
 
-        const minBoundMass = getSpriteXYFromLerpUV(this, 0, 0);
-        this.emitterL.emitParticleAt(minBoundMass.x, minBoundMass.y, 1);
+        getBlockLattice(this).forEach(({ x, y }) => {
+            this.emitterO.emitParticleAt(x, y, 1);
+        });
 
-        const maxBoundMass = getSpriteXYFromLerpUV(this, 1, 1);
-        this.emitterO.emitParticleAt(maxBoundMass.x, maxBoundMass.y, 1);
+        const minBoundLerp = getSpriteXYFromLerpUV(this, 0, 0);
+        this.emitterL.emitParticleAt(minBoundLerp.x, minBoundLerp.y, 1);
 
-        const maxBoundPixMass = getSpriteXYFromPixelOffset(this, this.width, this.height);
-        this.emitterZ.emitParticleAt(maxBoundPixMass.x, maxBoundPixMass.y, 1);
-
-        const spriteCoord = getSpriteXYFromPixelOffset(this, -tetrominoUnitSize, tetrominoUnitSize);
-        this.emitterO.emitParticleAt(spriteCoord.x, spriteCoord.y, 1);
+        const maxBoundLerp = getSpriteXYFromLerpUV(this, 1, 1);
+        this.emitterJ.emitParticleAt(maxBoundLerp.x, maxBoundLerp.y, 1);
 
         // Important or else the sprites will not rotate
         this.shipParts.forEach(part => part.object.body.angle = degreesToRadians * (this.angle + part.rotationDegrees));
