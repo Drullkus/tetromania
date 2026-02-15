@@ -19,6 +19,26 @@ class Initialize extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start('clickDevScene');
+        const collisions = {
+            ...this.cache.json.get('tetromino_collision'),
+            ...this.cache.json.get('technology_collision')
+        };
+
+        const partCentroids = {};
+
+        partNames.forEach(tetrominoName => {
+            // Unknown when and where centerOfMass is set within lifecycle of this.matter.add.sprite
+            const tetromino = this.matter.add.sprite(0, 0, tetrominoName, 0, {
+                shape: collisions[tetrominoName]
+            });
+
+            partCentroids[tetrominoName] = tetromino.body.centerOffset;
+
+            tetromino.destroy();
+        });
+
+        window.partCentroids = partCentroids;
+
+        this.scene.start('constraintDevScene');
     }
 }

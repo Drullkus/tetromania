@@ -14,8 +14,13 @@ const degreesEigth = 45.0;
 const degreesSixteenth = 22.5;
 const degreesThirtySecond = 11.25;
 
+const radiansToDegrees = 180 / Math.PI;
+const degreesToRadians = Math.PI / 180;
+
 const shapeNames = [ 'i', 'j', 'l', 'o', 's', 't', 'z' ];
 const tetrominoNames = shapeNames.map(name => `tetromino-${name}`);
+const techNames = [ 'thruster' ];
+const partNames = [ ...tetrominoNames, ...techNames ];
 
 const tetrominoUnitSize = 32;
 
@@ -46,6 +51,27 @@ function angleAcceptable(body) {
     if (!body) return 0;
     const radiansInsideQuarter = mod(body.angle + radiansEigth, radiansQuarter) - radiansEigth;
     return Math.abs(radiansInsideQuarter) <= radiansThirtySecond;
+}
+
+/**
+ * Gets scene-space XY position for given UV coordinate in given sprite's texture space.
+ * Useful for calculating relative positioning between rotatable bodies.
+ */
+function getSpritePosition(gameObject, lerpU, lerpV) {
+    const mat2 = Matrix2.rotationMatrix(gameObject.angle * degreesToRadians);
+
+    return new Phaser.Math.Vector2(
+        gameObject.x - mat2.multiplyVectorX(lerpU / gameObject.width, lerpV / gameObject.height),
+        gameObject.y - mat2.multiplyVectorY(lerpU / gameObject.width, lerpV / gameObject.height)
+    );
+}
+
+function getCoordinatesOfMassCenter(gameObject) {
+    return getSpritePosition(
+        gameObject,
+        gameObject.body.centerOffset.x,
+        gameObject.body.centerOffset.y
+    );
 }
 
 /**

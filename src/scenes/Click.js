@@ -7,13 +7,15 @@ class Click extends Phaser.Scene {
         const tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const technologyCollisions = this.cache.json.get('technology_collision');
 
+        this.matter.add.mouseSpring(); // Allow mouse to pick up and drag objects
+
         this.thruster = this.add.sprite(0, 0, 'thruster', 0);
 
         this.playerShip = this.add.container(gameWidth * 0.5, gameHeight * 0.5, [this.thruster]);
         this.playerShip.setSize(this.thruster.width, this.thruster.height);
         this.physicsContainer = this.matter.add.gameObject(this.playerShip, {
             shape: technologyCollisions['thruster'],
-            isStatic: true
+            // isStatic: true
         });
         this.physicsContainer.ship = true;
 
@@ -54,35 +56,46 @@ class Click extends Phaser.Scene {
         this.angleInfo = this.add.text(0, 20);
         this.bodyInfo = this.add.text(0, 40);
 
-        this.scene.launch('navInterfaceScene');
-        this.controlUi = this.game.scene.getScene('navInterfaceScene');
+        if (false) {
+            this.scene.launch('navInterfaceScene');
+            this.controlUi = this.game.scene.getScene('navInterfaceScene');
 
-        // https://github.com/dataarts/dat.gui/blob/master/API.md
-        const gui = new dat.GUI();
+            // https://github.com/dataarts/dat.gui/blob/master/API.md
+            const gui = new dat.GUI();
 
-        gui.add(this.tetrominoL.body, 'angle').listen();
+            gui.add(this.tetrominoL.body, 'angle').listen();
+        }
     }
 
     collide(event, shipContainer, tetromino) {
         if (angleAcceptable(tetromino.body)) {
             console.log("Collided!");
 
-            // tetrominoBody.gameObject.x = 0;
-            // tetrominoBody.gameObject.y = 0;
-            this.matter.world.remove(tetromino); // Remove from simulation
+            tetromino.body.x = 0;
+            tetromino.body.y = 0;
+            // this.matter.world.remove(tetromino); // Remove from simulation
 
             tetromino.setAngle(snapCardinalAngleDegrees(tetromino));
 
             // Readd for display & update
-            this.add.existing(tetromino);
-            tetromino.setBelow(shipContainer);
+            // this.add.existing(tetromino);
+            // tetromino.setBelow(shipContainer);
 
-            this.playerShip.add(tetromino);
-            this.matter.world.add(tetromino.body);
+            shipContainer.add(tetromino);
+
+            // const compoundBody = Phaser.Physics.Matter.Matter.Body.create({
+            //     parts: [ ...tetromino.body.parts, ...this.playerShip.body.parts ]
+            // });
+
+            // this.playerShip.add(tetromino);
+            // this.playerShip.body.parts.push(tetromino.body);
+            // this.playerShip.setExistingBody(compoundBody);
+            // this.physicsContainer.add(tetromino);
 
             // TODO Shift to "snap" collision
-            tetromino.displayOriginX += shipContainer.x;
-            tetromino.displayOriginY += shipContainer.y;
+            // tetromino.displayOriginX += shipContainer.x;
+            // tetromino.displayOriginY += shipContainer.y;
+            // tetromino.body.positionPrev = tetromino.body.position; // Halt movement
         }
     }
 
@@ -91,16 +104,18 @@ class Click extends Phaser.Scene {
         this.angleInfo.text = `tetromino.body.angle [deg] = ${this.tetrominoL.angle.toFixed(2)} (Radians ${mod(this.tetrominoL.body.angle, Math.PI * 2.0).toFixed(2)})`;
         this.bodyInfo.text = `tetromino angle if connected: ${snapCardinalAngleDegrees(this.tetrominoL)}`;
 
-        const deltaSeconds = deltaMillis * 0.001;
-        const speed = 8 * deltaSeconds;
-        const motionDelta = this.controlUi.getControlDelta();
+        if (this.controlUi) {
+            const deltaSeconds = deltaMillis * 0.001;
+            const speed = 8 * deltaSeconds;
+            const motionDelta = this.controlUi.getControlDelta();
 
-        const deltaX = motionDelta.controlDX * speed;
-        const deltaY = motionDelta.controlDY * speed;
+            const deltaX = motionDelta.controlDX * speed;
+            const deltaY = motionDelta.controlDY * speed;
 
-        if (!this.physicsContainer.exists(this.tetrominoL)) {
-            this.tetrominoL.x += deltaX;
-            this.tetrominoL.y += deltaY;
+            if (!this.physicsContainer.exists(this.tetrominoL)) {
+                this.tetrominoL.x += deltaX;
+                this.tetrominoL.y += deltaY;
+            }
         }
 
         getBlockLattice(this.tetrominoL).forEach(({ x, y }) => {

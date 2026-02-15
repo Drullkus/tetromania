@@ -15,7 +15,7 @@ const config = {
     width: 800,
     height: 600,
     useTicker: true,
-    scene: [ Initialize, PhysicsBox, Rotate, Click, NavInterface ],
+    scene: [ Initialize, PhysicsBox, Rotate, Constraint, Click, NavInterface ],
     parent: 'tetromania',
     pixelArt: true,
     physics: {
@@ -29,3 +29,6 @@ const config = {
 const game = new Phaser.Game(config);
 
 const { height: gameHeight, width: gameWidth } = game.config;
+
+// For easy access via terminal. Access scenes without typing `game.scene.keys.` every time
+game.events.once('ready', () => Object.assign(window, game.scene.keys));

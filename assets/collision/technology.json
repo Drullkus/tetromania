@@ -1,5 +1,6 @@
 {
 	"thruster": {
+		"type": "fromPhysicsEditor",
 		"label": "thruster",
 		"isStatic": false,
 		"density": 100,
