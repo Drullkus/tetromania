@@ -5,6 +5,10 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         super(scene, x, y, []);
 
+        this.x = x;
+        this.y = y;
+        this.reorient();
+
         console.groupCollapsed('construct ShipContainer');
 
         scene.add.existing(this);
@@ -19,9 +23,10 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         console.groupEnd('construct ShipContainer');
 
-        // Set again because moving the piece will cause center to shift
+        // Set again because adding the first piece will cause center to shift
         this.x = x;
         this.y = y;
+        this.reorient();
     }
 
     integratePart(gameObject) {
@@ -65,8 +70,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
     }
 
     reorient() {
-        this.x = Math.round(this.x);
-        this.y = Math.round(this.y);
+        roundVector(this);
         this.angle = snapCardinalAngleDegrees(this.angle);
     }
 

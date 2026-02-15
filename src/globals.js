@@ -136,8 +136,7 @@ function getContainerGridCoords(shipContainer, tetromino) {
 
     const offset = getSpriteXYFromLerpUV(tetromino, 0, 0).subtract(getSpriteXYFromLerpUV(shipContainer, 0, 0)).scale(1.0 / tetrominoUnitSize);
 
-    offset.x = Math.round(offset.x);
-    offset.y = Math.round(offset.y);
+    roundVector(offset);
 
     return {
         x: offset.x,
@@ -152,17 +151,27 @@ function snapToContainerGrid(shipContainer, tetromino) {
 
     // copy grid placement data to use as vector in positioning the tetromino
     const offset = new Phaser.Math.Vector2(unitPlacement).scale(tetrominoUnitSize);
+    console.log('offset 1', offset);
     offset.subtract(shipContainer.body.centerOffset);
+    console.log('offset 2', offset);
     offset.add(tetromino.body.centerOffset);
+    console.log('offset 3', offset);
     
     // Now that offset is the cumulative difference between the ship centerOffset and
     // Where the centerOffset of the tetromino should go, rotate before adding scene-space
     const angleRadians = unitPlacement.rotationDegrees * degreesToRadians;
     offset.rotate(angleRadians);
+    console.log('offset 4', offset);
     offset.add(shipContainer);
+    console.log('offset 5', offset);
 
-    tetromino.x = Math.round(offset.x);
-    tetromino.y = Math.round(offset.y);
+    tetromino.x = offset.x;
+    tetromino.y = offset.y;
 
     return unitPlacement;
+}
+
+function roundVector(vector2) {
+    vector2.x = Math.round(vector2.x);
+    vector2.y = Math.round(vector2.y);
 }
