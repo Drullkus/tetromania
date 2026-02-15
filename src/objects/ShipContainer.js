@@ -59,7 +59,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
         const {x: width, y: height} = new Phaser.Math.Vector2(compoundBody.bounds.max).subtract(compoundBody.bounds.min);
         this.setSize(width, height);
         
-        this.body.centerOffset = new Phaser.Math.Vector2(width, height).scale(0.5); // Update centerOffset so that it's not in worldspace
+        this.body.centerOffset = new Phaser.Math.Vector2(width, height).multiply(this.body.centerOfMass); // Update centerOffset so that it's not in worldspace
 
         this.reorient();
 
