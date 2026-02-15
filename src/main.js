@@ -1,5 +1,5 @@
 /*
-Estimate time spent: 3h
+Estimate time spent: 10h
 
 Citations:
     Expoential Decay function "Lerp smoothing is broken" https://www.youtube.com/watch?v=LSNQuFEDOyQ&t=2982s
