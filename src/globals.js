@@ -37,13 +37,13 @@ function mod(a, b) {
 }
 
 /** Gets cardinal angle from object, returning 0, 90, 180, 270 */
-function snapCardinalAngleDegrees(gameObject) {
-    return mod(Math.round(gameObject.angle / degreesQuarter) * degreesQuarter, degreesFull);
+function snapCardinalAngleDegrees(degrees) {
+    return mod(Math.round(degrees / degreesQuarter) * degreesQuarter, degreesFull);
 }
 
 /** Gets cardinal angle from object, returning 0, PI/2, PI, or 3PI/2 */
-function snapCardinalAngleRadians(gameObject) {
-    return mod(Math.round(gameObject.angle / radiansQuarter) * radiansQuarter, radiansFull);
+function snapCardinalAngleRadians(radians) {
+    return mod(Math.round(radians / radiansQuarter) * radiansQuarter, radiansFull);
 }
 
 /** Determines if the tetromino is elible to connect with ship */

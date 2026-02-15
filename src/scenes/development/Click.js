@@ -9,35 +9,19 @@ class Click extends Phaser.Scene {
 
         this.matter.add.mouseSpring(); // Allow mouse to pick up and drag objects
 
-        this.thruster = this.add.sprite(0, 0, 'thruster', 0);
+        this.playerShip = new SpaceShip(this, gameWidth * 0.5, gameHeight * 0.5), technologyCollisions['thruster'];
+        this.playerShip.onShip = true;
 
-        this.playerShip = this.add.container(gameWidth * 0.5, gameHeight * 0.5, [this.thruster]);
-        this.playerShip.setSize(this.thruster.width, this.thruster.height);
-        this.matter.add.gameObject(this.playerShip, {
-            shape: technologyCollisions['thruster'],
-            // isStatic: true
-        });
-        this.playerShip.ship = true;
+        const thrusterCentroid = partCentroids['thruster'];
+        const tetrominoLCentroid = partCentroids['tetromino-l'];
 
-        this.tetrominoL = this.matter.add.sprite(350, 350, 'tetromino-l', 0, {
+        this.tetrominoL = this.matter.add.sprite(gameWidth * 0.5 + tetrominoLCentroid.x - thrusterCentroid.x - 32, gameHeight * 0.5 + tetrominoLCentroid.y - thrusterCentroid.y + 32, 'tetromino-l', 0, {
             shape: tetrominoCollisions['tetromino-l']
         });
-        this.tetrominoL.setAngle(5);
-
-        this.tetrominoL.setBelow(this.playerShip);
-        this.tetrominoL.ship = false;
+        this.playerShip.integratePart(this.tetrominoL);
 
         this.matter.world.setBounds(0, 0, gameWidth, gameHeight, 9001);
         this.matter.world.disableGravity();
-
-        this.emitter = this.add.particles(0, 0, 'tetromino-j', {
-            lifespan: 25,
-            speed: 0,
-            scale: 0.125,
-            color: [ 0xFF_FF_FF, 0 ],
-            emitting: false,
-        });
-        this.emitter.setDepth(100);
 
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             if (!(bodyA.gameObject && bodyB.gameObject)) {
@@ -45,9 +29,9 @@ class Click extends Phaser.Scene {
                 return;
             }
 
-            if (bodyA.gameObject.ship) {
+            if (bodyA.gameObject.onShip) {
                 this.collide(event, bodyA.gameObject, bodyB.gameObject);
-            } else if (bodyB.gameObject.ship) {
+            } else if (bodyB.gameObject.onShip) {
                 this.collide(event, bodyB.gameObject, bodyA.gameObject);
             }
         });
@@ -65,23 +49,44 @@ class Click extends Phaser.Scene {
 
             gui.add(this.tetrominoL.body, 'angle').listen();
         }
+
+        this.emitterJ = this.add.particles(0, 0, 'tetromino-j', {
+            lifespan: 25,
+            speed: 0,
+            scale: 0.125,
+            color: [ 0xFF_FF_FF, 0 ],
+            emitting: false,
+        });
+        this.emitterJ.setDepth(100);
+
+        this.emitterZ = this.add.particles(0, 0, 'tetromino-z', {
+            lifespan: 25,
+            speed: 0,
+            scale: 0.125,
+            color: [ 0xFF_FF_FF, 0 ],
+            emitting: false,
+        });
+        this.emitterZ.setDepth(101);
+
+        this.playerShip.emitterJ = this.emitterJ;
+        this.playerShip.emitterZ = this.emitterZ;
     }
 
     collide(event, shipContainer, tetromino) {
         if (angleAcceptable(tetromino.body)) {
             console.log("Collided!");
 
-            tetromino.body.x = 0;
-            tetromino.body.y = 0;
+            //tetromino.body.x = 0;
+            //tetromino.body.y = 0;
             // this.matter.world.remove(tetromino); // Remove from simulation
 
-            tetromino.setAngle(snapCardinalAngleDegrees(tetromino));
+            //tetromino.setAngle(snapCardinalAngleDegrees(tetromino.angle));
 
             // Readd for display & update
             // this.add.existing(tetromino);
             // tetromino.setBelow(shipContainer);
 
-            shipContainer.add(tetromino);
+            //shipContainer.add(tetromino);
 
             // const compoundBody = Phaser.Physics.Matter.Matter.Body.create({
             //     parts: [ ...tetromino.body.parts, ...this.playerShip.body.parts ]
@@ -100,9 +105,6 @@ class Click extends Phaser.Scene {
     }
 
     update(_time, deltaMillis) {
-        this.acceptingInfo.text = `angleAcceptable(tetromino.body) = ${angleAcceptable(this.tetrominoL.body)}`;
-        this.angleInfo.text = `tetromino.body.angle [deg] = ${this.tetrominoL.angle.toFixed(2)} (Radians ${mod(this.tetrominoL.body.angle, Math.PI * 2.0).toFixed(2)})`;
-        this.bodyInfo.text = `tetromino angle if connected: ${snapCardinalAngleDegrees(this.tetrominoL)}`;
 
         if (this.controlUi) {
             const deltaSeconds = deltaMillis * 0.001;
@@ -118,12 +120,6 @@ class Click extends Phaser.Scene {
             }
         }
 
-        getBlockLattice(this.tetrominoL).forEach(({ x, y }) => {
-            this.emitter.emitParticleAt(x, y, 1);
-        });
-
-        getBlockLattice(this.playerShip).forEach(({ x, y }) => {
-            this.emitter.emitParticleAt(x, y, 1);
-        });
+        this.playerShip.update(deltaMillis);
     }
 }
