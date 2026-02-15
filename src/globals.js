@@ -61,8 +61,8 @@ function getSpritePosition(gameObject, lerpU, lerpV) {
     const mat2 = Matrix2.rotationMatrix(gameObject.angle * degreesToRadians);
 
     return new Phaser.Math.Vector2(
-        gameObject.x - mat2.multiplyVectorX(lerpU / gameObject.width, lerpV / gameObject.height),
-        gameObject.y - mat2.multiplyVectorY(lerpU / gameObject.width, lerpV / gameObject.height)
+        gameObject.x - mat2.multiplyVectorX(lerpU * gameObject.width, lerpV * gameObject.height),
+        gameObject.y - mat2.multiplyVectorY(lerpU * gameObject.width, lerpV * gameObject.height)
     );
 }
 

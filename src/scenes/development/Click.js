@@ -18,7 +18,7 @@ class Click extends Phaser.Scene {
         this.tetrominoL = this.matter.add.sprite(gameWidth * 0.5 + tetrominoLCentroid.x - thrusterCentroid.x - 32, gameHeight * 0.5 + tetrominoLCentroid.y - thrusterCentroid.y + 32, 'tetromino-l', 0, {
             shape: tetrominoCollisions['tetromino-l']
         });
-        this.playerShip.integratePart(this.tetrominoL);
+        // this.playerShip.integratePart(this.tetrominoL);
 
         this.matter.world.setBounds(0, 0, gameWidth, gameHeight, 9001);
         this.matter.world.disableGravity();
@@ -50,57 +50,25 @@ class Click extends Phaser.Scene {
             gui.add(this.tetrominoL.body, 'angle').listen();
         }
 
-        this.emitterJ = this.add.particles(0, 0, 'tetromino-j', {
-            lifespan: 25,
-            speed: 0,
-            scale: 0.125,
-            color: [ 0xFF_FF_FF, 0 ],
-            emitting: false,
-        });
-        this.emitterJ.setDepth(100);
+        shapeNames.forEach((name, index) => {
+            const emitter = this.add.particles(0, 0, `tetromino-${name}`, {
+                lifespan: 25,
+                speed: 0,
+                scale: 0.125,
+                color: [ 0xFF_FF_FF, 0 ],
+                emitting: false,
+            });
+            emitter.setDepth(100 + index);
 
-        this.emitterZ = this.add.particles(0, 0, 'tetromino-z', {
-            lifespan: 25,
-            speed: 0,
-            scale: 0.125,
-            color: [ 0xFF_FF_FF, 0 ],
-            emitting: false,
+            const fieldName = `emitter${name.toUpperCase()}`;
+            this[fieldName] = emitter;
+            this.playerShip[fieldName] = emitter;
         });
-        this.emitterZ.setDepth(101);
-
-        this.playerShip.emitterJ = this.emitterJ;
-        this.playerShip.emitterZ = this.emitterZ;
     }
 
     collide(event, shipContainer, tetromino) {
         if (angleAcceptable(tetromino.body)) {
-            console.log("Collided!");
-
-            //tetromino.body.x = 0;
-            //tetromino.body.y = 0;
-            // this.matter.world.remove(tetromino); // Remove from simulation
-
-            //tetromino.setAngle(snapCardinalAngleDegrees(tetromino.angle));
-
-            // Readd for display & update
-            // this.add.existing(tetromino);
-            // tetromino.setBelow(shipContainer);
-
-            //shipContainer.add(tetromino);
-
-            // const compoundBody = Phaser.Physics.Matter.Matter.Body.create({
-            //     parts: [ ...tetromino.body.parts, ...this.playerShip.body.parts ]
-            // });
-
-            // this.playerShip.add(tetromino);
-            // this.playerShip.body.parts.push(tetromino.body);
-            // this.playerShip.setExistingBody(compoundBody);
-            // this.physicsContainer.add(tetromino);
-
-            // TODO Shift to "snap" collision
-            // tetromino.displayOriginX += shipContainer.x;
-            // tetromino.displayOriginY += shipContainer.y;
-            // tetromino.body.positionPrev = tetromino.body.position; // Halt movement
+            shipContainer.integratePart(tetromino);
         }
     }
 

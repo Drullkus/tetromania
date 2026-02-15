@@ -19,6 +19,10 @@ class SpaceShip extends Phaser.GameObjects.Container {
     }
 
     integratePart(gameObject) {
+        console.log('pre-integratePart centerOffset', this.body.centerOffset);
+        console.log('pre-integratePart centerOfMass', this.body.centerOfMass);
+        console.log('pre-integratePart width, height', this.width, this.height);
+        
         gameObject.onShip = true;
 
         this.parts.push({
@@ -36,13 +40,32 @@ class SpaceShip extends Phaser.GameObjects.Container {
 
         this.setExistingBody(compoundBody, true);
 
-        const boundDiff = new Phaser.Math.Vector2(compoundBody.bounds.max).subtract(compoundBody.bounds.min);
-        this.setSize(boundDiff.x, boundDiff.y);
+        const {x: width, y: height} = new Phaser.Math.Vector2(compoundBody.bounds.max).subtract(compoundBody.bounds.min);
+        this.setSize(width, height);
+        
+        this.body.centerOffset = new Phaser.Math.Vector2(width, height).scale(0.5); // Update so that it's not in worldspace
+
+        console.log('post-integratePart centerOffset', this.body.centerOffset);
+        console.log('post-integratePart centerOfMass', this.body.centerOfMass);
+        console.log('post-integratePart width, height', this.width, this.height);
     }
 
     update() {
+        // this.emitterJ.emitParticleAt(this.x, this.y, 1);
+
         getBlockLattice(this).forEach(({ x, y }) => {
-            this.emitterJ.emitParticleAt(x, y, 1);
+            this.emitterS.emitParticleAt(x, y, 1);
         });
+
+        const centerOffset = this.body.centerOffset;
+        this.emitterT.emitParticleAt(centerOffset.x, centerOffset.y, 1);
+
+        const minBoundMass = getSpritePosition(this, 0, 0);
+        this.emitterL.emitParticleAt(minBoundMass.x, minBoundMass.y, 1);
+
+        const maxBoundMass = getSpritePosition(this, 1, 1);
+        this.emitterZ.emitParticleAt(maxBoundMass.x, maxBoundMass.y, 1);
+
+        this.parts.forEach(part => part.object.body.angle = degreesToRadians * (this.angle + part.rotationDegrees));
     }
 }
