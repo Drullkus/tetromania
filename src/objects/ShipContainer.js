@@ -1,11 +1,11 @@
 class ShipContainer extends Phaser.GameObjects.Container {
     constructor(scene, x, y, thrusterShape) {
+        x = Math.round(x);
+        y = Math.round(y);
+
         super(scene, x, y, []);
 
-        this.x = x;
-        this.y = y;
-
-        console.group('construct ShipContainer');
+        console.groupCollapsed('construct ShipContainer');
 
         scene.add.existing(this);
         this.physicsObj = scene.matter.add.gameObject(this);
@@ -18,6 +18,10 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.integratePart(scene.matter.add.sprite(x, y, 'thruster', 0, { shape: thrusterShape}));
 
         console.groupEnd('construct ShipContainer');
+
+        // Set again because moving the piece will cause center to shift
+        this.x = x;
+        this.y = y;
     }
 
     integratePart(gameObject) {
@@ -59,7 +63,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
     }
 
     update() {
-        // Important or else the sprites will not rotate
         this.x = Math.round(this.x);
         this.y = Math.round(this.y);
 
@@ -81,6 +84,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
         const spriteCoord = getSpriteXYFromPixelOffset(this, -tetrominoUnitSize, tetrominoUnitSize);
         this.emitterO.emitParticleAt(spriteCoord.x, spriteCoord.y, 1);
 
+        // Important or else the sprites will not rotate
         this.shipParts.forEach(part => part.object.body.angle = degreesToRadians * (this.angle + part.rotationDegrees));
     }
 }
