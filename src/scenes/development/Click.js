@@ -13,11 +13,11 @@ class Click extends Phaser.Scene {
 
         this.playerShip = this.add.container(gameWidth * 0.5, gameHeight * 0.5, [this.thruster]);
         this.playerShip.setSize(this.thruster.width, this.thruster.height);
-        this.physicsContainer = this.matter.add.gameObject(this.playerShip, {
+        this.matter.add.gameObject(this.playerShip, {
             shape: technologyCollisions['thruster'],
             // isStatic: true
         });
-        this.physicsContainer.ship = true;
+        this.playerShip.ship = true;
 
         this.tetrominoL = this.matter.add.sprite(350, 350, 'tetromino-l', 0, {
             shape: tetrominoCollisions['tetromino-l']
@@ -122,7 +122,7 @@ class Click extends Phaser.Scene {
             this.emitter.emitParticleAt(x, y, 1);
         });
 
-        getBlockLattice(this.physicsContainer).forEach(({ x, y }) => {
+        getBlockLattice(this.playerShip).forEach(({ x, y }) => {
             this.emitter.emitParticleAt(x, y, 1);
         });
     }
