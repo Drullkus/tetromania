@@ -39,6 +39,6 @@ class Initialize extends Phaser.Scene {
 
         window.partCentroids = partCentroids;
 
-        this.scene.start('clickDevScene');
+        this.scene.start('alignmentDevScene');
     }
 }
