@@ -147,6 +147,8 @@ function getContainerGridCoords(shipContainer, tetromino) {
 
 /** Snaps tetromino to the ship-container grid */
 function snapToContainerGrid(shipContainer, tetromino) {
+    console.group(tetromino);
+
     const unitPlacement = getContainerGridCoords(shipContainer, tetromino);
 
     // copy grid placement data to use as vector in positioning the tetromino
@@ -167,6 +169,8 @@ function snapToContainerGrid(shipContainer, tetromino) {
 
     tetromino.x = offset.x;
     tetromino.y = offset.y;
+
+    console.groupEnd(tetromino);
 
     return unitPlacement;
 }
