@@ -146,33 +146,24 @@ function getContainerGridCoords(shipContainer, tetromino) {
 }
 
 /** Snaps tetromino to the ship-container grid */
-function snapToContainerGrid(shipContainer, tetromino) {
-    console.group(tetromino);
-
-    const unitPlacement = getContainerGridCoords(shipContainer, tetromino);
-
+function snapToContainerGrid(unitPlacement, scenePosGridOrigin, tetromino) {
+    tetromino.angle = unitPlacement.rotationDegrees;
     // copy grid placement data to use as vector in positioning the tetromino
     const offset = new Phaser.Math.Vector2(unitPlacement).scale(tetrominoUnitSize);
     console.log('offset 1', offset);
-    offset.subtract(shipContainer.body.centerOffset);
+    offset.add(scenePosGridOrigin);
     console.log('offset 2', offset);
-    offset.add(tetromino.body.centerOffset);
-    console.log('offset 3', offset);
-    
-    // Now that offset is the cumulative difference between the ship centerOffset and
-    // Where the centerOffset of the tetromino should go, rotate before adding scene-space
     const angleRadians = unitPlacement.rotationDegrees * degreesToRadians;
-    offset.rotate(angleRadians);
-    console.log('offset 4', offset);
-    offset.add(shipContainer);
-    console.log('offset 5', offset);
+    offset.add(new Phaser.Math.Vector2(tetromino.body.centerOffset).rotate(angleRadians));
+    console.log('offset 3', offset);
 
     tetromino.x = offset.x;
+    tetromino.body.position.x = offset.x;
+    tetromino.body.positionPrev.x = offset.x;
+
     tetromino.y = offset.y;
-
-    console.groupEnd(tetromino);
-
-    return unitPlacement;
+    tetromino.body.position.y = offset.y;
+    tetromino.body.positionPrev.y = offset.y;
 }
 
 function roundVector(vector2) {

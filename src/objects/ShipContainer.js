@@ -5,10 +5,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         super(scene, x, y, []);
 
-        this.x = x;
-        this.y = y;
-        this.reorient();
-
         console.groupCollapsed('construct ShipContainer');
 
         scene.add.existing(this);
@@ -39,9 +35,9 @@ class ShipContainer extends Phaser.GameObjects.Container {
         
         gameObject.onShip = true;
 
-        const unitPlacement = snapToContainerGrid(this, gameObject);
-
-        gameObject.angle = unitPlacement.rotationDegrees;
+        const unitPlacement = getContainerGridCoords(this, gameObject);
+        snapToContainerGrid(unitPlacement, new Phaser.Math.Vector2(this).subtract(this.body.centerOffset), gameObject);
+        gameObject.body.velocity = { x: 0, y: 0 };
 
         this.shipParts.push({
             object: gameObject,
@@ -71,25 +67,33 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
     reorient() {
         roundVector(this);
-        this.angle = snapCardinalAngleDegrees(this.angle);
+        this.angle = 0;
+        this.body.position.x = this.x;
+        this.body.position.y = this.y;
+        this.body.positionPrev.x = this.x;
+        this.body.positionPrev.y = this.y;
     }
 
     update() {
         this.reorient();
 
-        this.emitterT.emitParticleAt(this.x, this.y, 1);
+        // this.emitterI.emitParticleAt(this.x, this.y, 1);
 
-        getBlockLattice(this).forEach(({ x, y }) => {
-            this.emitterO.emitParticleAt(x, y, 1);
-        });
+        // getBlockLattice(this).forEach(({ x, y }) => {
+        //     this.emitterO.emitParticleAt(x, y, 1);
+        // });
 
-        const minBoundLerp = getSpriteXYFromLerpUV(this, 0, 0);
-        this.emitterL.emitParticleAt(minBoundLerp.x, minBoundLerp.y, 1);
+        // const minBoundLerp = getSpriteXYFromLerpUV(this, 0, 0);
+        // this.emitterL.emitParticleAt(minBoundLerp.x, minBoundLerp.y, 1);
 
-        const maxBoundLerp = getSpriteXYFromLerpUV(this, 1, 1);
-        this.emitterJ.emitParticleAt(maxBoundLerp.x, maxBoundLerp.y, 1);
+        // const maxBoundLerp = getSpriteXYFromLerpUV(this, 1, 1);
+        // this.emitterJ.emitParticleAt(maxBoundLerp.x, maxBoundLerp.y, 1);
 
         // Important or else the sprites will not rotate
         this.shipParts.forEach(part => part.object.body.angle = degreesToRadians * (this.angle + part.rotationDegrees));
+    }
+
+    isAttached(gameObject) {
+        return this.shipParts.map(p => p.object).indexOf(gameObject) > 0;
     }
 }

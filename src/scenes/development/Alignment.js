@@ -1,9 +1,13 @@
 class Alignment extends Phaser.Scene {
     constructor() {
         super('alignmentDevScene');
+
+        this.collided = [];
+        this.snapped = [];
     }
 
     create() {
+
         const tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const technologyCollisions = this.cache.json.get('technology_collision');
 
@@ -11,8 +15,6 @@ class Alignment extends Phaser.Scene {
 
         this.playerShip = new ShipContainer(this, gameWidth * 0.5, gameHeight * 0.5), technologyCollisions['thruster'];
         this.playerShip.onShip = true;
-
-        const thrusterCentroid = partCentroids['thruster'];
 
         this.tetrominoes = tetrominoNames.map((tetrominoName, index) => {
             return this.matter.add.sprite(140 * (index % 4) + 75, 140 * Math.floor(index / 4) + 75, tetrominoName, 0, {
@@ -24,7 +26,7 @@ class Alignment extends Phaser.Scene {
         this.matter.world.disableGravity();
 
         // FIXME Why does moving this out of the lambda into a class function reference, cause `this` to change to the World object inside the closure?
-        this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
+        this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_ACTIVE, (event, bodyA, bodyB) => {
             if (!(bodyA.gameObject && bodyB.gameObject)) {
                 // world bounds has no gameObject
                 return;
@@ -37,6 +39,7 @@ class Alignment extends Phaser.Scene {
             }
         });
 
+        console.groupCollapsed('Emitters');
         shapeNames.forEach((name, index) => {
             const emitter = this.add.particles(0, 0, `tetromino-${name}`, {
                 lifespan: 50,
@@ -47,10 +50,16 @@ class Alignment extends Phaser.Scene {
             });
             emitter.setDepth(100 + index);
 
+
             const fieldName = `emitter${name.toUpperCase()}`;
+            console.log(`Adding emitter ${fieldName} to alignmentDevScene and alignmentDevScene.playerShip`);
             this[fieldName] = emitter;
             this.playerShip[fieldName] = emitter;
         });
+        console.groupEnd('Emitters');
+
+        this.scene.launch('navInterfaceScene');
+        this.controlUi = this.game.scene.getScene('navInterfaceScene');
     }
 
     collideWithShip(_event, shipContainer, tetromino) {
@@ -60,6 +69,24 @@ class Alignment extends Phaser.Scene {
     }
 
     update(_time, deltaMillis) {
+        if (this.controlUi) {
+            const deltaSeconds = deltaMillis * 0.001;
+            const speed = 8 * deltaSeconds;
+            const motionDelta = this.controlUi.getControlDelta();
+
+            const deltaX = motionDelta.controlDX * speed;
+            const deltaY = motionDelta.controlDY * speed;
+
+            this.tetrominoes.forEach(tetromino => {
+                if (!this.playerShip.isAttached(tetromino)) {
+                    tetromino.x += deltaX;
+                    tetromino.y += deltaY;
+                }
+            });
+        }
+
         this.playerShip.update(deltaMillis);
+
+        // this.tetrominoes.forEach((tetromino) => this.playerShip.isAttached(tetromino) || this.emitterT.emitParticleAt(tetromino.x, tetromino.y, 1));
     }
 }
