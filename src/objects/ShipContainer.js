@@ -5,7 +5,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         super(scene, x, y, []);
 
-        // console.group('construct ShipContainer');
+        console.groupCollapsed('construct ShipContainer');
         // console.log(thrusterShape);
 
         scene.add.existing(this);
@@ -18,7 +18,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         this.attachPart(scene.matter.add.sprite(0, 0, 'thruster', 0, { shape: thrusterShape }));
 
-        // console.groupEnd('construct ShipContainer');
+        console.groupEnd('construct ShipContainer');
 
         // Set again because adding the first piece will cause center to shift
         this.x = x;
@@ -37,8 +37,10 @@ class ShipContainer extends Phaser.GameObjects.Container {
         const unitPlacement = getContainerGridCoords(this, gameObject);
 
         if (!this.canAttach(gameObject, unitPlacement)) {
+            console.log('No attachment for gameObject at unitPlacement', gameObject, unitPlacement)
             return false;
         }
+        console.log('Attached gameObject at unitPlacement', gameObject, unitPlacement)
 
         gameObject.onShip = true;
         snapToContainerGrid(unitPlacement, new Phaser.Math.Vector2(this).subtract(this.body.centerOffset), gameObject);
@@ -46,7 +48,9 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         this.shipParts.push({
             object: gameObject,
-            ...unitPlacement
+            gridX: unitPlacement.x,
+            gridY: unitPlacement.y,
+            rotationDegrees: unitPlacement.rotationDegrees
         });
 
         this.scene.matter.world.remove(gameObject);
@@ -95,12 +99,10 @@ class ShipContainer extends Phaser.GameObjects.Container {
         // this.emitterI.emitParticleAt(this.x, this.y, 1);
 
         this.generateShipLattice().forEach(({ x, y, tileX, tileY }) => {
-            if (tileX == 0 && tileY == 0) {
-                this.emitterZ.emitParticleAt(x, y, 1);
-            } else {
-                this.emitterO.emitParticleAt(x, y, 1);
-            }
-            this.emitterL.emitParticleAt((tileX + 0.5) * tetrominoUnitSize, (tileY + 0.5) * tetrominoUnitSize, 1);
+            const shift = 8;
+            this.emitters[mod(tileX, 7)].emitParticleAt(x - shift, y, 1);
+            this.emitters[mod(tileY, 7)].emitParticleAt(x + shift, y, 1);
+            this.emitterO.emitParticleAt((tileX + 0.5) * 17, (tileY + 0.5) * 17, 1);
         });
 
         // const minBoundLerp = getSpriteXYFromLerpUV(this, 0, 0);

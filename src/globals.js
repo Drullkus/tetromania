@@ -63,7 +63,6 @@ function getSpriteXYFromLerpUV(gameObject, lerpU, lerpV) {
         gameObject.body.centerOfMass.y
     );
 
-    const angleDegrees = mod(gameObject.angle + degreesEigth, degreesQuarter) - degreesEigth;
     const angleRadians = gameObject.angle * degreesToRadians;
 
     switch (snapCardinalAngleDegrees(gameObject.angle)) {
@@ -168,7 +167,26 @@ function snapToContainerGrid(unitPlacement, scenePosGridOrigin, tetromino) {
     offset.add(scenePosGridOrigin);
     // console.log('offset 2', offset);
     const angleRadians = unitPlacement.rotationDegrees * degreesToRadians;
-    offset.add(new Phaser.Math.Vector2(tetromino.body.centerOffset).rotate(angleRadians));
+
+    const shift = new Phaser.Math.Vector2(tetromino.body.centerOffset).rotate(angleRadians)
+
+    const tetrominoWidth = tetromino.width;
+    const tetrominoHeight = tetromino.height;
+
+    switch(unitPlacement.rotationDegrees) {
+        case 90:
+            shift.x += tetrominoHeight;
+            break;
+        case 180:
+            shift.x += tetrominoWidth;
+            shift.y += tetrominoHeight;
+            break;
+        case 270:
+            shift.y += tetrominoWidth;
+            break;
+    }
+
+    offset.add(shift);
     // console.log('offset 3', offset);
 
     tetromino.x = offset.x;

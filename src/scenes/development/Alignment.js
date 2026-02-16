@@ -17,9 +17,9 @@ class Alignment extends Phaser.Scene {
         this.playerShip.onShip = true;
 
         this.tetrominoes = tetrominoNames.map((tetrominoName, index) => {
-            return this.matter.add.sprite(140 * (index % 4) + 75, 140 * Math.floor(index / 4) + 75, tetrominoName, 0, {
+            return this.matter.add.sprite(128 * (index % 4) + 64, 128 * Math.floor(index / 4) + 64, tetrominoName, 0, {
                 shape: tetrominoCollisions[tetrominoName]
-            }).setAngle(270);
+            }).setAngle(index * 90);
         });
 
         // this.tetrominoes.pop().destroy();
@@ -51,11 +51,11 @@ class Alignment extends Phaser.Scene {
         });
 
         // console.groupCollapsed('Emitters');
-        shapeNames.forEach((name, index) => {
+        this.emitters = shapeNames.map((name, index) => {
             const emitter = this.add.particles(0, 0, `tetromino-${name}`, {
-                lifespan: 50,
+                lifespan: 25,
                 speed: 0,
-                scale: 0.125,
+                scale: 0.25,
                 color: [ 0xFF_FF_FF, 0 ],
                 emitting: false,
             });
@@ -66,7 +66,9 @@ class Alignment extends Phaser.Scene {
             // console.log(`Adding emitter ${fieldName} to alignmentDevScene and alignmentDevScene.playerShip`);
             this[fieldName] = emitter;
             this.playerShip[fieldName] = emitter;
+            return emitter;
         });
+        this.playerShip.emitters = this.emitters;
         // console.groupEnd('Emitters');
 
         this.scene.launch('navInterfaceScene');
@@ -100,7 +102,9 @@ class Alignment extends Phaser.Scene {
 
         this.playerShip.update(deltaMillis);
 
-        this.tetrominoes.forEach(tetromino => {
+        this.tetrominoes.forEach(tetromino => tetromino.angle = snapCardinalAngleDegrees(tetromino.angle));
+
+        /*this.tetrominoes.forEach(tetromino => {
             getBlockLattice(tetromino).forEach(({ x, y, tileX, tileY }) => {
                 if (tileX == 0 && tileY == 0) {
                     this.emitterS.emitParticleAt(x, y, 1);
@@ -116,6 +120,6 @@ class Alignment extends Phaser.Scene {
             const spriteOrigin = getSpriteXYFromLerpUV(tetromino, 0, 0);
 
             this.emitterI.emitParticleAt(spriteOrigin.x, spriteOrigin.y, 1);
-        });
+        });*/
     }
 }
