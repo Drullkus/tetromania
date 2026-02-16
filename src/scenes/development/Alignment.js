@@ -19,8 +19,15 @@ class Alignment extends Phaser.Scene {
         this.tetrominoes = tetrominoNames.map((tetrominoName, index) => {
             return this.matter.add.sprite(140 * (index % 4) + 75, 140 * Math.floor(index / 4) + 75, tetrominoName, 0, {
                 shape: tetrominoCollisions[tetrominoName]
-            });
+            }).setAngle(270);
         });
+
+        // this.tetrominoes.pop().destroy();
+        // this.tetrominoes.pop().destroy();
+        // this.tetrominoes.pop().destroy();
+        // this.tetrominoes.pop().destroy();
+        // this.tetrominoes.pop().destroy();
+        // this.tetrominoes.pop().destroy();
 
         this.matter.world.setBounds(0, 0, gameWidth, gameHeight, 9001);
         this.matter.world.disableGravity();
@@ -62,8 +69,8 @@ class Alignment extends Phaser.Scene {
         });
         // console.groupEnd('Emitters');
 
-        // this.scene.launch('navInterfaceScene');
-        // this.controlUi = this.game.scene.getScene('navInterfaceScene');
+        this.scene.launch('navInterfaceScene');
+        this.controlUi = this.game.scene.getScene('navInterfaceScene');
     }
 
     collideWithShip(_event, shipContainer, tetromino) {
@@ -94,11 +101,21 @@ class Alignment extends Phaser.Scene {
         this.playerShip.update(deltaMillis);
 
         this.tetrominoes.forEach(tetromino => {
-            getBlockLattice(tetromino).forEach(({ x, y }) => this.emitterZ.emitParticleAt(x, y, 1));
+            getBlockLattice(tetromino).forEach(({ x, y, tileX, tileY }) => {
+                if (tileX == 0 && tileY == 0) {
+                    this.emitterS.emitParticleAt(x, y, 1);
+                } else {
+                    this.emitterJ.emitParticleAt(x, y, 1);
+                }
+            });
 
-            if (this.playerShip.isAttached(tetromino)) return;
+            // if (this.playerShip.isAttached(tetromino)) return;
 
             this.emitterT.emitParticleAt(tetromino.x, tetromino.y, 1);
+
+            const spriteOrigin = getSpriteXYFromLerpUV(tetromino, 0, 0);
+
+            this.emitterI.emitParticleAt(spriteOrigin.x, spriteOrigin.y, 1);
         });
     }
 }

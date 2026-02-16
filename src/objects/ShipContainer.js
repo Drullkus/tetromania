@@ -16,7 +16,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.body.centerOffset = { x: 0, y: 0 };
         this.body.centerOfMass = { x: 0.5, y: 0.5 };
 
-        this.attachPart(scene.matter.add.sprite(x, y, 'thruster', 0, { shape: thrusterShape }));
+        this.attachPart(scene.matter.add.sprite(0, 0, 'thruster', 0, { shape: thrusterShape }));
 
         // console.groupEnd('construct ShipContainer');
 
@@ -59,7 +59,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         // FIXME Why is this incompatible with convex shapes in tetrominos?
         const compoundBody = Phaser.Physics.Matter.Matter.Body.create({
-            // parts: this.shipParts.flatMap(part => part.object.body.parts)
             parts: tetrominoParts
         });
         // this.add(gameObject);
@@ -96,7 +95,11 @@ class ShipContainer extends Phaser.GameObjects.Container {
         // this.emitterI.emitParticleAt(this.x, this.y, 1);
 
         this.generateShipLattice().forEach(({ x, y, tileX, tileY }) => {
-            this.emitterO.emitParticleAt(x, y, 1);
+            if (tileX == 0 && tileY == 0) {
+                this.emitterZ.emitParticleAt(x, y, 1);
+            } else {
+                this.emitterO.emitParticleAt(x, y, 1);
+            }
             this.emitterL.emitParticleAt((tileX + 0.5) * tetrominoUnitSize, (tileY + 0.5) * tetrominoUnitSize, 1);
         });
 

@@ -63,7 +63,23 @@ function getSpriteXYFromLerpUV(gameObject, lerpU, lerpV) {
         gameObject.body.centerOfMass.y
     );
 
+    const angleDegrees = mod(gameObject.angle + degreesEigth, degreesQuarter) - degreesEigth;
     const angleRadians = gameObject.angle * degreesToRadians;
+
+    switch (snapCardinalAngleDegrees(gameObject.angle)) {
+        case 90:
+            lerpU = lerpV;
+            lerpV = 1 - lerpU;
+            break;
+        case 180:
+            lerpU = 1 - lerpU;
+            lerpV = 1 - lerpV;
+            break;
+        case 270:
+            lerpU = 1 - lerpV;
+            lerpV = 1 - lerpU;
+            break;
+    }
 
     center.subtract({x: lerpU, y: lerpV})
         .multiply({x: gameObject.width, y: gameObject.height})
@@ -89,14 +105,15 @@ function getCoordinatesOfMassCenter(gameObject) {
  * */
 function getBlockLattice(tetromino, gridX = 0, gridY = 0) {
     // Get angle
-    const angle = tetromino.body.angle;
+    const angle = mod(tetromino.angle + degreesEigth, degreesQuarter) - degreesEigth;
+    const switchAxis = Math.round(snapCardinalAngleDegrees(tetromino.angle) / 90) % 2 == 1;
 
     // Construct rotation matrix
-    const mat2 = Matrix2.rotationMatrix(angle);
+    const mat2 = Matrix2.rotationMatrix(angle * degreesToRadians);
 
     // Tetromino's sprite dimensions
-    const tetrominoWidth = tetromino.width;
-    const tetrominoHeight = tetromino.height;
+    const tetrominoWidth = switchAxis ? tetromino.height : tetromino.width;
+    const tetrominoHeight = switchAxis ? tetromino.width : tetromino.height;
 
     // Tetromino's tile width and height
     const tileWidth = Math.round(tetrominoWidth / tetrominoUnitSize);
