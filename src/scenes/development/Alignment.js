@@ -43,7 +43,7 @@ class Alignment extends Phaser.Scene {
             }
         });
 
-        console.groupCollapsed('Emitters');
+        // console.groupCollapsed('Emitters');
         shapeNames.forEach((name, index) => {
             const emitter = this.add.particles(0, 0, `tetromino-${name}`, {
                 lifespan: 50,
@@ -56,11 +56,11 @@ class Alignment extends Phaser.Scene {
 
 
             const fieldName = `emitter${name.toUpperCase()}`;
-            console.log(`Adding emitter ${fieldName} to alignmentDevScene and alignmentDevScene.playerShip`);
+            // console.log(`Adding emitter ${fieldName} to alignmentDevScene and alignmentDevScene.playerShip`);
             this[fieldName] = emitter;
             this.playerShip[fieldName] = emitter;
         });
-        console.groupEnd('Emitters');
+        // console.groupEnd('Emitters');
 
         // this.scene.launch('navInterfaceScene');
         // this.controlUi = this.game.scene.getScene('navInterfaceScene');
@@ -93,6 +93,12 @@ class Alignment extends Phaser.Scene {
 
         this.playerShip.update(deltaMillis);
 
-        this.tetrominoes.forEach((tetromino) => this.playerShip.isAttached(tetromino) || this.emitterT.emitParticleAt(tetromino.x, tetromino.y, 1));
+        this.tetrominoes.forEach(tetromino => {
+            getBlockLattice(tetromino).forEach(({ x, y }) => this.emitterZ.emitParticleAt(x, y, 1));
+
+            if (this.playerShip.isAttached(tetromino)) return;
+
+            this.emitterT.emitParticleAt(tetromino.x, tetromino.y, 1);
+        });
     }
 }

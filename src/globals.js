@@ -63,9 +63,11 @@ function getSpriteXYFromLerpUV(gameObject, lerpU, lerpV) {
         gameObject.body.centerOfMass.y
     );
 
+    const angleRadians = gameObject.angle * degreesToRadians;
+
     center.subtract({x: lerpU, y: lerpV})
         .multiply({x: gameObject.width, y: gameObject.height})
-        .rotate(gameObject.angle * degreesToRadians);
+        .rotate(angleRadians);
 
     return new Phaser.Math.Vector2(
         gameObject.x - center.x,
@@ -85,7 +87,7 @@ function getCoordinatesOfMassCenter(gameObject) {
  * Extract units of a tetromino body. Registers a point for every center of 32-wide units in the body.
  * Returns a list of grid-cell center positions, all located in scene space.
  * */
-function getBlockLattice(tetromino) {
+function getBlockLattice(tetromino, gridX = 0, gridY = 0) {
     // Get angle
     const angle = tetromino.body.angle;
 
@@ -100,13 +102,6 @@ function getBlockLattice(tetromino) {
     const tileWidth = Math.round(tetrominoWidth / tetrominoUnitSize);
     const tileHeight = Math.round(tetrominoHeight / tetrominoUnitSize);
 
-    // The scene position of this piece's pivot point
-    const objX = tetromino.x;
-    const objY = tetromino.y;
-    // Tetromino's central pivot in pixel space inside sprite bounds
-    const pixotX = tetromino.body.centerOffset.x;
-    const pixotY = tetromino.body.centerOffset.y;
-
     // Scene position of the sprite's top-left corner
     const { x: offsetFromPivotToTopLeftX, y: offsetFromPivotToTopLeftY } = getSpriteXYFromLerpUV(tetromino, 0, 0);
 
@@ -115,11 +110,13 @@ function getBlockLattice(tetromino) {
     // Loop over entire lattice within sprite bounds
     for (let tileY = 0.5; tileY < tileHeight; tileY++) {
         for (let tileX = 0.5; tileX < tileWidth; tileX++) {
-            const rotatedX = mat2.multiplyVectorX(tileX, tileY) * tetrominoUnitSize + offsetFromPivotToTopLeftX;
-            const rotatedY = mat2.multiplyVectorY(tileX, tileY) * tetrominoUnitSize + offsetFromPivotToTopLeftY;
+            const unitX = tileX + gridX;
+            const unitY = tileY + gridY;
+            const rotatedX = mat2.multiplyVectorX(unitX, unitY) * tetrominoUnitSize + offsetFromPivotToTopLeftX;
+            const rotatedY = mat2.multiplyVectorY(unitX, unitY) * tetrominoUnitSize + offsetFromPivotToTopLeftY;
             // Include only if lattice point actually contained inside physical body
             if (tetromino.scene.matter.containsPoint(tetromino.body, rotatedX, rotatedY)) {
-                positions.push({ x: rotatedX, y: rotatedY, tileX: Math.round(tileX - 0.5), tileY: Math.round(tileY - 0.5) });
+                positions.push({ x: rotatedX, y: rotatedY, tileX: Math.round(unitX - 0.5), tileY: Math.round(unitY - 0.5) });
             }
         }
     }

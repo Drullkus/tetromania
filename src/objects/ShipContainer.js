@@ -5,7 +5,8 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         super(scene, x, y, []);
 
-        console.groupCollapsed('construct ShipContainer');
+        // console.group('construct ShipContainer');
+        // console.log(thrusterShape);
 
         scene.add.existing(this);
         this.physicsObj = scene.matter.add.gameObject(this);
@@ -17,7 +18,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         this.attachPart(scene.matter.add.sprite(x, y, 'thruster', 0, { shape: thrusterShape }));
 
-        console.groupEnd('construct ShipContainer');
+        // console.groupEnd('construct ShipContainer');
 
         // Set again because adding the first piece will cause center to shift
         this.x = x;
@@ -38,8 +39,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
         if (!this.canAttach(gameObject, unitPlacement)) {
             return false;
         }
-        
-        // TODO check against ship grid
 
         gameObject.onShip = true;
         snapToContainerGrid(unitPlacement, new Phaser.Math.Vector2(this).subtract(this.body.centerOffset), gameObject);
@@ -52,9 +51,18 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         this.scene.matter.world.remove(gameObject);
 
+        // gameObject.removeFromDisplayList();
+        // gameObject.removeFromUpdateList();
+
+        const tetrominoParts = this.shipParts.flatMap(part => part.object.body.parts);
+        // const tetrominoParts = this.shipParts.flatMap(part => part.object.body.parts.filter(part => !part.label));
+
+        // FIXME Why is this incompatible with convex shapes in tetrominos?
         const compoundBody = Phaser.Physics.Matter.Matter.Body.create({
-            parts: this.shipParts.flatMap(part => part.object.body.parts)
+            // parts: this.shipParts.flatMap(part => part.object.body.parts)
+            parts: tetrominoParts
         });
+        // this.add(gameObject);
 
         this.setExistingBody(compoundBody, true);
 
@@ -87,7 +95,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         // this.emitterI.emitParticleAt(this.x, this.y, 1);
 
-        getBlockLattice(this).forEach(({ x, y, tileX, tileY }) => {
+        this.generateShipLattice().forEach(({ x, y, tileX, tileY }) => {
             this.emitterO.emitParticleAt(x, y, 1);
             this.emitterL.emitParticleAt((tileX + 0.5) * tetrominoUnitSize, (tileY + 0.5) * tetrominoUnitSize, 1);
         });
@@ -115,15 +123,17 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         // FIXME This will scan entire grid inside ship's boundaries against the tetromino grid
         //  Future optimization will have to minimize the search-space to the point of collision
-        const shipLattice = getBlockLattice(this).map(p => ({ x: p.tileX, y: p.tileY }));
-        const partLattice = getBlockLattice(gameObject).map(p => ({ x: p.tileX + unitPlacement.x, y: p.tileY + unitPlacement.y }));
+        const shipLattice = this.generateShipLattice().map(p => ({ x: p.tileX, y: p.tileY }));
+        const partLattice = getBlockLattice(gameObject, unitPlacement.tileX, unitPlacement.tileY).map(p => ({ x: p.tileX + unitPlacement.x, y: p.tileY + unitPlacement.y }));
 
         const hasOverlap = shipLattice.some(gridPoint => partLattice.some(unitPoint => gridPoint.x == unitPoint.x && gridPoint.y == unitPoint.y));
         
         if (hasOverlap) {
+            console.groupCollapsed('canAttach detected overlap');
             console.log('unitPlacement', unitPlacement);
             console.log('shipLattice', shipLattice);
             console.log('partLattice', partLattice);
+            console.groupEnd('canAttach detected overlap');
         }
         
         // Check for adjacent connections
@@ -141,5 +151,10 @@ class ShipContainer extends Phaser.GameObjects.Container {
         }));
 
         return doAttach;
+    }
+
+    generateShipLattice() {
+        // FIXME get units from each tetromino instead
+        return getBlockLattice(this);
     }
 }
