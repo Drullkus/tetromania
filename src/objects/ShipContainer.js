@@ -15,7 +15,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.body.centerOffset = { x: 0, y: 0 };
         this.body.centerOfMass = { x: 0.5, y: 0.5 };
 
-        this.integratePart(scene.matter.add.sprite(x, y, 'thruster', 0, { shape: thrusterShape }));
+        this.attachPart(scene.matter.add.sprite(x, y, 'thruster', 0, { shape: thrusterShape }));
 
         console.groupEnd('construct ShipContainer');
 
@@ -25,17 +25,23 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.reorient();
     }
 
-    integratePart(gameObject) {
+    attachPart(gameObject) {
         this.reorient();
 
         // console.log('pre-integratePart x, y', this.x, this.y);
         // console.log('pre-integratePart centerOffset', this.body.centerOffset);
         // console.log('pre-integratePart centerOfMass', this.body.centerOfMass);
         // console.log('pre-integratePart width, height', this.width, this.height);
-        
-        gameObject.onShip = true;
 
         const unitPlacement = getContainerGridCoords(this, gameObject);
+
+        if (!this.canAttach(gameObject, unitPlacement)) {
+            return false;
+        }
+        
+        // TODO check against ship grid
+
+        gameObject.onShip = true;
         snapToContainerGrid(unitPlacement, new Phaser.Math.Vector2(this).subtract(this.body.centerOffset), gameObject);
         gameObject.body.velocity = { x: 0, y: 0 };
 
@@ -63,6 +69,8 @@ class ShipContainer extends Phaser.GameObjects.Container {
         // console.log('post-integratePart centerOffset', this.body.centerOffset);
         // console.log('post-integratePart centerOfMass', this.body.centerOfMass);
         // console.log('post-integratePart width, height', this.width, this.height);
+
+        return true;
     }
 
     reorient() {
@@ -79,9 +87,10 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         // this.emitterI.emitParticleAt(this.x, this.y, 1);
 
-        // getBlockLattice(this).forEach(({ x, y }) => {
-        //     this.emitterO.emitParticleAt(x, y, 1);
-        // });
+        getBlockLattice(this).forEach(({ x, y, tileX, tileY }) => {
+            this.emitterO.emitParticleAt(x, y, 1);
+            this.emitterL.emitParticleAt((tileX + 0.5) * tetrominoUnitSize, (tileY + 0.5) * tetrominoUnitSize, 1);
+        });
 
         // const minBoundLerp = getSpriteXYFromLerpUV(this, 0, 0);
         // this.emitterL.emitParticleAt(minBoundLerp.x, minBoundLerp.y, 1);
@@ -94,6 +103,43 @@ class ShipContainer extends Phaser.GameObjects.Container {
     }
 
     isAttached(gameObject) {
-        return this.shipParts.map(p => p.object).indexOf(gameObject) > 0;
+        return this.shipParts.some(p => p.object == gameObject);
+    }
+
+    // Checks if the integer coord is ajacent on this ship's grid, barring diagonals or overlaps
+    canAttach(gameObject, unitPlacement) {
+        // Automatic pass if zero parts (as called during constructor)
+        if (this.shipParts.length == 0) {
+            return true;
+        }
+
+        // FIXME This will scan entire grid inside ship's boundaries against the tetromino grid
+        //  Future optimization will have to minimize the search-space to the point of collision
+        const shipLattice = getBlockLattice(this).map(p => ({ x: p.tileX, y: p.tileY }));
+        const partLattice = getBlockLattice(gameObject).map(p => ({ x: p.tileX + unitPlacement.x, y: p.tileY + unitPlacement.y }));
+
+        const hasOverlap = shipLattice.some(gridPoint => partLattice.some(unitPoint => gridPoint.x == unitPoint.x && gridPoint.y == unitPoint.y));
+        
+        if (hasOverlap) {
+            console.log('unitPlacement', unitPlacement);
+            console.log('shipLattice', shipLattice);
+            console.log('partLattice', partLattice);
+        }
+        
+        // Check for adjacent connections
+        const doAttach = hasOverlap ? false : shipLattice.some(gridPoint => partLattice.some(unitPoint => {
+            const north = gridPoint.x == unitPoint.x && gridPoint.y == unitPoint.y + 1;
+            const east = gridPoint.x == unitPoint.x - 1 && gridPoint.y == unitPoint.y;
+            const south = gridPoint.x == unitPoint.x && gridPoint.y == unitPoint.y - 1;
+            const west = gridPoint.x == unitPoint.x + 1 && gridPoint.y == unitPoint.y;
+
+            const pass = north || east || south || west;
+
+            //if (pass) console.log(`${north} || ${east} || ${south} || ${west} = ${pass}, gridPoint, unitPoint`, gridPoint, unitPoint);
+
+            return pass;
+        }));
+
+        return doAttach;
     }
 }

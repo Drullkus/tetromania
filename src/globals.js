@@ -119,7 +119,7 @@ function getBlockLattice(tetromino) {
             const rotatedY = mat2.multiplyVectorY(tileX, tileY) * tetrominoUnitSize + offsetFromPivotToTopLeftY;
             // Include only if lattice point actually contained inside physical body
             if (tetromino.scene.matter.containsPoint(tetromino.body, rotatedX, rotatedY)) {
-                positions.push({ x: rotatedX, y: rotatedY });
+                positions.push({ x: rotatedX, y: rotatedY, tileX: Math.round(tileX - 0.5), tileY: Math.round(tileY - 0.5) });
             }
         }
     }
@@ -150,12 +150,12 @@ function snapToContainerGrid(unitPlacement, scenePosGridOrigin, tetromino) {
     tetromino.angle = unitPlacement.rotationDegrees;
     // copy grid placement data to use as vector in positioning the tetromino
     const offset = new Phaser.Math.Vector2(unitPlacement).scale(tetrominoUnitSize);
-    console.log('offset 1', offset);
+    // console.log('offset 1', offset);
     offset.add(scenePosGridOrigin);
-    console.log('offset 2', offset);
+    // console.log('offset 2', offset);
     const angleRadians = unitPlacement.rotationDegrees * degreesToRadians;
     offset.add(new Phaser.Math.Vector2(tetromino.body.centerOffset).rotate(angleRadians));
-    console.log('offset 3', offset);
+    // console.log('offset 3', offset);
 
     tetromino.x = offset.x;
     tetromino.body.position.x = offset.x;

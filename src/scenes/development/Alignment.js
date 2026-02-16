@@ -11,7 +11,7 @@ class Alignment extends Phaser.Scene {
         const tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const technologyCollisions = this.cache.json.get('technology_collision');
 
-        this.matter.add.mouseSpring(); // Allow mouse to pick up and drag objects
+        this.mouseHoldConstraint = this.matter.add.pointerConstraint(); // Allow mouse to pick up and drag objects
 
         this.playerShip = new ShipContainer(this, gameWidth * 0.5, gameHeight * 0.5), technologyCollisions['thruster'];
         this.playerShip.onShip = true;
@@ -33,9 +33,13 @@ class Alignment extends Phaser.Scene {
             }
 
             if (bodyA.gameObject.onShip) {
-                this.collideWithShip(event, bodyA.gameObject, bodyB.gameObject);
+                if (this.collideWithShip(event, bodyA.gameObject, bodyB.gameObject)) {
+                    this.mouseHoldConstraint.stopDrag();
+                }
             } else if (bodyB.gameObject.onShip) {
-                this.collideWithShip(event, bodyB.gameObject, bodyA.gameObject);
+                if (this.collideWithShip(event, bodyB.gameObject, bodyA.gameObject)) {
+                    this.mouseHoldConstraint.stopDrag();
+                }
             }
         });
 
@@ -58,14 +62,16 @@ class Alignment extends Phaser.Scene {
         });
         console.groupEnd('Emitters');
 
-        this.scene.launch('navInterfaceScene');
-        this.controlUi = this.game.scene.getScene('navInterfaceScene');
+        // this.scene.launch('navInterfaceScene');
+        // this.controlUi = this.game.scene.getScene('navInterfaceScene');
     }
 
     collideWithShip(_event, shipContainer, tetromino) {
-        if (angleAcceptable(tetromino.body)) {
-            shipContainer.integratePart(tetromino);
+        if (angleAcceptable(tetromino.body) && !this.playerShip.isAttached(tetromino)) {
+            return shipContainer.attachPart(tetromino);
         }
+
+        return false;
     }
 
     update(_time, deltaMillis) {
@@ -87,6 +93,6 @@ class Alignment extends Phaser.Scene {
 
         this.playerShip.update(deltaMillis);
 
-        // this.tetrominoes.forEach((tetromino) => this.playerShip.isAttached(tetromino) || this.emitterT.emitParticleAt(tetromino.x, tetromino.y, 1));
+        this.tetrominoes.forEach((tetromino) => this.playerShip.isAttached(tetromino) || this.emitterT.emitParticleAt(tetromino.x, tetromino.y, 1));
     }
 }
