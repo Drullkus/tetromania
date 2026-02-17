@@ -19,7 +19,7 @@ class Alignment extends Phaser.Scene {
         this.tetrominoes = tetrominoNames.map((tetrominoName, index) => {
             return this.matter.add.sprite(128 * (index % 4) + 64, 128 * Math.floor(index / 4) + 64, tetrominoName, 0, {
                 shape: tetrominoCollisions[tetrominoName]
-            }).setAngle(index * 90);
+            });//.setAngle(index * 90);
         });
 
         // this.tetrominoes.pop().destroy();
@@ -102,24 +102,23 @@ class Alignment extends Phaser.Scene {
 
         this.playerShip.update(deltaMillis);
 
-        this.tetrominoes.forEach(tetromino => tetromino.angle = snapCardinalAngleDegrees(tetromino.angle));
+        // this.tetrominoes.forEach(tetromino => tetromino.angle = snapCardinalAngleDegrees(tetromino.angle));
 
-        /*this.tetrominoes.forEach(tetromino => {
-            getBlockLattice(tetromino).forEach(({ x, y, tileX, tileY }) => {
-                if (tileX == 0 && tileY == 0) {
-                    this.emitterS.emitParticleAt(x, y, 1);
-                } else {
-                    this.emitterJ.emitParticleAt(x, y, 1);
-                }
-            });
+        this.tetrominoes.forEach(tetromino => {
+            // getBlockLattice(tetromino).forEach(({ x, y, tileX, tileY }) => {
+            //     if (tileX == 0 && tileY == 0) {
+            //         this.emitterS.emitParticleAt(x, y, 1);
+            //     } else {
+            //         this.emitterJ.emitParticleAt(x, y, 1);
+            //     }
+            // });
 
             // if (this.playerShip.isAttached(tetromino)) return;
 
             this.emitterT.emitParticleAt(tetromino.x, tetromino.y, 1);
 
-            const spriteOrigin = getSpriteXYFromLerpUV(tetromino, 0, 0);
-
-            this.emitterI.emitParticleAt(spriteOrigin.x, spriteOrigin.y, 1);
-        });*/
+            // const spriteOrigin = getSpriteXYFromLerpUV(tetromino, 0, 0);
+            // this.emitterI.emitParticleAt(spriteOrigin.x, spriteOrigin.y, 1);
+        });
     }
 }

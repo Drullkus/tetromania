@@ -57,7 +57,7 @@ function angleAcceptable(body) {
  * Gets scene-space XY position for given UV coordinate in given sprite's texture space.
  * Useful for calculating relative positioning between rotatable bodies.
  */
-function getSpriteXYFromLerpUV(gameObject, lerpU, lerpV) {
+function getSpriteXYFromLerpUV(gameObject, lerpU = 0, lerpV = 0) {
     const center = new Phaser.Math.Vector2(
         gameObject.body.centerOfMass.x,
         gameObject.body.centerOfMass.y
