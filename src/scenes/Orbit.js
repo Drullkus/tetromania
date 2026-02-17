@@ -75,7 +75,7 @@ class Orbit extends Phaser.Scene {
         this.tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const limitInv = 1.0 / this.floatingObjectLimitSqrt;
 
-        const encounterFactories = [ this.createSmallAsteroid, this.createMediumAsteroid, this.createTetromino ];
+        const encounterFactories = [ this.createSmallAsteroid, this.createTetromino, this.createMediumAsteroid ];
 
         for (let yLerp = 0; yLerp < 1; yLerp += limitInv) {
             const worldY = Phaser.Math.Linear(this.wrapBounds.min.y, this.wrapBounds.max.y, yLerp);
