@@ -38,11 +38,11 @@ class Orbit extends Phaser.Scene {
         const scene = this;
         // COLLISION_START causes horrible inaccuracies in building ship grid
         this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_ACTIVE, event => {
-            event.pairs.forEach(p => scene.checkCollisionPair(p.bodyA, p.bodyB));
+            event.pairs.forEach(p => scene.checkCollisionPair(p, p.bodyA, p.bodyB));
         });
     }
 
-    checkCollisionPair(bodyA, bodyB) {
+    checkCollisionPair(event, bodyA, bodyB) {
         const gameObjectA = bodyA.gameObject;
         const gameObjectB = bodyB.gameObject;
         
@@ -50,6 +50,10 @@ class Orbit extends Phaser.Scene {
             // world bounds has no gameObject
             return;
         }
+
+        event.contacts.map(contact => contact.vertex).filter(c => c != null).forEach(({x, y}) => {
+            this.emitters[0].emitParticleAt(x, y, 1);
+        });
 
         if (gameObjectA.isShip && gameObjectB.tetromino) {
             // console.log('bodyA.gameObject.collideWithShip(bodyB.gameObject)', bodyA, bodyB)
