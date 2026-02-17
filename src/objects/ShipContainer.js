@@ -24,6 +24,14 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.reorient();
     }
 
+    collideWithShip(tetromino) {
+        if (angleAcceptable(tetromino.body) && !this.isAttached(tetromino)) {
+            return this.attachPart(tetromino);
+        }
+
+        return false;
+    }
+
     attachPart(gameObject) {
         this.reorient();
 
@@ -60,6 +68,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
         });
         // this.add(gameObject);
 
+        compoundBody.isStatic = true;
         this.setExistingBody(compoundBody, true);
 
         const {x: width, y: height} = new Phaser.Math.Vector2(compoundBody.bounds.max).subtract(compoundBody.bounds.min);

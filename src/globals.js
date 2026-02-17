@@ -53,6 +53,14 @@ function angleAcceptable(body) {
     return Math.abs(radiansInsideQuarter) <= radiansThirtySecond;
 }
 
+/** Remove element from array: https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript */
+function removeArrayElement(list, element) {
+  const index = list.indexOf(element);
+  if (index >= 0) {
+    list.splice(index, 1);
+  }
+}
+
 /**
  * Gets scene-space XY position for given UV coordinate in given sprite's texture space.
  * Useful for calculating relative positioning between rotatable bodies.
@@ -201,4 +209,23 @@ function snapToContainerGrid(unitPlacement, scenePosGridOrigin, tetromino) {
 function roundVector(vector2) {
     vector2.x = Math.round(vector2.x);
     vector2.y = Math.round(vector2.y);
+}
+
+/**
+ * Choose random point within range, with uniform distribution
+ * Source: https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly/50746409#50746409
+ * Modified to set custom bounds
+ * 
+ * Testing strings:
+ *     Math.min(...Array.from({length:1000}).map(() => randomInRange(1, 2).length())); // Should approximate very close to being 1
+ *     Math.max(...Array.from({length:1000}).map(() => randomInRange(1, 2).length())); // Should approximate very close to being 2
+ */
+function randomInRange(minRadius, maxRadius) {
+    const minFrac = Math.pow(minRadius / maxRadius, 2);
+    const radius = Math.sqrt(Phaser.Math.RND.realInRange(minFrac, 1)) * maxRadius;
+    return new Phaser.Math.Vector2(radius, 0).rotate(Phaser.Math.RND.frac() * radiansFull);
+}
+
+function randomRangeAroundCenter(minRadius, maxRadius, center) {
+    return randomInRange(minRadius, maxRadius).add(center);
 }
