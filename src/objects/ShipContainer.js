@@ -109,13 +109,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         // this.emitterI.emitParticleAt(this.x, this.y, 1);
 
-        // this.generateShipLattice().forEach(({ x, y, tileX, tileY }) => {
-        //     const shift = 8;
-        //     this.emitters[mod(tileX, 7)].emitParticleAt(x - shift, y, 1);
-        //     this.emitters[mod(tileY, 7)].emitParticleAt(x + shift, y, 1);
-        //     this.emitterO.emitParticleAt((tileX + 0.5) * 17, (tileY + 0.5) * 17, 1);
-        // });
-
         // const minBoundLerp = getSpriteXYFromLerpUV(this, 0, 0);
         // this.emitterL.emitParticleAt(minBoundLerp.x, minBoundLerp.y, 1);
 
@@ -154,13 +147,13 @@ class ShipContainer extends Phaser.GameObjects.Container {
             // );
         });
 
-        this.shipGrid.forEach(({tileX, tileY}) => {
-            const shift = 10;
-            const putX = (tileX + 0.5) * tetrominoUnitSize * 2;
-            const putY = (tileY + 0.5) * tetrominoUnitSize * 2;
-            this.emitters[mod(tileX, 7)].emitParticleAt(putX - shift, putY, 1);
-            this.emitters[mod(tileY, 7)].emitParticleAt(putX + shift, putY, 1);
-        });
+        // this.shipGrid.forEach(({tileX, tileY}) => {
+        //     const shift = 10;
+        //     const putX = (tileX + 0.5) * tetrominoUnitSize * 2;
+        //     const putY = (tileY + 0.5) * tetrominoUnitSize * 2;
+        //     this.emitters[mod(tileX, 7)].emitParticleAt(putX - shift, putY, 1);
+        //     this.emitters[mod(tileY, 7)].emitParticleAt(putX + shift, putY, 1);
+        // });
     }
 
     isAttached(gameObject) {
@@ -176,7 +169,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         // FIXME This will scan entire grid inside ship's boundaries against the tetromino grid
         //  Future optimization will have to minimize the search-space to the point of collision
-        const shipLattice = this.generateShipLattice().map(p => ({ x: p.tileX, y: p.tileY }));
+        const shipLattice = this.shipGrid.map(p => ({ x: p.tileX, y: p.tileY }));
         const partLattice = getBlockLattice(gameObject, unitPlacement.tileX, unitPlacement.tileY).map(p => ({ x: p.tileX + unitPlacement.x, y: p.tileY + unitPlacement.y }));
 
         const hasOverlap = shipLattice.some(gridPoint => partLattice.some(unitPoint => gridPoint.x == unitPoint.x && gridPoint.y == unitPoint.y));
@@ -228,10 +221,5 @@ class ShipContainer extends Phaser.GameObjects.Container {
                 tileX: gridX + tileX, tileY: gridY + tileY
             }));
         });
-    }
-
-    generateShipLattice() {
-        // FIXME get units from each tetromino instead
-        return getBlockLattice(this);
     }
 }
