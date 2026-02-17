@@ -5,7 +5,6 @@ class Initialize extends Phaser.Scene {
 
     preload() {
         this.load.image('controller-circle', './assets/ui/controller-circle.png');
-        this.load.image('controller-line', './assets/ui/controller-line.png');
 
         tetrominoNames.forEach(tetrominoName => {
             this.load.image(tetrominoName, `./assets/blocks/${tetrominoName}.png`);
