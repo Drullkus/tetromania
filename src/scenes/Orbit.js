@@ -75,7 +75,7 @@ class Orbit extends Phaser.Scene {
         this.tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const limitInv = 1.0 / this.floatingObjectLimitSqrt;
 
-        const encounterFactories = [ this.createSmallAsteroid, this.createTetromino ];
+        const encounterFactories = [ this.createSmallAsteroid, this.createMediumAsteroid, this.createTetromino ];
 
         for (let yLerp = 0; yLerp < 1; yLerp += limitInv) {
             const worldY = Phaser.Math.Linear(this.wrapBounds.min.y, this.wrapBounds.max.y, yLerp);
@@ -91,6 +91,8 @@ class Orbit extends Phaser.Scene {
                 const createEncounter = Phaser.Math.RND.weightedPick(encounterFactories);
                 const generatedObject = createEncounter(placeCoord, this);
                 this.floatingObjects.push(generatedObject);
+                generatedObject.body.frictionAir = 0;
+                generatedObject.body.frictionStatic = 0;
             }
         }
     }
@@ -106,8 +108,6 @@ class Orbit extends Phaser.Scene {
         tetromino.tetromino = true;
 
         return tetromino;
-
-        scene.floatingObjects.push(tetromino);
     }
 
     createSmallAsteroid(placeCoord, scene) {
@@ -119,12 +119,25 @@ class Orbit extends Phaser.Scene {
             .setCircle(24); // Radius of circle body
 
         smallAsteroid.tetromino = false; // Signal to checkCollisionPair
-        smallAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.1, 0.1); // Random angular movement
+        smallAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.025, 0.025); // Random angular movement
         smallAsteroid.body.wrapBounds = scene.wrapBounds;
 
         return smallAsteroid;
+    }
 
-        scene.floatingObjects.push(smallAsteroid);
+    createMediumAsteroid(placeCoord, scene) {
+        const mediumAsteroid = scene.matter.add.sprite(placeCoord.x, placeCoord.y, 'asteroid_medium', Phaser.Math.RND.integerInRange(0, 15));
+
+        mediumAsteroid
+            .setOrigin(0.5)
+            .setAngle(Phaser.Math.RND.angle()) // Random initital angle
+            .setCircle(80); // Radius of circle body
+
+        mediumAsteroid.tetromino = false; // Signal to checkCollisionPair
+        mediumAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.0125, 0.0125); // Random angular movement
+        mediumAsteroid.body.wrapBounds = scene.wrapBounds;
+
+        return mediumAsteroid;
     }
 
     createNUILayer() {
