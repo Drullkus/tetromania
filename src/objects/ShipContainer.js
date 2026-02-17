@@ -140,7 +140,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
             });
         }
 
-        if (true || this.hudShowPieceCoords) {
+        if (this.hudShowPieceCoords) {
             this.shipParts.forEach(({x, y}) => {
                 this.emitters[0].emitParticleAt(x, y, 1);
             });

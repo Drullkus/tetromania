@@ -2,7 +2,7 @@ class Orbit extends Phaser.Scene {
     constructor() {
         super('orbitScene');
 
-        this.boundsExtraSpace = Math.min(gameWidth, gameHeight);
+        this.boundsExtraSpace = Math.min(gameWidth, gameHeight) * 5;
         this.wrapBounds = {
             min: {
                 x: -this.boundsExtraSpace,
@@ -16,7 +16,7 @@ class Orbit extends Phaser.Scene {
     }
 
     create() {
-        this.floatingObjectLimit = 100;
+        this.floatingObjectLimit = 512;
         this.floatingObjectLimitSqrt = Math.sqrt(this.floatingObjectLimit);
         this.floatingObjects = [];
 
@@ -51,7 +51,7 @@ class Orbit extends Phaser.Scene {
             return;
         }
 
-        if (gameObjectA.isShip) {
+        if (gameObjectA.isShip && gameObjectB.tetromino) {
             // console.log('bodyA.gameObject.collideWithShip(bodyB.gameObject)', bodyA, bodyB)
             if (gameObjectA.collideWithShip(gameObjectB)) {
                 if (!removeArrayElement(this.floatingObjects, gameObjectB)) {
@@ -59,7 +59,7 @@ class Orbit extends Phaser.Scene {
                 }
                 this.mouseHoldConstraint.stopDrag();
             }
-        } else if (gameObjectB.isShip) {
+        } else if (gameObjectB.isShip && gameObjectA.tetromino) {
             // console.log('bodyB.gameObject.collideWithShip(bodyA.gameObject)', bodyB, bodyA)
             if (gameObjectB.collideWithShip(gameObjectA)) {
                 if (!removeArrayElement(this.floatingObjects, gameObjectA)) {
@@ -70,31 +70,61 @@ class Orbit extends Phaser.Scene {
         }
     }
 
-    createFloatingObjects() {
+    createFloatingObjects() { 
         const posClearOfDebris = { x: this.controlUi.focusX, y: this.controlUi.focusY };
-        const tetrominoCollisions = this.cache.json.get('tetromino_collision');
+        this.tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const limitInv = 1.0 / this.floatingObjectLimitSqrt;
+
+        const encounterFactories = [ this.createSmallAsteroid, this.createTetromino ];
+
         for (let yLerp = 0; yLerp < 1; yLerp += limitInv) {
             const worldY = Phaser.Math.Linear(this.wrapBounds.min.y, this.wrapBounds.max.y, yLerp);
             for (let xLerp = 0; xLerp < 1; xLerp += limitInv) {
                 const worldX = Phaser.Math.Linear(this.wrapBounds.min.x, this.wrapBounds.max.x, xLerp);
 
-                const placeCoord = new Phaser.Math.Vector2(32, 0).rotate(Phaser.Math.RND.rotation()).add({ x: worldX, y: worldY});
+                const placeCoord = new Phaser.Math.Vector2(128, 0).rotate(Phaser.Math.RND.rotation()).add({ x: worldX, y: worldY});
 
-                if (placeCoord.distance(posClearOfDebris) < 150) {
+                if (placeCoord.distance(posClearOfDebris) <= 512) {
                     continue; // Skip to next loop interation instead of placing piece at this lerp pos
                 }
 
-                const tetrominoName = Phaser.Math.RND.pick(tetrominoNames);
-
-                const tetromino = this.matter.add.sprite(placeCoord.x, placeCoord.y, tetrominoName, 0, {
-                    shape: tetrominoCollisions[tetrominoName],
-                    wrapBounds: this.wrapBounds
-                }).setAngle(snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
-
-                this.floatingObjects.push(tetromino);
+                const createEncounter = Phaser.Math.RND.weightedPick(encounterFactories);
+                const generatedObject = createEncounter(placeCoord, this);
+                this.floatingObjects.push(generatedObject);
             }
         }
+    }
+
+    createTetromino(placeCoord, scene) {
+        const tetrominoName = Phaser.Math.RND.pick(tetrominoNames);
+
+        const tetromino = scene.matter.add.sprite(placeCoord.x, placeCoord.y, tetrominoName, 0, {
+            shape: scene.tetrominoCollisions[tetrominoName],
+            wrapBounds: scene.wrapBounds
+        }).setAngle(snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
+
+        tetromino.tetromino = true;
+
+        return tetromino;
+
+        scene.floatingObjects.push(tetromino);
+    }
+
+    createSmallAsteroid(placeCoord, scene) {
+        const smallAsteroid = scene.matter.add.sprite(placeCoord.x, placeCoord.y, 'asteroid_small', Phaser.Math.RND.integerInRange(0, 15));
+
+        smallAsteroid
+            .setOrigin(0.5)
+            .setAngle(Phaser.Math.RND.angle()) // Random initital angle
+            .setCircle(24); // Radius of circle body
+
+        smallAsteroid.tetromino = false; // Signal to checkCollisionPair
+        smallAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.1, 0.1); // Random angular movement
+        smallAsteroid.body.wrapBounds = scene.wrapBounds;
+
+        return smallAsteroid;
+
+        scene.floatingObjects.push(smallAsteroid);
     }
 
     createNUILayer() {
