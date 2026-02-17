@@ -2,7 +2,7 @@ class Orbit extends Phaser.Scene {
     constructor() {
         super('orbitScene');
 
-        this.boundsExtraSpace = 400;
+        this.boundsExtraSpace = 1000;
         this.wrapBounds = {
             min: {
                 x: -this.boundsExtraSpace,
@@ -16,7 +16,7 @@ class Orbit extends Phaser.Scene {
     }
 
     create() {
-        this.floatingObjectLimit = 200;
+        this.floatingObjectLimit = 100;
         this.floatingObjectLimitSqrt = Math.sqrt(this.floatingObjectLimit);
         this.floatingObjects = [];
 
