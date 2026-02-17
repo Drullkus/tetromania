@@ -12,6 +12,9 @@ class Initialize extends Phaser.Scene {
 
         this.load.image('thruster', './assets/objects/thruster.png');
 
+        this.load.spritesheet('asteroid_small', './assets/objects/asteroid_small.png', { frameWidth: 64 });
+        this.load.spritesheet('asteroid_medium', './assets/objects/asteroid_medium.png', { frameWidth: 256 });
+
         this.load.json('tetromino_collision', './assets/collision/tetromino.json');
         this.load.json('technology_collision', './assets/collision/technology.json');
     }
