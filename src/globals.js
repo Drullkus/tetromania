@@ -55,10 +55,17 @@ function angleAcceptable(body) {
 
 /** Remove element from array: https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript */
 function removeArrayElement(list, element) {
-  const index = list.indexOf(element);
-  if (index >= 0) {
-    list.splice(index, 1);
-  }
+    const index = list.indexOf(element);
+    if (index >= 0) {
+        return list.splice(index, 1)[0];
+    }
+}
+
+function removeIf(list, predicate) {
+    const index = list.findIndex(predicate);
+    if (index >= 0) {
+        return list.splice(index, 1)[0];
+    }
 }
 
 /**

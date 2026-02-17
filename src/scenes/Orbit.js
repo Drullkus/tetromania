@@ -16,7 +16,7 @@ class Orbit extends Phaser.Scene {
     }
 
     create() {
-        this.floatingObjectLimit = 50;
+        this.floatingObjectLimit = 200;
         this.floatingObjectLimitSqrt = Math.sqrt(this.floatingObjectLimit);
         this.floatingObjects = [];
 
@@ -54,31 +54,72 @@ class Orbit extends Phaser.Scene {
                 this.floatingObjects.push(tetromino);
             }
         }
+        
+        const _this = this;
 
-        this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_ACTIVE, (_event, bodyA, bodyB) => {
-            if (!(bodyA.gameObject && bodyB.gameObject)) {
-                // world bounds has no gameObject
-                return;
-            }
-
-            if (bodyA.gameObject.isShip) {
-                console.log('bodyA.gameObject.collideWithShip(bodyB.gameObject)', bodyA, bodyB)
-                if (bodyA.gameObject.collideWithShip(bodyB.gameObject)) {
-                    removeArrayElement(this.floatingObjects, bodyB.gameObject);
-                }
-            } else if (bodyB.gameObject.isShip) {
-                console.log('bodyB.gameObject.collideWithShip(bodyA.gameObject)', bodyB, bodyA)
-                if (bodyB.gameObject.collideWithShip(bodyA.gameObject)) {
-                    removeArrayElement(this.floatingObjects, bodyA.gameObject);
-                }
-            } else {
-            }
+        this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_ACTIVE, event => {
+            event.pairs.forEach(p => _this.checkCollisionPair(p.bodyA, p.bodyB));
         });
+
+        this.createEmitters();
+    }
+
+    checkCollisionPair(bodyA, bodyB) {
+        const gameObjectA = bodyA.gameObject;
+        const gameObjectB = bodyB.gameObject;
+        
+        
+        if (!(gameObjectA && gameObjectB) || (gameObjectA.isShip && gameObjectB.isShip)) {
+            // world bounds has no gameObject
+            return;
+        }
+
+        if (gameObjectA.isShip) {
+            // console.log('bodyA.gameObject.collideWithShip(bodyB.gameObject)', bodyA, bodyB)
+            if (gameObjectA.collideWithShip(gameObjectB)) {
+                if (!removeArrayElement(this.floatingObjects, gameObjectB)) {
+                    console.log('gameObjectB not removed', gameObjectB);
+                }
+                this.mouseHoldConstraint.stopDrag();
+            }
+        } else if (gameObjectB.isShip) {
+            // console.log('bodyB.gameObject.collideWithShip(bodyA.gameObject)', bodyB, bodyA)
+            if (gameObjectB.collideWithShip(gameObjectA)) {
+                if (!removeArrayElement(this.floatingObjects, gameObjectA)) {
+                    console.log('gameObjectB not removed', gameObjectA);
+                }
+                this.mouseHoldConstraint.stopDrag();
+            }
+        } else {
+        }
     }
 
     createNUILayer() {
+        this.mouseHoldConstraint = this.matter.add.pointerConstraint(); // Allow mouse to pick up and drag objects
+
         this.scene.launch('navInterfaceScene');
         this.controlUi = this.game.scene.getScene('navInterfaceScene');
+    }
+
+    createEmitters() {
+        this.emitters = shapeNames.map((name, index) => {
+            const emitter = this.add.particles(0, 0, `tetromino-${name}`, {
+                lifespan: 25,
+                speed: 0,
+                scale: 0.25,
+                color: [ 0xFF_FF_FF, 0 ],
+                emitting: false,
+            });
+            emitter.setDepth(100 + index);
+
+
+            const fieldName = `emitter${name.toUpperCase()}`;
+            // console.log(`Adding emitter ${fieldName} to alignmentDevScene and alignmentDevScene.playerShip`);
+            this[fieldName] = emitter;
+            this.playerShip[fieldName] = emitter;
+            return emitter;
+        });
+        this.playerShip.emitters = this.emitters;
     }
     
     update(_time, deltaMillis) {

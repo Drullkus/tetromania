@@ -33,6 +33,10 @@ class ShipContainer extends Phaser.GameObjects.Container {
     }
 
     attachPart(gameObject) {
+        if (gameObject.isShip) {
+            return false;
+        }
+
         this.reorient();
 
         const unitPlacement = getContainerGridCoords(this, gameObject);
@@ -105,12 +109,13 @@ class ShipContainer extends Phaser.GameObjects.Container {
             const rotationRadians = degreesToRadians * (this.angle + rotationDegrees);
             object.body.angle = rotationRadians;
 
-            // getBlockLattice(object).forEach(({ x, y, tileX: gridX, tileY: gridY }) => {
-            //     const shift = 8;
-            //     this.emitters[mod(gridX + tileX, 7)].emitParticleAt(x - shift, y, 1);
-            //     this.emitters[mod(gridY + tileY, 7)].emitParticleAt(x + shift, y, 1);
-            //     this.emitterO.emitParticleAt((gridX + tileX + 0.5) * 17, (gridY + tileY + 0.5) * 17, 1);
-            // });
+            if (this.showGridUnitsOnShip) {
+                getBlockLattice(object).forEach(({ x, y, tileX: gridX, tileY: gridY }) => {
+                    const shift = 8;
+                    this.emitters[mod(gridX + tileX, 7)].emitParticleAt(x - shift, y, 1);
+                    this.emitters[mod(gridY + tileY, 7)].emitParticleAt(x + shift, y, 1);
+                });
+            }
 
             // const pieceTransform = new Phaser.GameObjects.Components.TransformMatrix().rotate(rotationRadians);
             // transform.multiply(pieceTransform, pieceTransform);
@@ -125,13 +130,21 @@ class ShipContainer extends Phaser.GameObjects.Container {
             // );
         });
 
-        // this.shipGrid.forEach(({tileX, tileY}) => {
-        //     const shift = 10;
-        //     const putX = (tileX + 0.5) * tetrominoUnitSize * 2;
-        //     const putY = (tileY + 0.5) * tetrominoUnitSize * 2;
-        //     this.emitters[mod(tileX, 7)].emitParticleAt(putX - shift, putY, 1);
-        //     this.emitters[mod(tileY, 7)].emitParticleAt(putX + shift, putY, 1);
-        // });
+        if (this.hudShowGridUnits) {
+            this.shipGrid.forEach(({tileX, tileY}) => {
+                const shift = 10;
+                const putX = (tileX + 0.5) * tetrominoUnitSize * 2;
+                const putY = (tileY + 0.5) * tetrominoUnitSize * 2;
+                this.emitters[mod(tileX, 7)].emitParticleAt(putX - shift, putY, 1);
+                this.emitters[mod(tileY, 7)].emitParticleAt(putX + shift, putY, 1);
+            });
+        }
+
+        if (true || this.hudShowPieceCoords) {
+            this.shipParts.forEach(({x, y}) => {
+                this.emitters[0].emitParticleAt(x, y, 1);
+            });
+        }
     }
 
     isAttached(gameObject) {
@@ -151,6 +164,8 @@ class ShipContainer extends Phaser.GameObjects.Container {
         const partLattice = getBlockLattice(gameObject, unitPlacement.tileX, unitPlacement.tileY).map(p => ({ x: p.tileX + unitPlacement.x, y: p.tileY + unitPlacement.y }));
 
         const hasOverlap = shipLattice.some(gridPoint => partLattice.some(unitPoint => gridPoint.x == unitPoint.x && gridPoint.y == unitPoint.y));
+
+        // console.log(`shipLattice partLattice hasOverlap=${hasOverlap}`, shipLattice, partLattice);
         
         // Check for adjacent connections
         const doAttach = hasOverlap ? false : shipLattice.some(gridPoint => partLattice.some(unitPoint => {
