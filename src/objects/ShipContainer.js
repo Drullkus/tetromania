@@ -5,13 +5,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         super(scene, x, y, []);
 
-        // this.drawPartsTextureName = 'shipContainerTexture';
-        // this.drawPartsTexture = scene.textures.addDynamicTexture(this.drawPartsTextureName, gameWidth, gameHeight);
-        // this.drawPartsSprite = scene.add.sprite(0, 0, this.drawPartsTextureName).setOrigin(0);
-
-        // console.groupCollapsed('construct ShipContainer');
-        // console.log(thrusterShape);
-
         scene.add.existing(this);
         this.physicsObj = scene.matter.add.gameObject(this);
         this.shipParts = [];
@@ -24,8 +17,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.attachPart(scene.matter.add.sprite(x, y, 'thruster', 0, { shape: thrusterShape }));
         // this.add(this.drawPartsSprite);
 
-        // console.groupEnd('construct ShipContainer');
-
         // Set again because adding the first piece will cause center to shift
         this.x = x;
         this.y = y;
@@ -35,20 +26,11 @@ class ShipContainer extends Phaser.GameObjects.Container {
     attachPart(gameObject) {
         this.reorient();
 
-        // console.log('pre-integratePart x, y', this.x, this.y);
-        // console.log('pre-integratePart centerOffset', this.body.centerOffset);
-        // console.log('pre-integratePart centerOfMass', this.body.centerOfMass);
-        // console.log('pre-integratePart width, height', this.width, this.height);
-
         const unitPlacement = getContainerGridCoords(this, gameObject);
 
         if (!this.canAttach(gameObject, unitPlacement)) {
-            // console.log('No attachment for gameObject at unitPlacement', gameObject, unitPlacement)
             return false;
         }
-        // console.log('Attached gameObject at unitPlacement', gameObject, unitPlacement)
-
-        // this.drawPartsTexture.drawFrame(gameObject.texture.key, null, gameObject.x + gameWidth * 0.5, gameObject.y + gameHeight * 0.5);
 
         gameObject.onShip = true;
         snapToContainerGrid(unitPlacement, new Phaser.Math.Vector2(this).subtract(this.body.centerOffset), gameObject);
@@ -87,11 +69,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.reorient();
         this.rebuildGrid();
 
-        // console.log('post-integratePart x, y', this.x, this.y);
-        // console.log('post-integratePart centerOffset', this.body.centerOffset);
-        // console.log('post-integratePart centerOfMass', this.body.centerOfMass);
-        // console.log('post-integratePart width, height', this.width, this.height);
-
         return true;
     }
 
@@ -106,15 +83,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
     update() {
         this.reorient();
-
-        // this.emitterI.emitParticleAt(this.x, this.y, 1);
-
-        // const minBoundLerp = getSpriteXYFromLerpUV(this, 0, 0);
-        // this.emitterL.emitParticleAt(minBoundLerp.x, minBoundLerp.y, 1);
-
-        // const maxBoundLerp = getSpriteXYFromLerpUV(this, 1, 1);
-        // this.emitterJ.emitParticleAt(maxBoundLerp.x, maxBoundLerp.y, 1);
-
 
         // const pipeline = this.scene.renderer.pipelines.MULTI_PIPELINE;
 
@@ -174,14 +142,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         const hasOverlap = shipLattice.some(gridPoint => partLattice.some(unitPoint => gridPoint.x == unitPoint.x && gridPoint.y == unitPoint.y));
         
-        // if (hasOverlap) {
-        //     console.groupCollapsed('canAttach detected overlap');
-        //     console.log('unitPlacement', unitPlacement);
-        //     console.log('shipLattice', shipLattice);
-        //     console.log('partLattice', partLattice);
-        //     console.groupEnd('canAttach detected overlap');
-        // }
-        
         // Check for adjacent connections
         const doAttach = hasOverlap ? false : shipLattice.some(gridPoint => partLattice.some(unitPoint => {
             const north = gridPoint.x == unitPoint.x && gridPoint.y == unitPoint.y + 1;
@@ -190,8 +150,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
             const west = gridPoint.x == unitPoint.x + 1 && gridPoint.y == unitPoint.y;
 
             const pass = north || east || south || west;
-
-            //if (pass) console.log(`${north} || ${east} || ${south} || ${west} = ${pass}, gridPoint, unitPoint`, gridPoint, unitPoint);
 
             return pass;
         }));
