@@ -93,6 +93,7 @@ class Orbit extends Phaser.Scene {
                 this.floatingObjects.push(generatedObject);
                 generatedObject.body.frictionAir = 0;
                 generatedObject.body.frictionStatic = 0;
+                generatedObject.body.slop = 0.0125;
             }
         }
     }
@@ -103,7 +104,7 @@ class Orbit extends Phaser.Scene {
         const tetromino = scene.matter.add.sprite(placeCoord.x, placeCoord.y, tetrominoName, 0, {
             shape: scene.tetrominoCollisions[tetrominoName],
             wrapBounds: scene.wrapBounds
-        }).setAngle(snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
+        }).setDepth(10).setAngle(snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
 
         tetromino.tetromino = true;
 
@@ -115,8 +116,9 @@ class Orbit extends Phaser.Scene {
 
         smallAsteroid
             .setOrigin(0.5)
+            .setDepth(20)
             .setAngle(Phaser.Math.RND.angle()) // Random initital angle
-            .setCircle(24); // Radius of circle body
+            .setCircle(22); // Radius of circle body
 
         smallAsteroid.tetromino = false; // Signal to checkCollisionPair
         smallAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.025, 0.025); // Random angular movement
@@ -130,8 +132,9 @@ class Orbit extends Phaser.Scene {
 
         mediumAsteroid
             .setOrigin(0.5)
+            .setDepth(21)
             .setAngle(Phaser.Math.RND.angle()) // Random initital angle
-            .setCircle(80); // Radius of circle body
+            .setCircle(75); // Radius of circle body
 
         mediumAsteroid.tetromino = false; // Signal to checkCollisionPair
         mediumAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.0125, 0.0125); // Random angular movement
