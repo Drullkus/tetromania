@@ -55,10 +55,9 @@ class Orbit extends Phaser.Scene {
             }
         }
         
-        const _this = this;
-
+        const scene = this;
         this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_ACTIVE, event => {
-            event.pairs.forEach(p => _this.checkCollisionPair(p.bodyA, p.bodyB));
+            event.pairs.forEach(p => scene.checkCollisionPair(p.bodyA, p.bodyB));
         });
 
         this.createEmitters();
@@ -112,9 +111,7 @@ class Orbit extends Phaser.Scene {
             });
             emitter.setDepth(100 + index);
 
-
             const fieldName = `emitter${name.toUpperCase()}`;
-            // console.log(`Adding emitter ${fieldName} to alignmentDevScene and alignmentDevScene.playerShip`);
             this[fieldName] = emitter;
             this.playerShip[fieldName] = emitter;
             return emitter;
@@ -135,9 +132,6 @@ class Orbit extends Phaser.Scene {
 
         this.floatingObjects.forEach(gameObject => {
             if (!this.playerShip.isAttached(gameObject)) {
-                // gameObject.x += deltaX;
-                // gameObject.y += deltaY;
-
                 gameObject.setVelocity(deltaX, deltaY);
             }
         });

@@ -43,10 +43,6 @@ class Controller extends Phaser.GameObjects.Sprite {
                 .normalize()
                 .scale(1 - this.circleRadius);
 
-            // console.log('offset', offset);
-
-            // offset.normalize().scale(dist - this.circleRadius).add(this);
-
             this.lineDest.setFromObject(offset.add(this));
         } else {
             this.lineDest.setFromObject(this.lineSrc);
