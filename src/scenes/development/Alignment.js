@@ -1,9 +1,6 @@
 class Alignment extends Phaser.Scene {
     constructor() {
         super('alignmentDevScene');
-
-        this.collided = [];
-        this.snapped = [];
     }
 
     create() {
@@ -14,7 +11,6 @@ class Alignment extends Phaser.Scene {
         this.mouseHoldConstraint = this.matter.add.pointerConstraint(); // Allow mouse to pick up and drag objects
 
         this.playerShip = new ShipContainer(this, gameWidth * 0.5, gameHeight * 0.5, technologyCollisions['thruster']);
-        this.playerShip.onShip = true;
 
         this.tetrominoes = tetrominoNames.map((tetrominoName, index) => {
             return this.matter.add.sprite(128 * (index % 4) + 64, 128 * Math.floor(index / 4) + 64, tetrominoName, 0, {

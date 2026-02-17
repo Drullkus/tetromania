@@ -15,7 +15,7 @@ const config = {
     width: 800,
     height: 600,
     useTicker: true,
-    scene: [ Initialize, PhysicsBox, Rotate, Constraint, Click, Alignment, NavInterface ],
+    scene: [ Initialize, /*PhysicsBox, Rotate, Constraint, Click, Alignment,*/ Orbit, NavInterface ],
     parent: 'tetromania',
     pixelArt: true,
     physics: {

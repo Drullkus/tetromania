@@ -5,6 +5,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         super(scene, x, y, []);
 
+        this.onShip = true;
         scene.add.existing(this);
         this.physicsObj = scene.matter.add.gameObject(this);
         this.shipParts = [];
