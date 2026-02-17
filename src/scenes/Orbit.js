@@ -2,7 +2,7 @@ class Orbit extends Phaser.Scene {
     constructor() {
         super('orbitScene');
 
-        this.boundsExtraSpace = 1000;
+        this.boundsExtraSpace = Math.min(gameWidth, gameHeight);
         this.wrapBounds = {
             min: {
                 x: -this.boundsExtraSpace,
@@ -24,14 +24,55 @@ class Orbit extends Phaser.Scene {
 
         this.createNUILayer();
 
-        const tetrominoCollisions = this.cache.json.get('tetromino_collision');
+        this.createPlayerShip();
+        this.createFloatingObjects();
+        this.createEmitters();
+    }
+
+    createPlayerShip() {
         const technologyCollisions = this.cache.json.get('technology_collision');
 
         this.playerShip = new ShipContainer(this, this.controlUi.focusX, this.controlUi.focusY, technologyCollisions['thruster']);
         this.playerShip.isShip = true;
+        
+        const scene = this;
+        // COLLISION_START causes horrible inaccuracies in building ship grid
+        this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_ACTIVE, event => {
+            event.pairs.forEach(p => scene.checkCollisionPair(p.bodyA, p.bodyB));
+        });
+    }
 
+    checkCollisionPair(bodyA, bodyB) {
+        const gameObjectA = bodyA.gameObject;
+        const gameObjectB = bodyB.gameObject;
+        
+        if (!(gameObjectA && gameObjectB) || (gameObjectA.isShip && gameObjectB.isShip)) {
+            // world bounds has no gameObject
+            return;
+        }
+
+        if (gameObjectA.isShip) {
+            // console.log('bodyA.gameObject.collideWithShip(bodyB.gameObject)', bodyA, bodyB)
+            if (gameObjectA.collideWithShip(gameObjectB)) {
+                if (!removeArrayElement(this.floatingObjects, gameObjectB)) {
+                    //console.log('gameObjectB not removed', gameObjectB);
+                }
+                this.mouseHoldConstraint.stopDrag();
+            }
+        } else if (gameObjectB.isShip) {
+            // console.log('bodyB.gameObject.collideWithShip(bodyA.gameObject)', bodyB, bodyA)
+            if (gameObjectB.collideWithShip(gameObjectA)) {
+                if (!removeArrayElement(this.floatingObjects, gameObjectA)) {
+                    //console.log('gameObjectB not removed', gameObjectA);
+                }
+                this.mouseHoldConstraint.stopDrag();
+            }
+        }
+    }
+
+    createFloatingObjects() {
         const posClearOfDebris = { x: this.controlUi.focusX, y: this.controlUi.focusY };
-
+        const tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const limitInv = 1.0 / this.floatingObjectLimitSqrt;
         for (let yLerp = 0; yLerp < 1; yLerp += limitInv) {
             const worldY = Phaser.Math.Linear(this.wrapBounds.min.y, this.wrapBounds.max.y, yLerp);
@@ -54,47 +95,11 @@ class Orbit extends Phaser.Scene {
                 this.floatingObjects.push(tetromino);
             }
         }
-        
-        const scene = this;
-        this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_ACTIVE, event => {
-            event.pairs.forEach(p => scene.checkCollisionPair(p.bodyA, p.bodyB));
-        });
-
-        this.createEmitters();
-    }
-
-    checkCollisionPair(bodyA, bodyB) {
-        const gameObjectA = bodyA.gameObject;
-        const gameObjectB = bodyB.gameObject;
-        
-        
-        if (!(gameObjectA && gameObjectB) || (gameObjectA.isShip && gameObjectB.isShip)) {
-            // world bounds has no gameObject
-            return;
-        }
-
-        if (gameObjectA.isShip) {
-            // console.log('bodyA.gameObject.collideWithShip(bodyB.gameObject)', bodyA, bodyB)
-            if (gameObjectA.collideWithShip(gameObjectB)) {
-                if (!removeArrayElement(this.floatingObjects, gameObjectB)) {
-                    console.log('gameObjectB not removed', gameObjectB);
-                }
-                this.mouseHoldConstraint.stopDrag();
-            }
-        } else if (gameObjectB.isShip) {
-            // console.log('bodyB.gameObject.collideWithShip(bodyA.gameObject)', bodyB, bodyA)
-            if (gameObjectB.collideWithShip(gameObjectA)) {
-                if (!removeArrayElement(this.floatingObjects, gameObjectA)) {
-                    console.log('gameObjectB not removed', gameObjectA);
-                }
-                this.mouseHoldConstraint.stopDrag();
-            }
-        } else {
-        }
     }
 
     createNUILayer() {
-        this.mouseHoldConstraint = this.matter.add.pointerConstraint(); // Allow mouse to pick up and drag objects
+        // Allow mouse to pick up and drag objects (if this.allowDragObjects is true)
+        this.mouseHoldConstraint = this.allowDragObjects ? this.matter.add.pointerConstraint() : { stopDrag: () => {} };
 
         this.scene.launch('navInterfaceScene');
         this.controlUi = this.game.scene.getScene('navInterfaceScene');
