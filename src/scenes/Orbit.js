@@ -34,12 +34,11 @@ class Orbit extends Phaser.Scene {
 
         this.playerShip = new ShipContainer(this, this.controlUi.focusX, this.controlUi.focusY, technologyCollisions['thruster']);
         this.playerShip.isShip = true;
-        
-        const scene = this;
+
         // COLLISION_START causes horrible inaccuracies in building ship grid
         this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_ACTIVE, event => {
-            event.pairs.forEach(p => scene.checkCollisionPair(p, p.bodyA, p.bodyB));
-        });
+            event.pairs.forEach(p => this.checkCollisionPair(p, p.bodyA, p.bodyB));
+        }, this);
     }
 
     checkCollisionPair(event, bodyA, bodyB) {
@@ -52,7 +51,7 @@ class Orbit extends Phaser.Scene {
         }
 
         event.contacts.map(contact => contact.vertex).filter(c => c != null).forEach(({x, y}) => {
-            this.emitters[0].emitParticleAt(x, y, 1);
+            this.debrisEmitter.emitParticleAt(x, y, 1);
         });
 
         if (gameObjectA.isShip && gameObjectB.tetromino) {
@@ -156,6 +155,22 @@ class Orbit extends Phaser.Scene {
     }
 
     createEmitters() {
+        const animatedParticles = ['debris', 'explosion', 'fire'].map((name, pfxIndex) => 
+            this.add.particles(0, 0, name, {
+                anim: [0, 1, 2, 3].map(index => `${name}-${index}`),
+                lifespan: { min: 50, max: 150 },
+                speed: { min: 10, max: 100 },
+                scale: { min: 0.5, max: 2 },
+                rotate: { start: 0, end: 90 },
+                emitting: false,
+                particleBringToTop: false
+            }).setDepth(100 + pfxIndex)
+        );
+        this.debrisEmitter = animatedParticles[0];
+        this.explosionEmitter = animatedParticles[1];
+        this.fireEmitter = animatedParticles[2];
+
+        // Tetromino emitters
         this.emitters = shapeNames.map((name, index) => {
             const emitter = this.add.particles(0, 0, `tetromino-${name}`, {
                 lifespan: 25,
@@ -164,7 +179,7 @@ class Orbit extends Phaser.Scene {
                 color: [ 0xFF_FF_FF, 0 ],
                 emitting: false,
             });
-            emitter.setDepth(100 + index);
+            emitter.setDepth(110 + index);
 
             const fieldName = `emitter${name.toUpperCase()}`;
             this[fieldName] = emitter;

@@ -51,13 +51,13 @@ class Initialize extends Phaser.Scene {
     }
 
     createAnimations() {
-        ['debris', 'explosion','fire'].forEach(name => 
+        ['debris', 'explosion', 'fire'].forEach(name => 
             [0, 1, 2, 3].forEach((columnIndex, _index, list) => this.anims.create({
                 key: `${name}-${columnIndex}`,
                 frames: this.anims.generateFrameNumbers(name, {
                     frames: [1, 0, 1, 2, 3].map(rowIndex => rowIndex * list.length + columnIndex)
                 }),
-                frameRate: 15
+                frameRate: 20
             }))
         );
     }
