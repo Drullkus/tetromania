@@ -1,13 +1,11 @@
 class NavInterface extends Phaser.Scene {
     constructor() {
         super('navInterfaceScene');
-
-        this.focusX = gameWidth * 0.5;
-        this.focusY = gameHeight * 0.77; // Set lower on screen to uncover center of view
     }
 
     create() {
-        this.controller = new Controller(this, this.focusX, this.focusY, 'controller-circle');
+        this.focus = new Phaser.Math.Vector2(gameWidth * 0.5, gameHeight * 0.77); // Set lower on screen to uncover center of view
+        this.controller = new Controller(this, this.focus, 'controller-circle');
     }
 
     update(_time, deltaMillis) {

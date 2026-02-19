@@ -32,7 +32,7 @@ class Orbit extends Phaser.Scene {
     createPlayerShip() {
         const technologyCollisions = this.cache.json.get('technology_collision');
 
-        this.playerShip = new ShipContainer(this, this.controlUi.focusX, this.controlUi.focusY, technologyCollisions['thruster']);
+        this.playerShip = new ShipContainer(this, gameWidth * 0.5, gameHeight * 0.7, technologyCollisions['thruster']);
         this.playerShip.isShip = true;
 
         // COLLISION_START causes horrible inaccuracies in building ship grid
@@ -74,7 +74,6 @@ class Orbit extends Phaser.Scene {
     }
 
     createFloatingObjects() { 
-        const posClearOfDebris = { x: this.controlUi.focusX, y: this.controlUi.focusY };
         this.tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const limitInv = 1.0 / this.floatingObjectLimitSqrt;
 
@@ -87,7 +86,7 @@ class Orbit extends Phaser.Scene {
 
                 const placeCoord = new Phaser.Math.Vector2(128, 0).rotate(Phaser.Math.RND.rotation()).add({ x: worldX, y: worldY});
 
-                if (placeCoord.distance(posClearOfDebris) <= 512) {
+                if (placeCoord.distance(this.controlUi.focus) <= 512) {
                     continue; // Skip to next loop interation instead of placing piece at this lerp pos
                 }
 

@@ -1,14 +1,14 @@
 class Controller extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame) {
-        super(scene, x, y, texture, frame);
+    constructor(scene, focus, texture, frame) {
+        super(scene, focus.x, focus.y, texture, frame);
 
         scene.add.existing(this); // add to existing scene
 
         this.circleRadius = 32.0;
 
         // The position that this object gravitates towards when let go
-        this.affixX = x;
-        this.affixY = y;
+        this.affixX = focus.x;
+        this.affixY = focus.y;
 
         this.setInteractive({
             useHandCursor: true,
