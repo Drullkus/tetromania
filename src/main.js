@@ -1,4 +1,8 @@
 /*
+Name: Drullkus
+
+Game Title: Tetromania
+
 Estimate time spent: 30h
 
 Citations:
@@ -8,6 +12,8 @@ Citations:
     PhysicsEditor tutorial https://www.codeandweb.com/physicseditor/tutorials/how-to-create-physics-shapes-for-phaser-3-and-matterjs
     Phaser Matter example (with permission from Nick) https://github.com/Nick-Marigo/Matter-Physics/tree/main
     Tetrominos https://en.wikipedia.org/wiki/Tetromino
+
+Additional notes for grader written inside README.md in root directory
 */
 
 const config = {
