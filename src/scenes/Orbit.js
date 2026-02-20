@@ -54,9 +54,9 @@ class Orbit extends Phaser.Scene {
             return;
         }
 
-        if (gameObjectA.isShip && gameObjectB.astroid) {
+        if (gameObjectA.isShip && gameObjectB.asteroid) {
             gameObjectA.shipStartedColliding(gameObjectB)
-        } else if (gameObjectB.isShip && gameObjectA.astroid) {
+        } else if (gameObjectB.isShip && gameObjectA.asteroid) {
             gameObjectB.shipStartedColliding(gameObjectA)
         }
     }
@@ -134,7 +134,7 @@ class Orbit extends Phaser.Scene {
             wrapBounds: scene.wrapBounds
         }).setDepth(10).setAngle(snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
 
-        tetromino.astroid = false; // Signal to checkPairStartedCollision
+        tetromino.asteroid = false; // Signal to checkPairStartedCollision
         tetromino.tetromino = true; // Signal to checkPairActiveCollision
 
         return tetromino;
@@ -153,7 +153,7 @@ class Orbit extends Phaser.Scene {
             .setAngle(Phaser.Math.RND.angle()) // Random initital angle
             .setCircle(22); // Radius of circle body
 
-        smallAsteroid.astroid = true; // Signal to checkPairStartedCollision
+        smallAsteroid.asteroid = true; // Signal to checkPairStartedCollision
         smallAsteroid.tetromino = false; // Signal to checkPairActiveCollision
 
         smallAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.025, 0.025); // Random angular movement
@@ -175,7 +175,7 @@ class Orbit extends Phaser.Scene {
             .setAngle(Phaser.Math.RND.angle()) // Random initital angle
             .setCircle(75); // Radius of circle body
 
-        mediumAsteroid.astroid = true; // Signal to checkPairStartedCollision
+        mediumAsteroid.asteroid = true; // Signal to checkPairStartedCollision
         mediumAsteroid.tetromino = false; // Signal to checkPairActiveCollision
 
         mediumAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.0125, 0.0125); // Random angular movement

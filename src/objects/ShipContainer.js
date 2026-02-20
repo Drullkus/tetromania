@@ -33,7 +33,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
     }
 
     shipStartedColliding(gameObject) {
-        if (gameObject.astroid != true) {
+        if (gameObject.asteroid != true) {
             return;
         } // Asteroids only!
 
