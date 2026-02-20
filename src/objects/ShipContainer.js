@@ -32,12 +32,18 @@ class ShipContainer extends Phaser.GameObjects.Container {
         return false;
     }
 
-    shipStartedColliding(gameObject) {
+    startedCollidingAsteroid(gameObject) {
         if (gameObject.asteroid != true) {
             return;
         } // Asteroids only!
 
-        gameObject.destroy(); // FIXME damage the ship instead and deflect the asteroid
+        // gameObject.destroy(); // FIXME damage the ship instead and deflect the asteroid
+    }
+
+    bodyPartHit(shipBody, hitByObject, collision) {
+        if (shipBody.originalBeforeShip) {
+            return this.breakPart(shipBody.originalBeforeShip);
+        }
     }
 
     attachPart(gameObject) {
@@ -52,6 +58,10 @@ class ShipContainer extends Phaser.GameObjects.Container {
         if (!this.canAttach(gameObject, unitPlacement)) {
             return false;
         }
+
+        // console.log(gameObject.body.parts);
+
+        gameObject.body.parts.forEach(b => b.originalBeforeShip = gameObject);
 
         gameObject.onShip = true;
         snapToContainerGrid(unitPlacement, new Phaser.Math.Vector2(this).subtract(this.body.centerOffset), gameObject);
@@ -71,6 +81,12 @@ class ShipContainer extends Phaser.GameObjects.Container {
         // gameObject.removeFromDisplayList();
         // gameObject.removeFromUpdateList();
 
+        this.rebuildBody();
+
+        return true;
+    }
+
+    rebuildBody() {
         const tetrominoParts = this.shipParts.flatMap(part => part.object.body.parts);
         // const tetrominoParts = this.shipParts.flatMap(part => part.object.body.parts.filter(part => !part.label));
 
@@ -90,8 +106,6 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         this.reorient();
         this.rebuildGrid();
-
-        return true;
     }
 
     reorient() {
@@ -101,6 +115,35 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.body.position.y = this.y;
         this.body.positionPrev.x = this.x;
         this.body.positionPrev.y = this.y;
+    }
+
+    /** Remove a piece from this ship, mark it unable to connect, and float it away */
+    breakPart(gameObject) {
+        const removed = this.removePart(gameObject);
+
+        removed.tetromino = false;
+        // TODO switch to destroyed sprite
+
+        return removed;
+    }
+
+    removePart(gameObject) {
+        const extractedPart = removeIf(this.shipParts, part => part.object === gameObject);
+        const extractedObject = extractedPart.object;
+        if (extractedObject) {
+
+            gameObject.onShip = false;
+            gameObject.body.parts.forEach(b => {
+                b.gameObject = gameObject;
+                b.parent = extractedObject.body;
+            });
+
+            this.scene.matter.world.add(gameObject.body);
+
+            this.rebuildBody();
+
+            return extractedObject;
+        }
     }
 
     update() {
@@ -212,5 +255,9 @@ class ShipContainer extends Phaser.GameObjects.Container {
                 tileX: gridX + tileX, tileY: gridY + tileY
             }));
         });
+    }
+
+    isEmpty() {
+        return this.shipParts.length == 0;
     }
 }

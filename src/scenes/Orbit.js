@@ -55,9 +55,23 @@ class Orbit extends Phaser.Scene {
         }
 
         if (gameObjectA.isShip && gameObjectB.asteroid) {
-            gameObjectA.shipStartedColliding(gameObjectB)
+            gameObjectA.startedCollidingAsteroid(gameObjectB);
+            const removed = gameObjectA.bodyPartHit(bodyA, gameObjectB, collision);
+            if (removed) {
+                this.floatingObjects.push(removed);
+            }
+            if (gameObjectA.isEmpty()) {
+                this.gameOver();
+            }
         } else if (gameObjectB.isShip && gameObjectA.asteroid) {
-            gameObjectB.shipStartedColliding(gameObjectA)
+            gameObjectB.startedCollidingAsteroid(gameObjectA);
+            const removed = gameObjectB.bodyPartHit(bodyB, gameObjectA, collision);
+            if (removed) {
+                this.floatingObjects.push(removed);
+            }
+            if (gameObjectB.isEmpty()) {
+                this.gameOver();
+            }
         }
     }
 
@@ -211,7 +225,8 @@ class Orbit extends Phaser.Scene {
         // Tetromino emitters
         this.emitters = shapeNames.map((name, index) => {
             const emitter = this.add.particles(0, 0, `tetromino-${name}`, {
-                lifespan: 25,
+                // lifespan: 25,
+                lifespan: 500,
                 speed: 0,
                 scale: 0.25,
                 color: [ 0xFF_FF_FF, 0 ],
@@ -243,5 +258,10 @@ class Orbit extends Phaser.Scene {
                 gameObject.setVelocity(deltaX, deltaY);
             }
         });
+    }
+
+    gameOver() {
+        console.log("game over");
+        this.scene.start('orbitScene');
     }
 }
