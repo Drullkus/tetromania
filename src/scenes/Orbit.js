@@ -86,12 +86,13 @@ class Orbit extends Phaser.Scene {
 
                 const placeCoord = new Phaser.Math.Vector2(128, 0).rotate(Phaser.Math.RND.rotation()).add({ x: worldX, y: worldY});
 
-                if (placeCoord.distance(this.controlUi.focus) <= 512) {
-                    continue; // Skip to next loop interation instead of placing piece at this lerp pos
-                }
-
                 const createEncounter = Phaser.Math.RND.weightedPick(encounterFactories);
                 const generatedObject = createEncounter(placeCoord, this);
+
+                if (!generatedObject) {
+                    continue;
+                }
+
                 this.floatingObjects.push(generatedObject);
                 generatedObject.body.frictionAir = 0;
                 generatedObject.body.frictionStatic = 0;
@@ -101,6 +102,10 @@ class Orbit extends Phaser.Scene {
     }
 
     createTetromino(placeCoord, scene) {
+        if (placeCoord.distance(scene.playerShip) <= 384) {
+            return; // Skip to next loop interation instead of placing piece at this lerp pos
+        }
+
         const tetrominoName = Phaser.Math.RND.pick(tetrominoNames);
 
         const tetromino = scene.matter.add.sprite(placeCoord.x, placeCoord.y, tetrominoName, 0, {
@@ -114,6 +119,10 @@ class Orbit extends Phaser.Scene {
     }
 
     createSmallAsteroid(placeCoord, scene) {
+        if (placeCoord.distance(scene.playerShip) <= 512) {
+            return; // Skip to next loop interation instead of placing piece at this lerp pos
+        }
+
         const smallAsteroid = scene.matter.add.sprite(placeCoord.x, placeCoord.y, 'asteroid_small', Phaser.Math.RND.integerInRange(0, 15));
 
         smallAsteroid
@@ -130,6 +139,10 @@ class Orbit extends Phaser.Scene {
     }
 
     createMediumAsteroid(placeCoord, scene) {
+        if (placeCoord.distance(scene.playerShip) <= 1024) {
+            return; // Skip to next loop interation instead of placing piece at this lerp pos
+        }
+
         const mediumAsteroid = scene.matter.add.sprite(placeCoord.x, placeCoord.y, 'asteroid_medium', Phaser.Math.RND.integerInRange(0, 15));
 
         mediumAsteroid
