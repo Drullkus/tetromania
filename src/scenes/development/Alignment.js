@@ -36,11 +36,11 @@ class Alignment extends Phaser.Scene {
             }
 
             if (bodyA.gameObject.onShip) {
-                if (this.collideWithShip(event, bodyA.gameObject, bodyB.gameObject)) {
+                if (this.shipCollidingWith(event, bodyA.gameObject, bodyB.gameObject)) {
                     this.mouseHoldConstraint.stopDrag();
                 }
             } else if (bodyB.gameObject.onShip) {
-                if (this.collideWithShip(event, bodyB.gameObject, bodyA.gameObject)) {
+                if (this.shipCollidingWith(event, bodyB.gameObject, bodyA.gameObject)) {
                     this.mouseHoldConstraint.stopDrag();
                 }
             }
@@ -71,7 +71,7 @@ class Alignment extends Phaser.Scene {
         this.controlUi = this.game.scene.getScene('navInterfaceScene');
     }
 
-    collideWithShip(_event, shipContainer, tetromino) {
+    shipCollidingWith(_event, shipContainer, tetromino) {
         if (angleAcceptable(tetromino.body) && !this.playerShip.isAttached(tetromino)) {
             return shipContainer.attachPart(tetromino);
         }

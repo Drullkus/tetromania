@@ -24,12 +24,20 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.reorient();
     }
 
-    collideWithShip(tetromino) {
+    shipCollidingWith(tetromino) {
         if (angleAcceptable(tetromino.body) && !this.isAttached(tetromino)) {
             return this.attachPart(tetromino);
         }
 
         return false;
+    }
+
+    shipStartedColliding(gameObject) {
+        if (gameObject.astroid != true) {
+            return;
+        } // Asteroids only!
+
+        gameObject.destroy(); // FIXME damage the ship instead and deflect the asteroid
     }
 
     attachPart(gameObject) {

@@ -35,36 +35,54 @@ class Orbit extends Phaser.Scene {
         this.playerShip = new ShipContainer(this, gameWidth * 0.5, gameHeight * 0.7, technologyCollisions['thruster']);
         this.playerShip.isShip = true;
 
+        this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_START, event => {
+            event.pairs.forEach(p => this.checkPairStartedCollision(p, p.bodyA, p.bodyB));
+        }, this);
+
         // COLLISION_START causes horrible inaccuracies in building ship grid
         this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_ACTIVE, event => {
-            event.pairs.forEach(p => this.checkCollisionPair(p, p.bodyA, p.bodyB));
+            event.pairs.forEach(p => this.checkPairActiveCollision(p, p.bodyA, p.bodyB));
         }, this);
     }
 
-    checkCollisionPair(event, bodyA, bodyB) {
+    checkPairStartedCollision(collision, bodyA, bodyB) {
+        const gameObjectA = bodyA.gameObject;
+        const gameObjectB = bodyB.gameObject;
+
+        if (!(gameObjectA && gameObjectB) || (gameObjectA.isShip == gameObjectB.isShip)) {
+            // world bounds has no gameObject, or ship vs ship, or floater vs floater
+            return;
+        }
+
+        if (gameObjectA.isShip && gameObjectB.astroid) {
+            gameObjectA.shipStartedColliding(gameObjectB)
+        } else if (gameObjectB.isShip && gameObjectA.astroid) {
+            gameObjectB.shipStartedColliding(gameObjectA)
+        }
+    }
+
+    checkPairActiveCollision(collision, bodyA, bodyB) {
         const gameObjectA = bodyA.gameObject;
         const gameObjectB = bodyB.gameObject;
         
         if (!(gameObjectA && gameObjectB) || (gameObjectA.isShip && gameObjectB.isShip)) {
-            // world bounds has no gameObject
+            // world bounds has no gameObject, or ship vs ship collision
             return;
         }
 
-        event.contacts.map(contact => contact.vertex).filter(c => c != null).forEach(({x, y}) => {
+        collision.contacts.map(contact => contact.vertex).filter(c => c != null).forEach(({x, y}) => {
             this.debrisEmitter.emitParticleAt(x, y, 1);
         });
 
         if (gameObjectA.isShip && gameObjectB.tetromino) {
-            // console.log('bodyA.gameObject.collideWithShip(bodyB.gameObject)', bodyA, bodyB)
-            if (gameObjectA.collideWithShip(gameObjectB)) {
+            if (gameObjectA.shipCollidingWith(gameObjectB)) {
                 if (!removeArrayElement(this.floatingObjects, gameObjectB)) {
                     //console.log('gameObjectB not removed', gameObjectB);
                 }
                 this.mouseHoldConstraint.stopDrag();
             }
         } else if (gameObjectB.isShip && gameObjectA.tetromino) {
-            // console.log('bodyB.gameObject.collideWithShip(bodyA.gameObject)', bodyB, bodyA)
-            if (gameObjectB.collideWithShip(gameObjectA)) {
+            if (gameObjectB.shipCollidingWith(gameObjectA)) {
                 if (!removeArrayElement(this.floatingObjects, gameObjectA)) {
                     //console.log('gameObjectB not removed', gameObjectA);
                 }
@@ -78,6 +96,8 @@ class Orbit extends Phaser.Scene {
         const limitInv = 1.0 / this.floatingObjectLimitSqrt;
 
         const encounterFactories = [ this.createSmallAsteroid, this.createTetromino, this.createMediumAsteroid ];
+
+        const runRemove = obj => removeArrayElement(this.floatingObjects, obj);
 
         for (let yLerp = 0; yLerp < 1; yLerp += limitInv) {
             const worldY = Phaser.Math.Linear(this.wrapBounds.min.y, this.wrapBounds.max.y, yLerp);
@@ -97,6 +117,7 @@ class Orbit extends Phaser.Scene {
                 generatedObject.body.frictionAir = 0;
                 generatedObject.body.frictionStatic = 0;
                 generatedObject.body.slop = 0.0125;
+                generatedObject.on(Phaser.GameObjects.Events.DESTROY, runRemove);
             }
         }
     }
@@ -113,7 +134,8 @@ class Orbit extends Phaser.Scene {
             wrapBounds: scene.wrapBounds
         }).setDepth(10).setAngle(snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
 
-        tetromino.tetromino = true;
+        tetromino.astroid = false; // Signal to checkPairStartedCollision
+        tetromino.tetromino = true; // Signal to checkPairActiveCollision
 
         return tetromino;
     }
@@ -131,7 +153,9 @@ class Orbit extends Phaser.Scene {
             .setAngle(Phaser.Math.RND.angle()) // Random initital angle
             .setCircle(22); // Radius of circle body
 
-        smallAsteroid.tetromino = false; // Signal to checkCollisionPair
+        smallAsteroid.astroid = true; // Signal to checkPairStartedCollision
+        smallAsteroid.tetromino = false; // Signal to checkPairActiveCollision
+
         smallAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.025, 0.025); // Random angular movement
         smallAsteroid.body.wrapBounds = scene.wrapBounds;
 
@@ -151,7 +175,9 @@ class Orbit extends Phaser.Scene {
             .setAngle(Phaser.Math.RND.angle()) // Random initital angle
             .setCircle(75); // Radius of circle body
 
-        mediumAsteroid.tetromino = false; // Signal to checkCollisionPair
+        mediumAsteroid.astroid = true; // Signal to checkPairStartedCollision
+        mediumAsteroid.tetromino = false; // Signal to checkPairActiveCollision
+
         mediumAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.0125, 0.0125); // Random angular movement
         mediumAsteroid.body.wrapBounds = scene.wrapBounds;
 

@@ -31,9 +31,9 @@ class Click extends Phaser.Scene {
             }
 
             if (bodyA.gameObject.onShip) {
-                this.collideWithShip(event, bodyA.gameObject, bodyB.gameObject);
+                this.shipCollidingWith(event, bodyA.gameObject, bodyB.gameObject);
             } else if (bodyB.gameObject.onShip) {
-                this.collideWithShip(event, bodyB.gameObject, bodyA.gameObject);
+                this.shipCollidingWith(event, bodyB.gameObject, bodyA.gameObject);
             }
         });
 
@@ -67,7 +67,7 @@ class Click extends Phaser.Scene {
         });
     }
 
-    collideWithShip(_event, shipContainer, tetromino) {
+    shipCollidingWith(_event, shipContainer, tetromino) {
         if (angleAcceptable(tetromino.body)) {
             shipContainer.integratePart(tetromino);
         }
