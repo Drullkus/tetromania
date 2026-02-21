@@ -64,5 +64,7 @@ TODO playtest
 ### Run without significant crashes or errors
 TODO playtest
 
+TODO when a part gets destroyed, check if its the only link to other tetrominos and break those off too if orphaned
+
 ### Include in-game credits for all roles, assets, music, etc.
 All in Credits.js (`creditsScene`)
