@@ -8,10 +8,18 @@ class NavInterface extends Phaser.Scene {
         this.controller = new Controller(this, this.focus, 'controller-circle');
 
         pullFactor && this.controller.setCursorPullFactor(pullFactor);
+        this.transparent = false;
     }
 
     update(_time, deltaMillis) {
         this.controller.update(deltaMillis);
+
+        if (this.transparent) {
+            const priorAlpha = this.controller.alpha;
+            if (priorAlpha > 0.001) {
+                this.controller.setAlphaLevel(exponentialDecay(priorAlpha, 0, 0.0075, deltaMillis));
+            }
+        }
     }
 
     getControlDelta() {
@@ -24,5 +32,10 @@ class NavInterface extends Phaser.Scene {
 
     isControlActive() {
         return this.controller.isBeingHeld();
+    }
+
+    disableControl() {
+        this.transparent = true;
+        this.controller.disableInteractive(true);
     }
 }

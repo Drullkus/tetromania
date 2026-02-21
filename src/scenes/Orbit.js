@@ -23,6 +23,7 @@ class Orbit extends Phaser.Scene {
         this.matter.world.disableGravity();
 
         this.createNUILayer();
+        this.gameOverLayer = null;
 
         this.createPlayerShip();
         this.createFloatingObjects();
@@ -60,17 +61,11 @@ class Orbit extends Phaser.Scene {
             if (removed) {
                 this.floatingObjects.push(removed);
             }
-            if (gameObjectA.isEmpty()) {
-                this.gameOver();
-            }
         } else if (gameObjectB.isShip && gameObjectA.asteroid) {
             gameObjectB.startedCollidingAsteroid(gameObjectA);
             const removed = gameObjectB.bodyPartHit(bodyB, gameObjectA, collision);
             if (removed) {
                 this.floatingObjects.push(removed);
-            }
-            if (gameObjectB.isEmpty()) {
-                this.gameOver();
             }
         }
     }
@@ -206,6 +201,11 @@ class Orbit extends Phaser.Scene {
         this.controlUi = this.game.scene.getScene('navInterfaceScene');
     }
 
+    createGameOverLayer() {
+        this.scene.launch('gameOverScene', { parentScene: this });
+        this.gameOverLayer = this.game.scene.getScene('gameOverScene');
+    }
+
     createEmitters() {
         const animatedParticles = ['debris', 'fire'].map((name, pfxIndex) => 
             this.add.particles(0, 0, name, {
@@ -264,7 +264,7 @@ class Orbit extends Phaser.Scene {
         }
 
         if (this.controlUi) {
-            const motionDelta = this.controlUi.getControlDelta();
+            const motionDelta = this.gameOverLayer ? { controlDX: 0, controlDY: 0} : this.controlUi.getControlDelta();
 
             const deltaX = -motionDelta.controlDX * speed;
             const deltaY = -motionDelta.controlDY * speed;
@@ -284,7 +284,15 @@ class Orbit extends Phaser.Scene {
     }
 
     gameOver() {
+        if (this.gameOverLayer) {
+            return;
+        }
         // TODO show game over overlay
-        this.scene.start('tutorialScene'); // "Launch again?" button in Game Over
+        // this.scene.start('orbitScene'); // "Launch again?" button in Game Over
+
+        this.playerShip.demolish();
+
+        this.createGameOverLayer();
+        this.controlUi.disableControl();
     }
 }

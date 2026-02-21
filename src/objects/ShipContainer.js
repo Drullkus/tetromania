@@ -42,7 +42,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
         // gameObject.destroy(); // FIXME damage the ship instead and deflect the asteroid
     }
 
-    bodyPartHit(shipBody, hitByObject, collision) {
+    bodyPartHit(shipBody, _hitByObject, _collision) {
         if (shipBody.originalBeforeShip) {
             return this.breakPart(shipBody.originalBeforeShip);
         }
@@ -134,20 +134,25 @@ class ShipContainer extends Phaser.GameObjects.Container {
         return removed;
     }
 
-    removePart(gameObject) {
+    removePart(gameObject, skipRebuild) {
         const extractedPart = removeIf(this.shipParts, part => part.object === gameObject);
-        const extractedObject = extractedPart.object;
-        if (extractedObject) {
+        if (extractedPart && extractedPart.object) {
+            const extractedObject = extractedPart.object;
 
-            gameObject.onShip = false;
-            gameObject.body.parts.forEach(b => {
+            extractedObject.onShip = false;
+            extractedObject.body.parts.forEach(b => {
                 b.gameObject = gameObject;
                 b.parent = extractedObject.body;
             });
 
             this.scene.matter.world.add(gameObject.body);
 
-            this.rebuildBody();
+            if (skipRebuild) {
+                this.rebuildBody();
+            }
+
+            extractedObject.body.positionPrev.x = extractedObject.body.position.x;
+            extractedObject.body.positionPrev.y = extractedObject.body.position.y;
 
             if (extractedObject.thruster == true) {
                 this.scene.shipBroke(this);
@@ -158,6 +163,9 @@ class ShipContainer extends Phaser.GameObjects.Container {
     }
 
     update() {
+        if (!this.body) {
+            return; // Ship is gone
+        }
         this.reorient();
 
         // const pipeline = this.scene.renderer.pipelines.MULTI_PIPELINE;
@@ -270,5 +278,20 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
     isEmpty() {
         return this.shipParts.length == 0;
+    }
+
+    breakAllParts() {
+        for (let index = this.shipParts.length - 1; index >= 0; index--) {
+            const part = this.shipParts[index];
+            if (!part || part.object.thruster) {
+                continue;
+            }
+            this.breakPart(part.object, true);
+        }
+    }
+
+    demolish() {
+        this.breakAllParts();
+        this.destroy();
     }
 }

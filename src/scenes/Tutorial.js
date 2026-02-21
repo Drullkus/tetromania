@@ -59,7 +59,7 @@ class Tutorial extends Phaser.Scene {
         const progress = inverseLerp(this.rocketSeed.y, this.controlUi.controller.affixY, destinationY);
 
         if (progress >= 1.0) {
-            this.scene.start('orbitScene');
+            this.exitTutorial();
             return;
         }
 
@@ -82,5 +82,11 @@ class Tutorial extends Phaser.Scene {
 
         this.rocketSeed.y = this.rocketY;
         this.controlUi.controller.lineSrc.y = this.rocketSeed.y;
+    }
+
+    exitTutorial() {
+        this.scene.stop(this.controlUi);
+        // TODO animation to properly transition between scenes
+        this.scene.start('orbitScene');
     }
 }

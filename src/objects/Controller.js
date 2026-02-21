@@ -4,6 +4,8 @@ class Controller extends Phaser.GameObjects.Sprite {
 
         scene.add.existing(this); // add to existing scene
 
+        this.setAlpha(1.0);
+
         this.circleRadius = 32.0;
 
         // The position that this object gravitates towards when let go
@@ -91,5 +93,11 @@ class Controller extends Phaser.GameObjects.Sprite {
             x: this.x,
             y: this.y
         };
+    }
+
+    setAlphaLevel(alpha) {
+        console.trace();
+        this.setAlpha(alpha);
+        this.graphics.setAlpha(alpha);
     }
 }

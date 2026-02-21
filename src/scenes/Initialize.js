@@ -67,7 +67,7 @@ class Initialize extends Phaser.Scene {
         [0, 1, 2, 3].forEach((columnIndex, _index, list) => this.anims.create({
             key: `explosion-${columnIndex}`,
             frames: this.anims.generateFrameNumbers('explosion', {
-                frames: [1, 0, 1, 2, 3].map(rowIndex => rowIndex * list.length + columnIndex)
+                frames: [0, 1, 2, 3].map(rowIndex => rowIndex * list.length + columnIndex)
             }),
             frameRate: 20
         }))
