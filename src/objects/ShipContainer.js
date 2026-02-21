@@ -122,7 +122,12 @@ class ShipContainer extends Phaser.GameObjects.Container {
         const removed = this.removePart(gameObject);
 
         removed.tetromino = false;
+        removed.tint = 0x55_44_33; // The piece is toasted
         // TODO switch to destroyed sprite
+
+        getBlockLattice(removed).forEach(({ x, y }) => {
+            this.explosionEmitter.emitParticleAt(x, y, 1);
+        });
 
         return removed;
     }
