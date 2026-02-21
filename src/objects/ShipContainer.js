@@ -15,7 +15,9 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.body.centerOffset = { x: 0, y: 0 };
         this.body.centerOfMass = { x: 0.5, y: 0.5 };
 
-        this.attachPart(scene.matter.add.sprite(x, y, 'thruster', 0, { shape: thrusterShape }));
+        const thrusterObj = scene.matter.add.sprite(x, y, 'thruster', 0, { shape: thrusterShape });
+        thrusterObj.thruster = true;
+        this.attachPart(thrusterObj);
         // this.add(this.drawPartsSprite);
 
         // Set again because adding the first piece will cause center to shift
@@ -146,6 +148,10 @@ class ShipContainer extends Phaser.GameObjects.Container {
             this.scene.matter.world.add(gameObject.body);
 
             this.rebuildBody();
+
+            if (extractedObject.thruster == true) {
+                this.scene.shipBroke(this);
+            }
 
             return extractedObject;
         }

@@ -274,8 +274,14 @@ class Orbit extends Phaser.Scene {
         });
     }
 
+    shipBroke(shipObject) {
+        if (shipObject == this.playerShip) {
+            this.gameOver();
+        }
+    }
+
     gameOver() {
-        console.log("game over");
+        // TODO show game over overlay
         this.scene.start('orbitScene');
     }
 }
