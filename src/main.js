@@ -36,8 +36,10 @@ const config = {
 const game = new Phaser.Game(config);
 
 const { height: gameHeight, width: gameWidth } = game.config;
+const centerX = gameWidth * 0.5;
+const centerY = gameHeight * 0.5;
 
-const controlFocusX = gameWidth * 0.5;
+const controlFocusX = centerX;
 const controlFocusY = gameHeight * 0.77;
 
 // For easy access via terminal. Access scenes without typing `game.scene.keys.` every time

@@ -9,6 +9,7 @@ class Controller extends Phaser.GameObjects.Sprite {
         // The position that this object gravitates towards when let go
         this.affixX = focus.x;
         this.affixY = focus.y;
+        this.setCursorPullFactor(0.05);
 
         this.setInteractive({
             useHandCursor: true,
@@ -16,9 +17,8 @@ class Controller extends Phaser.GameObjects.Sprite {
             draggable: true
         });
 
-        this.on('drag', (_pointer, x, y) => {
-            this.setPosition(x, y);
-        });
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, this.resetTargetPos);
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG, this.drag);
 
         this.graphics = this.scene.add.graphics();
 
@@ -28,8 +28,30 @@ class Controller extends Phaser.GameObjects.Sprite {
         this.dragLine = new Phaser.Curves.Line(this.lineSrc, this.lineDest);
     }
 
+    setCursorPullFactor(decayFactor) {
+        this.pullFactor = decayFactor;
+    }
+
+    drag(pointer) {
+        this.setTargetPos(pointer.position.x, pointer.position.y);
+    }
+
+    setTargetPos(x, y) {
+        this.targetX = x;
+        this.targetY = y;
+    }
+
+    resetTargetPos() {
+        this.targetX = this.affixX;
+        this.targetY = this.affixY;
+    }
+
     update(deltaMillis) {
-        if (!this.isBeingHeld()) {
+        if (this.isBeingHeld()) {
+            const expDecayX = exponentialDecay(this.x, this.targetX, this.pullFactor, deltaMillis);
+            const expDecayY = exponentialDecay(this.y, this.targetY, this.pullFactor, deltaMillis);
+            this.setPosition(expDecayX, expDecayY);
+        } else {
             const decayFactor = 0.005;
             const expDecayX = exponentialDecay(this.x, this.affixX, decayFactor, deltaMillis);
             const expDecayY = exponentialDecay(this.y, this.affixY, decayFactor, deltaMillis);
@@ -61,6 +83,13 @@ class Controller extends Phaser.GameObjects.Sprite {
         return {
             controlDX: this.x - this.affixX,
             controlDY: this.y - this.affixY
+        };
+    }
+
+    getControlPos() {
+        return {
+            x: this.x,
+            y: this.y
         };
     }
 }

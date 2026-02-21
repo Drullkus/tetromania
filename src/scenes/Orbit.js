@@ -285,6 +285,6 @@ class Orbit extends Phaser.Scene {
 
     gameOver() {
         // TODO show game over overlay
-        this.scene.start('orbitScene');
+        this.scene.start('tutorialScene'); // "Launch again?" button in Game Over
     }
 }
