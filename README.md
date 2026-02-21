@@ -13,10 +13,12 @@ I also made all of the art in this game, nothing recycled from the web. The tetr
 - PlanetSide.js instructs the player to tactially learn the cursor by "pulling" it into orbit. Functionally, it is the tutorial.
 - Initialize.js prepares game assets.
 - Orbit.js manages the game.
-- NavInterface.js overlay owns the cursor UI element.
-- MainMenu.js scene with TETROMANIA title and PLAY button
-- GameOver.js overlay to either start over or go to menu
+- MainMenu.js scene with TETROMANIA title, PLAY button, and CREDITS button.
 - Credits.js for crediting the developer.
+
+- NavInterface.js overlay owns the cursor UI element.
+- SpaceBackground.js contains parallax layers that pan slower than player "movement".
+- GameOver.js overlay to either start over or go to menu.
 
 ### Properly transition between Scenes and allow the player to restart w/out having to reload the page
 Game Over scene instructs player to respawn by pressing "REINCARNATE", or perhaps instead click "RETURN TO MENU".
@@ -31,7 +33,7 @@ Drag the cursor at the middle/lower-bottom of the screen to navigate the ship.
 TODO animated tetrominos?
 
 ### Simulate scrolling with a tileSprite (or equivalent means)
-TODO space parallax
+SpaceBackground.js contains 6 layers. Its top 2 layers contain space dust and scroll more closely with gameplay objects. Its bottom 4 layers are more stationary, being stars and cosmic colors which can be galaxies.
 
 ### Implement proper collision detection (via Arcade Physics or a custom routine)
 Utilized MatterJS instead of Arcade

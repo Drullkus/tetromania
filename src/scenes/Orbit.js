@@ -203,7 +203,7 @@ class Orbit extends Phaser.Scene {
         // Allow mouse to pick up and drag objects (if this.allowDragObjects is true)
         this.mouseHoldConstraint = this.allowDragObjects ? this.matter.add.pointerConstraint() : { stopDrag: () => {} };
 
-        this.scene.launch('navInterfaceScene');
+        this.scene.launch('navInterfaceScene', { pullFactor: 0.05, dragCallback: () => {} });
         this.controlUi = this.game.scene.getScene('navInterfaceScene');
     }
 
