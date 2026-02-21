@@ -8,6 +8,8 @@ class Initialize extends Phaser.Scene {
 
         this.load.image('controller-circle', 'ui/controller-circle.png');
 
+        this.load.image('penrose-triangle', 'penrose_triangle_icon.png');
+
         tetrominoNames.forEach(tetrominoName => {
             this.load.image(tetrominoName, `objects/${tetrominoName}.png`);
         });
@@ -53,7 +55,7 @@ class Initialize extends Phaser.Scene {
 
         this.createAnimations();
 
-        this.scene.start('mainMenuScene');
+        this.scene.start('creditsScene');
     }
 
     createAnimations() {

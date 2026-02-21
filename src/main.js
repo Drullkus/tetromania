@@ -23,7 +23,7 @@ const config = {
     width: 600,
     height: 800,
     useTicker: true,
-    scene: [ Initialize, /*PhysicsBox, Rotate, Constraint, Click, Alignment,*/ MainMenu, PlanetSide, SpaceBackground, Orbit, NavInterface, GameOver ],
+    scene: [ Initialize, /*PhysicsBox, Rotate, Constraint, Click, Alignment,*/ Credits, MainMenu, PlanetSide, SpaceBackground, Orbit, NavInterface, GameOver ],
     parent: 'tetromania',
     // For some reason there's a gap between the bottom of Phaser Canvas and bottom of its parent div.
     canvasStyle: 'margin-bottom: -6px;', // Nasty hack to seal the gap.

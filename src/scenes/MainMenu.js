@@ -4,8 +4,9 @@ class MainMenu extends Phaser.Scene {
     }
 
     create() {
-        this.time.delayedCall(1000, this.createTitle, null, this);
-        this.time.delayedCall(2000, this.createPlayButton, null, this);
+        this.createTitle();
+        this.time.delayedCall(1000, this.createPlayButton, null, this);
+        this.time.delayedCall(1000, this.createCreditsButton, null, this);
     }
 
     createTitle() {
@@ -39,6 +40,31 @@ class MainMenu extends Phaser.Scene {
         this.createButton("PLAY", gameHeight * 0.6, buttonStyle, this.playButtonPressed);
     }
 
+    createCreditsButton() {
+        const buttonStyle = {
+            fontFamily: 'aesymatt',
+            fontSize: `49px`,
+            color: '#FFF',
+            align: 'center',
+            backgroundColor: buttonColor,
+            padding: {
+                bottom: 4,
+                left: 10,
+                right: 14
+            }
+        };
+
+        this.createButton("CREDITS", gameHeight * 0.9, buttonStyle, this.creditsButtonPressed);
+    }
+
+    playButtonPressed() {
+        this.scene.start('planetSideScene');
+    }
+
+    creditsButtonPressed() {
+        this.scene.start('creditsScene');
+    }
+
     createButton(text, yPosition, style, onDown) {
         const textObj = this.add.text(centerX, yPosition, text, style).setOrigin(0.5);
         textObj.setOrigin(0.5);
@@ -56,9 +82,5 @@ class MainMenu extends Phaser.Scene {
         textObj.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, onDown, this);
 
         return textObj;
-    }
-
-    playButtonPressed() {
-        this.scene.start('planetSideScene');
     }
 }

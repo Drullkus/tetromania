@@ -16,6 +16,7 @@ I also made all of the art in this game, nothing recycled from the web. The tetr
 - NavInterface.js overlay owns the cursor UI element.
 - MainMenu.js scene with TETROMANIA title and PLAY button
 - GameOver.js overlay to either start over or go to menu
+- Credits.js for crediting the developer.
 
 ### Properly transition between Scenes and allow the player to restart w/out having to reload the page
 Game Over scene instructs player to respawn by pressing "REINCARNATE", or perhaps instead click "RETURN TO MENU".
