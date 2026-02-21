@@ -44,7 +44,7 @@ class GameOver extends Phaser.Scene {
     planetClicked() {
         this.scene.stop(this.parentScene.sys.config);
         this.scene.stop('spaceBackgroundScene');
-        this.scene.start('tutorialScene');
+        this.scene.start('planetSideScene');
     }
 
     revealMenu() {

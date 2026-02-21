@@ -28,6 +28,10 @@ class Controller extends Phaser.GameObjects.Sprite {
         this.lineDest = new Phaser.Math.Vector2(this);
 
         this.dragLine = new Phaser.Curves.Line(this.lineSrc, this.lineDest);
+
+        this.dragCallback = _activatedState => {};
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, () => this.dragCallback(true));
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, () => this.dragCallback(false));
     }
 
     setCursorPullFactor(decayFactor) {

@@ -59,6 +59,6 @@ class MainMenu extends Phaser.Scene {
     }
 
     playButtonPressed() {
-        this.scene.start('tutorialScene');
+        this.scene.start('planetSideScene');
     }
 }

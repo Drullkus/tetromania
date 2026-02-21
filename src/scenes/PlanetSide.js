@@ -1,30 +1,22 @@
-class Tutorial extends Phaser.Scene {
+class PlanetSide extends Phaser.Scene {
     constructor() {
-        super('tutorialScene');
+        super('planetSideScene');
     }
 
     create() {
-        this.matter.world.disableGravity();
-        this.matter.world.pause(); // Don't need this running
-
         const bg = this.add.image(centerX, centerY, '__WHITE');
         bg.setDisplaySize(gameWidth + 4, gameHeight + 4);
         const gradient = bg.postFX.addGradient(0x55_AA_00, 0x00_00_FF, 0);
+        gradient.fromY = 0.3;
+        gradient.toY = 0.4;
         gradient.size = 32;
 
         this.createNUILayer();
         this.createEmitters();
 
-        const callToActionTextStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `49px`,
-            color: '#FFF',
-            align: 'center'
-        };
-        this.tutorialText = this.add.text(gameWidth * 0.5, gameHeight * 0.25, 'Pull the seed\ntowards the sky', callToActionTextStyle).setOrigin(0.5);
+        this.tutorialTimer = this.time.delayedCall(2000, this.callToPlay, null, this);
 
         this.rocketSeed = this.add.sprite(controlFocusX, controlFocusY, 'thruster');
-        this.rocketSeed.setScale(0.5);
         this.rocketSeed.setDepth(20);
 
         this.accelY = 0;
@@ -33,7 +25,11 @@ class Tutorial extends Phaser.Scene {
     }
 
     createNUILayer() {
-        this.scene.launch('navInterfaceScene', { pullFactor: 0.00125 });
+        const dragCallback = activated => {
+            this.tutorialTimer.delay = 1000;
+            this.tutorialTimer.paused = activated;
+        };
+        this.scene.launch('navInterfaceScene', { pullFactor: 0.00125, dragCallback: dragCallback });
         this.controlUi = this.game.scene.getScene('navInterfaceScene');
     }
 
@@ -52,6 +48,18 @@ class Tutorial extends Phaser.Scene {
             this[`emitter${name.toUpperCase()}`] = emitter;
             return emitter;
         });
+    }
+
+    callToPlay() {
+        const callToPlayTextStyle = {
+            fontFamily: 'aesymatt',
+            fontSize: `49px`,
+            color: '#FFF',
+            align: 'center'
+        };
+        this.tutorialText = this.add.text(gameWidth * 0.5, gameHeight * 0.25, 'Pull the seed\nto the sky\nfor blastoff.', callToPlayTextStyle);
+        this.tutorialText.setOrigin(0.5);
+        this.tutorialText.setStroke("#000", 8);
     }
 
     update(_time, deltaMillis) {
