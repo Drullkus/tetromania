@@ -22,6 +22,7 @@ class Orbit extends Phaser.Scene {
 
         this.matter.world.disableGravity();
 
+        this.createSpaceBackgroundLayer();
         this.createNUILayer();
         this.gameOverLayer = null;
 
@@ -193,6 +194,11 @@ class Orbit extends Phaser.Scene {
         return mediumAsteroid;
     }
 
+    createSpaceBackgroundLayer() {
+        this.scene.launch('spaceBackgroundScene');
+        this.spaceBackground = this.game.scene.getScene('spaceBackgroundScene');
+    }
+
     createNUILayer() {
         // Allow mouse to pick up and drag objects (if this.allowDragObjects is true)
         this.mouseHoldConstraint = this.allowDragObjects ? this.matter.add.pointerConstraint() : { stopDrag: () => {} };
@@ -274,6 +280,8 @@ class Orbit extends Phaser.Scene {
                     gameObject.setVelocity(deltaX, deltaY);
                 }
             });
+
+            this.spaceBackground.shiftLayers(deltaMillis, motionDelta.controlDX * 0.001, motionDelta.controlDY * 0.001);
         }
     }
 

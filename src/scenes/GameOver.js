@@ -6,7 +6,7 @@ class GameOver extends Phaser.Scene {
     create({ parentScene }) {
         this.time.delayedCall(3000, this.revealGameOver, null, this);
         this.time.delayedCall(4000, this.revealMenu, null, this);
-        this.time.delayedCall(5000, this.revealStartOver, null, this);
+        this.time.delayedCall(4000, this.revealStartOver, null, this);
 
         this.parentScene = parentScene
     }
@@ -19,7 +19,7 @@ class GameOver extends Phaser.Scene {
             align: 'center'
         };
 
-        this.gameOverText = this.add.text(centerX, gameHeight * 0.45, "GAME OVER", gameOverStyle);
+        this.gameOverText = this.add.text(centerX, gameHeight * 0.35, "GAME OVER", gameOverStyle);
         this.gameOverText.setOrigin(0.5);
         this.gameOverText.setStroke("#000", 10);
         
@@ -43,6 +43,7 @@ class GameOver extends Phaser.Scene {
 
     planetClicked() {
         this.scene.stop(this.parentScene.sys.config);
+        this.scene.stop('spaceBackgroundScene');
         this.scene.start('tutorialScene');
     }
 
@@ -52,6 +53,7 @@ class GameOver extends Phaser.Scene {
 
     mainMenuClicked() {
         this.scene.stop(this.parentScene.sys.config);
+        this.scene.stop('spaceBackgroundScene');
         this.scene.start('mainMenuScene');
     }
 
