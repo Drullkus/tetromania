@@ -10,11 +10,11 @@ This endless runner focuses on piloting a ship around asteroids, amassing their 
 I also made all of the art in this game, nothing recycled from the web. The tetrominos, the 32 asteroid sprites, and particles are all original. The particles are my reused creations from the Rocket Patrol Mod project.
 
 ### Use multiple Scene classes (dictated by your game's style)
-- PlanetSide.js instructs the player to tactially learn the cursor by "pulling" it into orbit. Functionally, it is the tutorial.
 - Initialize.js prepares game assets.
-- Orbit.js manages the game.
 - MainMenu.js scene with TETROMANIA title, PLAY button, and CREDITS button.
 - Credits.js for crediting the developer.
+- PlanetSide.js instructs the player to tactially learn the cursor by "pulling" it into orbit. Functionally, it is the tutorial.
+- Orbit.js manages the game.
 
 - NavInterface.js overlay owns the cursor UI element.
 - SpaceBackground.js contains parallax layers that pan slower than player "movement".
