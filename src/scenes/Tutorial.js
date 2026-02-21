@@ -18,9 +18,10 @@ class Tutorial extends Phaser.Scene {
         const callToActionTextStyle = {
             fontFamily: 'aesymatt',
             fontSize: `49px`,
-            color: '#FFF'
+            color: '#FFF',
+            align: 'center'
         };
-        this.tutorialText = this.add.text(gameWidth * 0.5, gameHeight * 0.25, 'Pull the seed towards the sky', callToActionTextStyle).setOrigin(0.5);
+        this.tutorialText = this.add.text(gameWidth * 0.5, gameHeight * 0.25, 'Pull the seed\ntowards the sky', callToActionTextStyle).setOrigin(0.5);
 
         this.rocketSeed = this.add.sprite(controlFocusX, controlFocusY, 'thruster');
         this.rocketSeed.setScale(0.5);
@@ -54,24 +55,27 @@ class Tutorial extends Phaser.Scene {
     }
 
     update(_time, deltaMillis) {
-        if (this.rocketSeed.y < -this.rocketSeed.height) {
+        const destinationY = -this.rocketSeed.height;
+        const progress = inverseLerp(this.rocketSeed.y, this.controlUi.controller.affixY, destinationY);
+
+        if (progress >= 1.0) {
             this.scene.start('orbitScene');
+            return;
         }
 
         if (this.controlUi.isControlActive()) {
-            const threshold = gameHeight * 0.15;
-            const pullForce = 1.0 - Math.min(1.0, (this.controlUi.controller.y - threshold) / (this.controlUi.controller.affixY - threshold));
+            const pullForce = Math.min(1.0, inverseLerp(this.controlUi.controller.y, this.controlUi.controller.affixY, destinationY));
 
-            this.accelY = exponentialDecay(this.accelY, pullForce * pullForce * 2, 0.5, deltaMillis);
+            this.accelY = exponentialDecay(this.accelY, pullForce * pullForce * 2 + progress * progress * 10.0, 0.5, deltaMillis);
 
-            if (pullForce * pullForce > Phaser.Math.RND.frac() * 5.0) {
+            if (pullForce * pullForce > Phaser.Math.RND.frac() * 2.0) {
                 const tetrominoEmitter = this.emitters[Phaser.Math.RND.integerInRange(0, this.emitters.length - 1)];
                 tetrominoEmitter.emitParticleAt(this.rocketSeed.x, this.rocketSeed.y + this.rocketSeed.height * 0.25);
                 // emittedTetromino.velocityX(Phaser.Math.RND.realInRange(-2, 2))
                 // emittedTetromino.velocityY(Phaser.Math.RND.realInRange(0, 4))
             }
         } else {
-            this.accelY = -10;
+            this.accelY = Math.min(10, this.accelY - 0.25);
         }
         
         this.rocketY = Math.min(controlFocusY, this.rocketY - this.accelY);

@@ -19,11 +19,13 @@ Additional notes for grader written inside README.md in root directory
 
 const config = {
     type: Phaser.WEBGL,
-    width: 800,
-    height: 600,
+    width: 600,
+    height: 800,
     useTicker: true,
     scene: [ Initialize, /*PhysicsBox, Rotate, Constraint, Click, Alignment,*/ Tutorial, Orbit, NavInterface ],
     parent: 'tetromania',
+    // For some reason there's a gap between the bottom of Phaser Canvas and bottom of its parent div.
+    canvasStyle: 'margin-bottom: -6px;', // Nasty hack to seal the gap.
     pixelArt: true,
     physics: {
         default: 'matter',
@@ -40,7 +42,7 @@ const centerX = gameWidth * 0.5;
 const centerY = gameHeight * 0.5;
 
 const controlFocusX = centerX;
-const controlFocusY = gameHeight * 0.77;
+const controlFocusY = gameHeight * 0.85;
 
 // For easy access via terminal. Access scenes without typing `game.scene.keys.` every time
 game.events.once('ready', () => Object.assign(window, game.scene.keys));

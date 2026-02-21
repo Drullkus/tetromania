@@ -236,3 +236,16 @@ function randomInRange(minRadius, maxRadius) {
 function randomRangeAroundCenter(minRadius, maxRadius, center) {
     return randomInRange(minRadius, maxRadius).add(center);
 }
+
+/**
+ * Inverted lerp in respect to min-max bounds.
+ * 
+ * inverseLerp(3.0, 2.0, 4.0) = 0.5
+ * inverseLerp(0.5, -1.0, 1.0) = 0.75
+ * inverseLerp(10.0, 0.0, 100.0) = 0.1
+ * 
+ * Copied from https://stackoverflow.com/a/39776893
+ */
+function inverseLerp(val, min, max) {
+    return (val - min) / (max - min);
+}
