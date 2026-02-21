@@ -63,4 +63,4 @@ TODO playtest
 TODO playtest
 
 ### Include in-game credits for all roles, assets, music, etc.
-TODO button from Main Menu scene
+All in Credits.js (`creditsScene`)

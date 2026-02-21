@@ -55,7 +55,7 @@ class Initialize extends Phaser.Scene {
 
         this.createAnimations();
 
-        this.scene.start('creditsScene');
+        this.scene.start('mainMenuScene');
     }
 
     createAnimations() {
