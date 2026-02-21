@@ -207,7 +207,7 @@ class Orbit extends Phaser.Scene {
     }
 
     createEmitters() {
-        const animatedParticles = ['debris', 'explosion', 'fire'].map((name, pfxIndex) => 
+        const animatedParticles = ['debris', 'fire'].map((name, pfxIndex) => 
             this.add.particles(0, 0, name, {
                 anim: [0, 1, 2, 3].map(index => `${name}-${index}`),
                 lifespan: { min: 50, max: 150 },
@@ -218,9 +218,23 @@ class Orbit extends Phaser.Scene {
                 particleBringToTop: false
             }).setDepth(100 + pfxIndex)
         );
+
         this.debrisEmitter = animatedParticles[0];
-        this.explosionEmitter = animatedParticles[1];
-        this.fireEmitter = animatedParticles[2];
+        this.fireEmitter = animatedParticles[1];
+
+        this.explosionEmitter = this.add.particles(0, 0, name, {
+            anim: [0, 1, 2, 3].map(index => `explosion-${index}`),
+            lifespan: { min: 100, max: 250 },
+            speed: { min: 20, max: 0 },
+            scale: { min: 4, max: 6 },
+            rotate: { start: 0, end: 90 },
+            emitting: false,
+            particleBringToTop: false
+        }).setDepth(102);
+
+        this.playerShip.debrisEmitter = this.debrisEmitter;
+        this.playerShip.explosionEmitter = this.explosionEmitter;
+        this.playerShip.fireEmitter = this.fireEmitter;
 
         // Tetromino emitters
         this.emitters = shapeNames.map((name, index) => {
