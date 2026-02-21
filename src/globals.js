@@ -23,6 +23,8 @@ const techNames = [ 'thruster' ];
 const partNames = [ ...tetrominoNames, ...techNames ];
 
 const tetrominoUnitSize = 32;
+const buttonColor = '#2d2d2d';
+const buttonColorOver = '#8d8d8d';
 
 const urlQueryParams = new URLSearchParams(window.location.search);
 

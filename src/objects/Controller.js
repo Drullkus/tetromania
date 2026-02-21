@@ -96,7 +96,6 @@ class Controller extends Phaser.GameObjects.Sprite {
     }
 
     setAlphaLevel(alpha) {
-        console.trace();
         this.setAlpha(alpha);
         this.graphics.setAlpha(alpha);
     }

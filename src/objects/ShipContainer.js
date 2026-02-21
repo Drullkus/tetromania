@@ -283,7 +283,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
     breakAllParts() {
         for (let index = this.shipParts.length - 1; index >= 0; index--) {
             const part = this.shipParts[index];
-            if (!part || part.object.thruster) {
+            if (!part) {
                 continue;
             }
             this.breakPart(part.object, true);

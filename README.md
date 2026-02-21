@@ -1,4 +1,4 @@
-# Tetromania
+# TETROMANIA
 
 A tetromino-based endless runner. Written using Phaser on Javascript.
 
@@ -13,14 +13,12 @@ I also made all of the art in this game, nothing recycled from the web. The tetr
 - Tutorial.js instructs the player to tactially learn the cursor by "pulling" it into orbit.
 - Initialize.js prepares game assets.
 - Orbit.js manages the game.
-- NavInterface.js owns the cursor UI element.
-
-TODO
-- Main Menu scene
-- Game Over overlay, to either start over or go to menu
+- NavInterface.js overlay owns the cursor UI element.
+- MainMenu.js scene with TETROMANIA title and PLAY button
+- GameOver.js overlay to either start over or go to menu
 
 ### Properly transition between Scenes and allow the player to restart w/out having to reload the page
-TODO
+Game Over scene instructs player to respawn by pressing "REINCARNATE", or perhaps instead click "RETURN TO MENU".
 
 ### Include in-game instructions using text or other means (e.g., tooltips, tutorial, diagram, etc.)
 The control element in this game is a hollow-white circular cursor which the player drags with a mouse. Thus, the tutorial has the player "launch a rocket" so that the game can demonstrate the cursor logic.

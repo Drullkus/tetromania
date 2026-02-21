@@ -4,6 +4,14 @@ class GameOver extends Phaser.Scene {
     }
 
     create({ parentScene }) {
+        this.time.delayedCall(3000, this.revealGameOver, null, this);
+        this.time.delayedCall(4000, this.revealMenu, null, this);
+        this.time.delayedCall(5000, this.revealStartOver, null, this);
+
+        this.parentScene = parentScene
+    }
+
+    revealGameOver() {
         const gameOverStyle = {
             fontFamily: 'aesymatt',
             fontSize: `81px`,
@@ -11,56 +19,58 @@ class GameOver extends Phaser.Scene {
             align: 'center'
         };
 
-        this.gameOverText = this.add.text(centerX, centerY, "GAME OVER", gameOverStyle);
+        this.gameOverText = this.add.text(centerX, gameHeight * 0.45, "GAME OVER", gameOverStyle);
         this.gameOverText.setOrigin(0.5);
         this.gameOverText.setStroke("#000", 10);
-
-        this.startOverPlanet = this.time.delayedCall(1000, this.revealStartOver, null, this);
-
-        this.parentScene = parentScene
-    }
-
-    revealStartOver() {
-        const startOverStyle = {
+        
+        this.startOverStyle = {
             fontFamily: 'aesymatt',
             fontSize: `49px`,
             color: '#FFF',
             align: 'center',
-            backgroundColor: '#2d2d2d',
+            backgroundColor: buttonColor,
             padding: {
                 bottom: 4,
                 left: 5,
                 right: 7
             }
         };
-
-        this.createButton(gameHeight - 100, startOverStyle);
     }
 
-    createButton(yPosition, startOverStyle) {
-        this.menuText = this.add.text(centerX, yPosition, "RETURN TO MENU", startOverStyle).setOrigin(0.5);
-        this.menuText.setOrigin(0.5);
-        this.menuText.setStroke("#000", 10);
-        this.menuText.setInteractive();
-
-        this.menuText.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-            this.menuText.setBackgroundColor('#8d8d8d');
-        });
-
-        this.menuText.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-            this.menuText.setBackgroundColor('#2d2d2d');
-        });
-
-        this.menuText.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, this.mainMenuClicked, this);
-    }
-
-    mainMenuClicked() {
-        this.scene.stop(this.parentScene.sys.config);
-        this.scene.start('tutorialScene'); // FIXME switch for Main Menu
+    revealStartOver() {
+        this.planetText = this.createButton("REINCARNATE", gameHeight - 200, this.startOverStyle, this.planetClicked);
     }
 
     planetClicked() {
         this.scene.stop(this.parentScene.sys.config);
         this.scene.start('tutorialScene');
+    }
+
+    revealMenu() {
+        this.menuText = this.createButton("RETURN TO MENU", gameHeight - 100, this.startOverStyle, this.mainMenuClicked);
+    }
+
+    mainMenuClicked() {
+        this.scene.stop(this.parentScene.sys.config);
+        this.scene.start('mainMenuScene');
+    }
+
+    createButton(text, yPosition, style, onDown) {
+        const textObj = this.add.text(centerX, yPosition, text, style).setOrigin(0.5);
+        textObj.setOrigin(0.5);
+        textObj.setStroke("#000", 10);
+        textObj.setInteractive();
+
+        textObj.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+            textObj.setBackgroundColor(buttonColorOver);
+        });
+
+        textObj.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+            textObj.setBackgroundColor(buttonColor);
+        });
+
+        textObj.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, onDown, this);
+
+        return textObj;
     }
 }
