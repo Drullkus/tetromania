@@ -32,7 +32,7 @@ class Orbit extends Phaser.Scene {
     createPlayerShip() {
         const technologyCollisions = this.cache.json.get('technology_collision');
 
-        this.playerShip = new ShipContainer(this, gameWidth * 0.5, gameHeight * 0.7, technologyCollisions['thruster']);
+        this.playerShip = new ShipContainer(this, controlFocusX, controlFocusY - gameHeight * 0.07, technologyCollisions['thruster']);
         this.playerShip.isShip = true;
 
         this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_START, event => {
@@ -239,7 +239,6 @@ class Orbit extends Phaser.Scene {
         // Tetromino emitters
         this.emitters = shapeNames.map((name, index) => {
             const emitter = this.add.particles(0, 0, `tetromino-${name}`, {
-                // lifespan: 25,
                 lifespan: 500,
                 speed: 0,
                 scale: 0.25,
@@ -260,18 +259,22 @@ class Orbit extends Phaser.Scene {
         const deltaSeconds = deltaMillis * 0.001;
         const speed = 4 * deltaSeconds;
 
-        this.playerShip.update();
+        if (this.playerShip) {
+            this.playerShip.update();
+        }
 
-        const motionDelta = this.controlUi.getControlDelta();
+        if (this.controlUi) {
+            const motionDelta = this.controlUi.getControlDelta();
 
-        const deltaX = -motionDelta.controlDX * speed;
-        const deltaY = -motionDelta.controlDY * speed;
+            const deltaX = -motionDelta.controlDX * speed;
+            const deltaY = -motionDelta.controlDY * speed;
 
-        this.floatingObjects.forEach(gameObject => {
-            if (!this.playerShip.isAttached(gameObject)) {
-                gameObject.setVelocity(deltaX, deltaY);
-            }
-        });
+            this.floatingObjects.forEach(gameObject => {
+                if (!this.playerShip.isAttached(gameObject)) {
+                    gameObject.setVelocity(deltaX, deltaY);
+                }
+            });
+        }
     }
 
     shipBroke(shipObject) {

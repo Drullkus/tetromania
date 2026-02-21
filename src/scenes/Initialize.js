@@ -4,24 +4,28 @@ class Initialize extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('controller-circle', './assets/ui/controller-circle.png');
+        this.load.path = './assets/';
+
+        this.load.image('controller-circle', 'ui/controller-circle.png');
 
         tetrominoNames.forEach(tetrominoName => {
-            this.load.image(tetrominoName, `./assets/objects/${tetrominoName}.png`);
+            this.load.image(tetrominoName, `objects/${tetrominoName}.png`);
         });
 
-        this.load.image('thruster', './assets/objects/thruster.png');
+        this.load.image('thruster', 'objects/thruster.png');
 
-        this.load.spritesheet('asteroid_small', './assets/objects/asteroid_small.png', { frameWidth: 64 });
-        this.load.spritesheet('asteroid_medium', './assets/objects/asteroid_medium.png', { frameWidth: 256 });
+        this.load.spritesheet('asteroid_small', 'objects/asteroid_small.png', { frameWidth: 64 });
+        this.load.spritesheet('asteroid_medium', 'objects/asteroid_medium.png', { frameWidth: 256 });
 
         const particleAnimationConfig = { frameWidth: 16 };
-        this.load.spritesheet('debris', './assets/objects/debris.png', particleAnimationConfig);
-        this.load.spritesheet('explosion', './assets/objects/explosion.png', particleAnimationConfig);
-        this.load.spritesheet('fire', './assets/objects/fire.png', particleAnimationConfig);
+        this.load.spritesheet('debris', 'objects/debris.png', particleAnimationConfig);
+        this.load.spritesheet('explosion', 'objects/explosion.png', particleAnimationConfig);
+        this.load.spritesheet('fire', 'objects/fire.png', particleAnimationConfig);
 
-        this.load.json('tetromino_collision', './assets/collision/tetromino.json');
-        this.load.json('technology_collision', './assets/collision/technology.json');
+        this.load.json('tetromino_collision', 'collision/tetromino.json');
+        this.load.json('technology_collision', 'collision/technology.json');
+
+        this.load.font('aesymatt', 'ui/aesymatt.ttf', 'truetype'); // Obtained from https://www.1001freefonts.com/aenigma-systematic.font
     }
 
     create() {
@@ -47,7 +51,7 @@ class Initialize extends Phaser.Scene {
 
         this.createAnimations();
 
-        this.scene.start('orbitScene');
+        this.scene.start('tutorialScene');
     }
 
     createAnimations() {
