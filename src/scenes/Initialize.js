@@ -1,6 +1,7 @@
 class Initialize extends Phaser.Scene {
-    constructor() {
+    constructor(queryMode) {
         super('initializeScene');
+        this.queryMode = queryMode ?? 'mainMenuScene';
     }
 
     preload() {
@@ -57,7 +58,7 @@ class Initialize extends Phaser.Scene {
 
         this.createAnimations();
 
-        this.scene.start('mainMenuScene');
+        this.scene.start(this.queryMode);
     }
 
     createAnimations() {

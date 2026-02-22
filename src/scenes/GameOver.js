@@ -1,3 +1,4 @@
+// http://127.0.0.1:5500/?mode=gameOverScene
 class GameOver extends Phaser.Scene {
     constructor() {
         super('gameOverScene');

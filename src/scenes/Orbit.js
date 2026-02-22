@@ -1,3 +1,4 @@
+// http://127.0.0.1:5500/?mode=orbitScene
 class Orbit extends Phaser.Scene {
     constructor() {
         super('orbitScene');
@@ -16,7 +17,7 @@ class Orbit extends Phaser.Scene {
     }
 
     create() {
-        this.floatingObjectLimit = 512;
+        this.floatingObjectLimit = 256;
         this.floatingObjectLimitSqrt = Math.sqrt(this.floatingObjectLimit);
         this.floatingObjects = [];
 
