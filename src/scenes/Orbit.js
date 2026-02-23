@@ -35,6 +35,7 @@ class Orbit extends Phaser.Scene {
         this.ambientSpeed = new Phaser.Math.Vector2(0.0, 100.0);
         this.ambientAcceleration = new Phaser.Math.Vector2(0.0, 10.0);
 
+        this.fuseSound = this.sound.add('fuse');
         this.rocketSound = this.sound.add('rocket');
     }
 
@@ -93,19 +94,24 @@ class Orbit extends Phaser.Scene {
 
         if (gameObjectA.isShip && gameObjectB.tetromino) {
             if (gameObjectA.shipCollidingWith(gameObjectB)) {
-                if (!removeArrayElement(this.floatingObjects, gameObjectB)) {
-                    //console.log('gameObjectB not removed', gameObjectB);
+                if (removeArrayElement(this.floatingObjects, gameObjectB)) {
+                    this.playFuseSound();
                 }
                 this.mouseHoldConstraint.stopDrag();
             }
         } else if (gameObjectB.isShip && gameObjectA.tetromino) {
             if (gameObjectB.shipCollidingWith(gameObjectA)) {
-                if (!removeArrayElement(this.floatingObjects, gameObjectA)) {
-                    //console.log('gameObjectB not removed', gameObjectA);
+                if (removeArrayElement(this.floatingObjects, gameObjectA)) {
+                    this.playFuseSound();
                 }
                 this.mouseHoldConstraint.stopDrag();
             }
         }
+    }
+
+    playFuseSound() {
+        this.fuseSound.volume = Phaser.Math.RND.realInRange(0.4, 0.8);
+        this.fuseSound.play();
     }
 
     createFloatingObjects() { 
