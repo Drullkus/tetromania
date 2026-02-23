@@ -15,6 +15,7 @@ class Credits extends Phaser.Scene {
         logo.setOrigin(0.425, 0.5);
         logo.setScale(3);
         logo.setTint(0xFF_AF_00);
+        logo.postFX.addGlow(0x00_00_00, 0, 16, false, 0.1, 16);
 
         this.tweens.add({
             targets: logo,
