@@ -46,12 +46,10 @@ Utilized MatterJS instead of Arcade
 TODO
 
 ### Use a minimum of four sound effects for key mechanics, UI, and/or significant events appropriate to your game design
+- Asteroid hit sound
 - Rocket sound when player increases speed
 - Fuse sound when tetrominos link with the seed's grid
-TODO
-- Asteroid impacts
-  - vs Asteroid
-  - vs Tetromino
+- Tetromino hit sound if there's no fusing
 
 ### Use randomness to generate escalating challenge, e.g. terrain, pickups, etc.
 TODO increase density of asteroid population over time

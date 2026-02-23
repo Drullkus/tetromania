@@ -35,8 +35,10 @@ class Initialize extends Phaser.Scene {
 
         this.load.font('aesymatt', 'ui/aesymatt.ttf', 'truetype'); // Obtained from https://www.1001freefonts.com/aenigma-systematic.font
 
+        this.load.audio('asteroid_thump', 'sound/asteroid_thump.wav');
         this.load.audio('fuse', 'sound/fuse.wav');
         this.load.audio('rocket', 'sound/rocket-3.wav');
+        this.load.audio('tetromino_hit', 'sound/tetromino_hit.wav');
     }
 
     create() {

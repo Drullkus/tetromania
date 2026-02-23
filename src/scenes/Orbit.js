@@ -35,8 +35,10 @@ class Orbit extends Phaser.Scene {
         this.ambientSpeed = new Phaser.Math.Vector2(0.0, 100.0);
         this.ambientAcceleration = new Phaser.Math.Vector2(0.0, 10.0);
 
+        this.asteroidHitSound = this.sound.add('asteroid_thump');
         this.fuseSound = this.sound.add('fuse');
         this.rocketSound = this.sound.add('rocket');
+        this.tetrominoHitSound = this.sound.add('tetromino_hit');
     }
 
     createPlayerShip() {
@@ -62,6 +64,10 @@ class Orbit extends Phaser.Scene {
         if (!(gameObjectA && gameObjectB) || (gameObjectA.isShip == gameObjectB.isShip)) {
             // world bounds has no gameObject, or ship vs ship, or floater vs floater
             return;
+        }
+
+        if (gameObjectA.asteroid == true || gameObjectB.asteroid == true) {
+            this.playAsteroidHitSound();
         }
 
         if (gameObjectA.isShip && gameObjectB.asteroid) {
@@ -93,25 +99,39 @@ class Orbit extends Phaser.Scene {
         });
 
         if (gameObjectA.isShip && gameObjectB.tetromino) {
-            if (gameObjectA.shipCollidingWith(gameObjectB)) {
+            if (gameObjectA.shipConnectedWith(gameObjectB)) {
                 if (removeArrayElement(this.floatingObjects, gameObjectB)) {
                     this.playFuseSound();
                 }
                 this.mouseHoldConstraint.stopDrag();
+            } else {
+                this.playTetrominoHitSound();
             }
         } else if (gameObjectB.isShip && gameObjectA.tetromino) {
-            if (gameObjectB.shipCollidingWith(gameObjectA)) {
+            if (gameObjectB.shipConnectedWith(gameObjectA)) {
                 if (removeArrayElement(this.floatingObjects, gameObjectA)) {
                     this.playFuseSound();
                 }
                 this.mouseHoldConstraint.stopDrag();
+            } else {
+                this.playTetrominoHitSound();
             }
         }
+    }
+
+    playAsteroidHitSound() {
+        this.asteroidHitSound.volume = Phaser.Math.RND.realInRange(0.8, 2.0);
+        this.asteroidHitSound.play();
     }
 
     playFuseSound() {
         this.fuseSound.volume = Phaser.Math.RND.realInRange(0.4, 0.8);
         this.fuseSound.play();
+    }
+
+    playTetrominoHitSound() {
+        this.tetrominoHitSound.volume = Phaser.Math.RND.realInRange(0.4, 0.8);
+        this.tetrominoHitSound.play();
     }
 
     createFloatingObjects() { 
@@ -159,6 +179,7 @@ class Orbit extends Phaser.Scene {
 
         tetromino.asteroid = false; // Signal to checkPairStartedCollision
         tetromino.tetromino = true; // Signal to checkPairActiveCollision
+        tetromino.broken = false;
 
         return tetromino;
     }
@@ -178,6 +199,7 @@ class Orbit extends Phaser.Scene {
 
         smallAsteroid.asteroid = true; // Signal to checkPairStartedCollision
         smallAsteroid.tetromino = false; // Signal to checkPairActiveCollision
+        smallAsteroid.broken = false;
 
         smallAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.025, 0.025); // Random angular movement
         smallAsteroid.body.wrapBounds = scene.wrapBounds;
@@ -200,6 +222,7 @@ class Orbit extends Phaser.Scene {
 
         mediumAsteroid.asteroid = true; // Signal to checkPairStartedCollision
         mediumAsteroid.tetromino = false; // Signal to checkPairActiveCollision
+        mediumAsteroid.broken = false;
 
         mediumAsteroid.body.angle += Phaser.Math.RND.realInRange(-0.0125, 0.0125); // Random angular movement
         mediumAsteroid.body.wrapBounds = scene.wrapBounds;

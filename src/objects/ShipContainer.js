@@ -27,8 +27,8 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.reorient();
     }
 
-    shipCollidingWith(tetromino) {
-        if (angleAcceptable(tetromino.body) && !this.isAttached(tetromino)) {
+    shipConnectedWith(tetromino) {
+        if (tetromino.broken == false && angleAcceptable(tetromino.body) && !this.isAttached(tetromino)) {
             return this.attachPart(tetromino);
         }
 
@@ -124,7 +124,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
     breakPart(gameObject) {
         const removed = this.removePart(gameObject);
 
-        removed.tetromino = false;
+        removed.broken = true;
         removed.tint = 0x55_44_33; // The piece is toasted
         // TODO switch to destroyed sprite
 
