@@ -22,6 +22,9 @@ class Initialize extends Phaser.Scene {
         this.load.image('stars', 'parallax/stars.png');
         this.load.image('space_dust', 'parallax/space_dust.png');
 
+        this.load.image('tetromino_scape', 'parallax/tetromino_scape.png');
+        this.load.image('tetromino_scape_flipped', 'parallax/tetromino_scape_flipped.png');
+
         this.load.spritesheet('asteroid_small', 'objects/asteroid_small.png', { frameWidth: 64 });
         this.load.spritesheet('asteroid_medium', 'objects/asteroid_medium.png', { frameWidth: 256 });
 

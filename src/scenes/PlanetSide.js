@@ -11,10 +11,10 @@ class PlanetSide extends Phaser.Scene {
 
         const bg = this.add.image(centerX, centerY, '__WHITE');
         bg.setDisplaySize(gameWidth + 4, gameHeight + 4);
-        const gradient = bg.postFX.addGradient(0x55_AA_00, 0x00_00_FF, 0);
-        gradient.fromY = 0.125;
-        gradient.toY = 0.2;
-        gradient.size = 32;
+        this.gradient = bg.postFX.addGradient(0x55_AA_00, 0x00_AA_FF, 0);
+        this.gradient.fromY = 0.125;
+        this.gradient.toY = 0.2;
+        this.gradient.size = 32;
 
         this.createNUILayer();
         this.createEmitters();
@@ -30,6 +30,25 @@ class PlanetSide extends Phaser.Scene {
         this.rocketY = controlFocusY;
 
         this.rocketSound = this.sound.add('rocket');
+
+        this.stars = this.add.image(centerX, gameHeight - 100, 'stars').setBlendMode('SCREEN').setOrigin(0.5, 1).setAlpha(0);
+
+        this.tetrominoLandsDistant = this.add.tileSprite(0, gameHeight - 200, null, null, 'tetromino_scape');
+        this.tetrominoLandsDistant.startingY = this.tetrominoLandsDistant.y;
+        this.tetrominoLandsDistant.setOrigin(0, 1);
+        this.tetrominoLandsDistant.setScale(20);
+        this.tetrominoLandsDistant.tint = 0xCC_CC_CC;
+
+        this.tetrominoLands = this.add.tileSprite(0, gameHeight - 150, null, null, 'tetromino_scape_flipped');
+        this.tetrominoLands.startingY = this.tetrominoLands.y;
+        this.tetrominoLands.setOrigin(0, 1);
+        this.tetrominoLands.setScale(30);
+        this.tetrominoLands.tint = 0xEE_EE_EE;
+
+        this.tetrominoLandsNear = this.add.tileSprite(0, gameHeight - 100, null, null, 'tetromino_scape');
+        this.tetrominoLandsNear.startingY = this.tetrominoLandsNear.y;
+        this.tetrominoLandsNear.setOrigin(0, 1);
+        this.tetrominoLandsNear.setScale(40);
     }
 
     createNUILayer() {
@@ -73,6 +92,7 @@ class PlanetSide extends Phaser.Scene {
     update(_time, deltaMillis) {
         const destinationY = -this.rocketSeed.height;
         const progress = inverseLerp(this.rocketSeed.y, this.controlUi.controller.affixY, destinationY);
+        const progressSq = progress * progress;
 
         if (progress >= 1.0) {
             this.exitTutorial();
@@ -82,7 +102,7 @@ class PlanetSide extends Phaser.Scene {
         if (this.controlUi.isControlActive()) {
             const pullForce = Math.min(1.0, inverseLerp(this.controlUi.controller.y, this.controlUi.controller.affixY, destinationY));
 
-            this.accelY = exponentialDecay(this.accelY, pullForce * pullForce * 2 + progress * progress * 10.0, 0.5, deltaMillis);
+            this.accelY = exponentialDecay(this.accelY, pullForce * pullForce * 2 + progressSq * 10.0, 0.5, deltaMillis);
 
             if (pullForce * pullForce > Phaser.Math.RND.frac()) {
                 const tetrominoEmitter = this.emitters[Phaser.Math.RND.integerInRange(0, this.emitters.length - 1)];
@@ -102,6 +122,12 @@ class PlanetSide extends Phaser.Scene {
 
         this.rocketSeed.y = this.rocketY;
         this.controlUi.controller.lineSrc.y = this.rocketSeed.y;
+
+        this.stars.setAlpha(progress);
+        this.tetrominoLandsDistant.y = Phaser.Math.Linear(this.tetrominoLandsDistant.startingY, this.tetrominoLandsDistant.startingY + 200, progressSq);
+        this.tetrominoLands.y = Phaser.Math.Linear(this.tetrominoLands.startingY, this.tetrominoLands.startingY + 400, progressSq);
+        this.tetrominoLandsNear.y = Phaser.Math.Linear(this.tetrominoLandsNear.startingY, this.tetrominoLandsNear.startingY + 800, progressSq);
+        this.gradient.color2 = Phaser.Display.Color.Interpolate.RGBWithRGB(0, 0xAA, 0xFF, 0, 0, 0, 100, Math.round(progressSq * 100)).color;
     }
 
     exitTutorial() {
