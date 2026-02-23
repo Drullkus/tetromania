@@ -142,7 +142,7 @@ class Orbit extends Phaser.Scene {
         this.tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const limitInv = 1.0 / this.floatingObjectLimitSqrt;
 
-        const encounterFactories = [ this.createTetromino, this.createTetromino, this.createSmallAsteroid, this.createTetromino, this.createMediumAsteroid ];
+        const encounterFactories = [ this.createSmallAsteroid, this.createTetromino, this.createMediumAsteroid ];
 
         const runRemove = obj => removeArrayElement(this.floatingObjects, obj);
 
@@ -397,7 +397,7 @@ class Orbit extends Phaser.Scene {
                 floater.broken = false;
                 floater.tint = 0xFF_FF_FF;
                 floater.setAngle(snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
-                floater.x = Phaser.Math.RND.realInRange(this.wrapBounds.min.x, this.wrapBounds.max.x);
+                floater.x = Phaser.Math.RND.realInRange(this.wrapBounds.min.x + 300, this.wrapBounds.max.x - 300);
             }
         }
     }
@@ -410,7 +410,7 @@ class Orbit extends Phaser.Scene {
             return true;
         }
 
-        if (gameObject.y < worldBounds.min.y + shrink || gameObject.y > worldBounds.max.y - shrink) {
+        if (gameObject.y > worldBounds.max.y - shrink) {
             return true;
         }
 
@@ -423,6 +423,26 @@ class Orbit extends Phaser.Scene {
     }
 
     generateNewFloaters() {
-        // TODO generate new floaters at top bounds, increasing limit over time
+        const runRemove = obj => removeArrayElement(this.floatingObjects, obj);
+        const secondsSinceStart = this.getTimeSinceStart() * 0.001;
+        const encounterFactories = [ this.createSmallAsteroid, this.createTetromino, this.createMediumAsteroid ];
+
+        // generate new floaters at top bounds, increasing limit over time
+        while (this.floatingObjectLimit + secondsSinceStart > this.floatingObjects.length) {
+            const placeCoord = new Phaser.Math.Vector2(128, 0).rotate(Phaser.Math.RND.rotation()).add({ x: Phaser.Math.RND.realInRange(this.wrapBounds.min.x + 300, this.wrapBounds.max.x - 300), y: this.wrapBounds.min.y + 300});
+
+            const createEncounter = Phaser.Math.RND.weightedPick(encounterFactories);
+            const generatedObject = createEncounter(placeCoord, this);
+
+            if (!generatedObject) {
+                continue;
+            }
+
+            this.floatingObjects.push(generatedObject);
+            generatedObject.body.frictionAir = 0;
+            generatedObject.body.frictionStatic = 0;
+            generatedObject.body.slop = 0.0125;
+            generatedObject.on(Phaser.GameObjects.Events.DESTROY, runRemove);
+        }
     }
 }

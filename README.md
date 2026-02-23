@@ -2,7 +2,6 @@
 
 A tetromino-based endless runner. Written using Phaser on Javascript.
 
-FIXME Resolve all TODO notes
 FIXME when a part gets destroyed, check if its the only link to other tetrominos and break those off too if orphaned
 FIXME when a piece gets broken off, something involving ship container physics isn't updated, causing offsets in its attachment grid system and occasionally pieces to not fuse on collision
 
@@ -52,7 +51,7 @@ Added non-commercial "Retro Arcade Game Music" from https://pixabay.com/music/up
 - Tetromino hit sound if there's no fusing
 
 ### Use randomness to generate escalating challenge, e.g. terrain, pickups, etc.
-TODO increase density of asteroid population over time
+The Orbit Scene increases its object capacity over time, increasing challenge with more asteroids at the player's way alongside the ambient acceleration.
 
 ### Include some metric of accomplishment that a player can improve over time, e.g., score, survival time, etc.
 Player is given a time metric. A local session-persisting highscore is also displayed.
