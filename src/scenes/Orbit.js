@@ -30,12 +30,15 @@ class Orbit extends Phaser.Scene {
         this.createPlayerShip();
         this.createFloatingObjects();
         this.createEmitters();
+
+        this.ambientSpeed = new Phaser.Math.Vector2(0.0, 100.0);
+        this.ambientAcceleration = new Phaser.Math.Vector2(0.0, 10.0);
     }
 
     createPlayerShip() {
         const technologyCollisions = this.cache.json.get('technology_collision');
 
-        this.playerShip = new ShipContainer(this, controlFocusX, controlFocusY - gameHeight * 0.07, technologyCollisions['thruster']);
+        this.playerShip = new ShipContainer(this, controlFocusX, controlFocusY, technologyCollisions['thruster']);
         this.playerShip.isShip = true;
 
         this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_START, event => {
@@ -263,26 +266,35 @@ class Orbit extends Phaser.Scene {
     }
     
     update(_time, deltaMillis) {
-        const deltaSeconds = deltaMillis * 0.001;
-        const speed = 4 * deltaSeconds;
-
         if (this.playerShip) {
             this.playerShip.update();
         }
 
-        if (this.controlUi) {
-            const motionDelta = this.gameOverLayer ? { controlDX: 0, controlDY: 0} : this.controlUi.getControlDelta();
+        this.updateMovement(deltaMillis);
+    }
 
-            const deltaX = -motionDelta.controlDX * speed;
-            const deltaY = -motionDelta.controlDY * speed;
+    updateMovement(deltaMillis) {
+        const deltaSeconds = deltaMillis * 0.001;
+        const speed = 1 * deltaSeconds;
 
-            this.floatingObjects.forEach(gameObject => {
-                if (!this.playerShip.isAttached(gameObject)) {
-                    gameObject.setVelocity(deltaX, deltaY);
-                }
-            });
+        const motionDelta = this.gameOverLayer || !this.controlUi ? { controlDX: 0, controlDY: 0 } : this.controlUi.getControlDelta();
+        const deltaX = (this.ambientSpeed.x - motionDelta.controlDX);
+        const deltaY = (this.ambientSpeed.y - motionDelta.controlDY);
 
-            this.spaceBackground.shiftLayers(deltaMillis, motionDelta.controlDX * 0.001, motionDelta.controlDY * 0.001);
+        this.floatingObjects.forEach(gameObject => {
+            if (!this.playerShip.isAttached(gameObject)) {
+                gameObject.setVelocity(deltaX * speed, deltaY * speed);
+            }
+        });
+
+        this.spaceBackground.shiftLayers(deltaMillis, deltaX * speed * -0.015, deltaY * speed * -0.015);
+
+        if (this.gameOverLayer) {
+            // Halt "movement"
+            this.ambientSpeed.scale(0.8);
+        } else {
+            // Slow yet maniacial increase in speed
+            this.ambientSpeed.add(this.ambientAcceleration.clone().scale(speed));
         }
     }
 

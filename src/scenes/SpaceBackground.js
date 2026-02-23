@@ -20,7 +20,6 @@ class SpaceBackground extends Phaser.Scene {
         const cosmosBig = this.addLayer('cosmos', 0.1);
         cosmosBig.setAlpha(0.2);
         cosmosBig.setScale(1.1);
-        cosmosBig.blendMode = 'SCREEN';
         cosmosBig.tilePositionX += centerX;
         cosmosBig.tilePositionY += centerX;
 
@@ -28,24 +27,20 @@ class SpaceBackground extends Phaser.Scene {
         const distantStars = this.addLayer('stars', 0.075);
         distantStars.setAlpha(0.5);
         distantStars.setScale(0.75);
-        distantStars.blendMode = 'SCREEN';
 
         // 4. regular stars
         const stars = this.addLayer('stars', 0.125);
         stars.setAlpha(0.75);
-        stars.blendMode = 'SCREEN';
 
         // 5. distant dust
         const distantDust = this.addLayer('space_dust', 0.8);
         distantDust.setScale(4);
         distantDust.setAlpha(0.4);
-        distantDust.blendMode = 'SCREEN';
 
         // 6. dust
         const dust = this.addLayer('space_dust', 1.8);
         dust.setScale(2);
         dust.setAlpha(0.6);
-        dust.blendMode = 'SCREEN';
 
         // TODO Streaks shader
         //  Can't use Rocket Patrol Mod's technical texture, may have to program a regress of 16 of the same texture trailing behind motion

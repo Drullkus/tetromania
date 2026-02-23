@@ -2,8 +2,11 @@
 
 A tetromino-based endless runner. Written using Phaser on Javascript.
 
+FIXME Resolve all TODO notes
+FIXME when a part gets destroyed, check if its the only link to other tetrominos and break those off too if orphaned
+FIXME when a piece gets broken off, something involving ship container physics isn't updated, causing offsets in its attachment grid system and occasionally pieces to not fuse on collision
+
 ## Grading
-FIXME Remove all TODO notes
 
 ### Creative Tilt
 This endless runner focuses on piloting a ship around asteroids, amassing their ship for protection. This involved writing a grid-connecting system in order to handle the connection logic and flush additions to the ship grid while avoiding unsightly rounding errors.
@@ -63,8 +66,6 @@ TODO playtest
 
 ### Run without significant crashes or errors
 TODO playtest
-
-TODO when a part gets destroyed, check if its the only link to other tetrominos and break those off too if orphaned
 
 ### Include in-game credits for all roles, assets, music, etc.
 All in Credits.js (`creditsScene`)
