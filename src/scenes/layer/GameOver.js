@@ -20,7 +20,7 @@ class GameOver extends Phaser.Scene {
             align: 'center'
         };
 
-        this.gameOverText = this.add.text(centerX, gameHeight * 0.35, "GAME OVER", gameOverStyle);
+        this.gameOverText = this.add.text(centerX, gameHeight * 0.25, "GAME OVER", gameOverStyle);
         this.gameOverText.setOrigin(0.5);
         this.gameOverText.setStroke("#000", 10);
         
@@ -44,7 +44,11 @@ class GameOver extends Phaser.Scene {
 
     planetClicked() {
         this.scene.stop(this.parentScene.sys.config);
+
+        // TODO move these 2 into an eventlistener? as OrbitScene is stopped
         this.scene.stop('spaceBackgroundScene');
+        this.scene.stop('gameTimeScene');
+
         this.scene.start('planetSideScene');
     }
 
@@ -54,7 +58,11 @@ class GameOver extends Phaser.Scene {
 
     mainMenuClicked() {
         this.scene.stop(this.parentScene.sys.config);
+
+        // TODO move these 2 into an eventlistener? as OrbitScene is stopped
         this.scene.stop('spaceBackgroundScene');
+        this.scene.stop('gameTimeScene');
+
         this.scene.start('mainMenuScene');
     }
 

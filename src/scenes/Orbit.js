@@ -24,7 +24,8 @@ class Orbit extends Phaser.Scene {
         this.matter.world.disableGravity();
 
         this.createSpaceBackgroundLayer();
-        this.createNUILayer();
+        this.createNavLayer();
+        this.createTimeLayer();
         this.gameOverLayer = null;
 
         this.createPlayerShip();
@@ -203,12 +204,17 @@ class Orbit extends Phaser.Scene {
         this.spaceBackground = this.game.scene.getScene('spaceBackgroundScene');
     }
 
-    createNUILayer() {
+    createNavLayer() {
         // Allow mouse to pick up and drag objects (if this.allowDragObjects is true)
         this.mouseHoldConstraint = this.allowDragObjects ? this.matter.add.pointerConstraint() : { stopDrag: () => {} };
 
         this.scene.launch('navInterfaceScene', { pullFactor: 0.05, dragCallback: () => {} });
         this.controlUi = this.game.scene.getScene('navInterfaceScene');
+    }
+
+    createTimeLayer() {
+        this.scene.launch('gameTimeScene');
+        this.gameTimeLayer = this.game.scene.getScene('gameTimeScene');
     }
 
     createGameOverLayer() {
@@ -322,5 +328,6 @@ class Orbit extends Phaser.Scene {
 
         this.createGameOverLayer();
         this.controlUi.disableControl();
+        this.gameTimeLayer.stopTime();
     }
 }

@@ -21,6 +21,7 @@ I also made all of the art in this game, nothing recycled from the web. The tetr
 
 - NavInterface.js overlay owns the cursor UI element.
 - SpaceBackground.js contains parallax layers that pan slower than player "movement".
+- GameTime.js overlay displays how long the player has been playing, and shifts the time to center of screen when game is over.
 - GameOver.js overlay to either start over or go to menu.
 
 ### Properly transition between Scenes and allow the player to restart w/out having to reload the page
@@ -56,7 +57,7 @@ TODO
 TODO increase density of asteroid population over time
 
 ### Include some metric of accomplishment that a player can improve over time, e.g., score, survival time, etc.
-TODO Score based off of time, multiplied by player's collection of pieces at a given time
+Player is given a time metric
 
 ### Be theoretically endless
 Orbit.js initializes wrapBounds which is used by asteroids and tetrominos to wrap around the player's space. The bounds enclose an area that is several times bigger than the game window.
