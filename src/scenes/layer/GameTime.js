@@ -74,7 +74,7 @@ class GameTime extends Phaser.Scene {
 
     update() {
         if (!this.stopTimer) {
-            this.playTime = Math.floor((this.time.now - this.time.startTime) * 0.01);
+            this.playTime = Math.floor(this.getTimeSinceStart() * 0.01);
             this.timeTextObj.text = (this.playTime * 0.1).toFixed(1);
         }
 
@@ -82,6 +82,11 @@ class GameTime extends Phaser.Scene {
             const colorHex = huetoHexCode(this.time.now * 0.00067);
             this.highscoreTextObj.setColor(colorHex);
         }
+    }
+
+    getTimeSinceStart() {
+        // In Milliseconds
+        return this.time.now - this.time.startTime;
     }
 
     stopTime() {

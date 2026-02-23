@@ -2,7 +2,9 @@
 class Orbit extends Phaser.Scene {
     constructor() {
         super('orbitScene');
+    }
 
+    create({ musicTrack }) {
         this.boundsExtraSpace = Math.min(gameWidth, gameHeight) * 5;
         this.wrapBounds = {
             min: {
@@ -14,9 +16,7 @@ class Orbit extends Phaser.Scene {
                 y: gameHeight + this.boundsExtraSpace
             }
         };
-    }
 
-    create({ musicTrack }) {
         if (!this.musicTrack) {
             this.musicTrack = musicTrack;
         }
@@ -142,7 +142,7 @@ class Orbit extends Phaser.Scene {
         this.tetrominoCollisions = this.cache.json.get('tetromino_collision');
         const limitInv = 1.0 / this.floatingObjectLimitSqrt;
 
-        const encounterFactories = [ this.createSmallAsteroid, this.createTetromino, this.createMediumAsteroid ];
+        const encounterFactories = [ this.createTetromino, this.createTetromino, this.createSmallAsteroid, this.createTetromino, this.createMediumAsteroid ];
 
         const runRemove = obj => removeArrayElement(this.floatingObjects, obj);
 
@@ -320,6 +320,11 @@ class Orbit extends Phaser.Scene {
 
             this.playerShip.update();
         }
+
+        if (!this.gameOverLayer) {
+            this.checkBrokenObjects();
+            this.generateNewFloaters();
+        }
     }
 
     updateMovement(deltaMillis) {
@@ -382,5 +387,42 @@ class Orbit extends Phaser.Scene {
             repeat: 0,
             ease: 'cubic.inout'
         });
+    }
+
+    checkBrokenObjects() {
+        for (let index = this.floatingObjects.length - 1; index >= 0; index--) {
+            const floater = this.floatingObjects[index];
+
+            if (floater.broken == true && this.isObjectCloseToBounds(floater)) {
+                floater.broken = false;
+                floater.tint = 0xFF_FF_FF;
+                floater.setAngle(snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
+                floater.x = Phaser.Math.RND.realInRange(this.wrapBounds.min.x, this.wrapBounds.max.x);
+            }
+        }
+    }
+
+    isObjectCloseToBounds(gameObject) {
+        const worldBounds = this.wrapBounds;
+        const shrink = 500;
+
+        if (gameObject.x < worldBounds.min.x + shrink || gameObject.x > worldBounds.max.x - shrink) {
+            return true;
+        }
+
+        if (gameObject.y < worldBounds.min.y + shrink || gameObject.y > worldBounds.max.y - shrink) {
+            return true;
+        }
+
+        return false;
+    }
+
+    getTimeSinceStart() {
+        // In Milliseconds
+        return this.time.now - this.time.startTime;
+    }
+
+    generateNewFloaters() {
+        // TODO generate new floaters at top bounds, increasing limit over time
     }
 }
