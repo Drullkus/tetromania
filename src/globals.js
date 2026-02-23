@@ -26,6 +26,9 @@ const tetrominoUnitSize = 32;
 const buttonColor = '#2d2d2d';
 const buttonColorOver = '#8d8d8d';
 
+const highscoreLifetimeName = 'LifetimeHighScore';
+const highscoreLifetimeDefault = 15;
+
 const urlQueryParams = new URLSearchParams(window.location.search);
 
 /** "Lerp smoothing is broken" https://www.youtube.com/watch?v=LSNQuFEDOyQ&t=2982s */
@@ -250,4 +253,36 @@ function randomRangeAroundCenter(minRadius, maxRadius, center) {
  */
 function inverseLerp(val, min, max) {
     return (val - min) / (max - min);
+}
+
+function getTimeHighScore() {
+    return localStorage.getItem(highscoreLifetimeName) ?? highscoreLifetimeDefault;
+}
+
+function setTimeHighScore(score) {
+    return localStorage.setItem(highscoreLifetimeName, score);
+}
+
+function huetoHexCode(h) {
+  const colorHex = huetoRGBInteger(h).toString(16).padStart(6, '0');
+  return `#${colorHex}`;
+}
+
+// Yoinked and simplified from https://stackoverflow.com/a/17243070
+function huetoRGBInteger(h) {
+  const i = Math.floor(h * 6);
+  const f = h * 6 - i;
+  const q = 1 - f;
+
+  var red, green, blue;
+  switch (i % 6) {
+    case 0: red = 1, green = f, blue = 0; break;
+    case 1: red = q, green = 1, blue = 0; break;
+    case 2: red = 0, green = 1, blue = f; break;
+    case 3: red = 0, green = q, blue = 1; break;
+    case 4: red = f, green = 0, blue = 1; break;
+    case 5: red = 1, green = 0, blue = q; break;
+  }
+
+  return (Math.round(red * 255) << 16) | (Math.round(green * 255) << 8) | (Math.round(blue * 255));
 }

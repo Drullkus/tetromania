@@ -9,6 +9,7 @@ Citations:
     aenigma-systematic (aesymatt.ttf) Free Non-commercial https://www.1001freefonts.com/aenigma-systematic.font
     Expoential Decay function "Lerp smoothing is broken" https://www.youtube.com/watch?v=LSNQuFEDOyQ&t=2982s
     Favicon https://www.w3schools.com/html/html_favicon.asp
+    huetoRGBInteger https://stackoverflow.com/a/17243070
     Inverse Lerp https://stackoverflow.com/a/39776893
     jsconfig https://code.visualstudio.com/docs/languages/jsconfig
     PhysicsEditor tutorial https://www.codeandweb.com/physicseditor/tutorials/how-to-create-physics-shapes-for-phaser-3-and-matterjs

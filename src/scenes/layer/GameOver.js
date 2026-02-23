@@ -5,9 +5,9 @@ class GameOver extends Phaser.Scene {
     }
 
     create({ parentScene }) {
-        this.time.delayedCall(3000, this.revealGameOver, null, this);
-        this.time.delayedCall(4000, this.revealMenu, null, this);
-        this.time.delayedCall(4000, this.revealStartOver, null, this);
+        this.time.delayedCall(4000, this.revealGameOver, null, this);
+        this.time.delayedCall(5000, this.revealMenu, null, this);
+        this.time.delayedCall(5000, this.revealStartOver, null, this);
 
         this.parentScene = parentScene
     }

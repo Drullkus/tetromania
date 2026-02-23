@@ -5,7 +5,11 @@ class GameTime extends Phaser.Scene {
 
     create() {
         this.stopTimer = false;
-        this.playTime = 0;
+        this.playTime = 0; // Measured in tenths of seconds  (decisecond)
+        this.previousHighscoreTime = getTimeHighScore();
+        this.hasNewHighscore = false;
+        this.highscoreTextObj = null;
+
         this.createTimeText();
     }
 
@@ -17,9 +21,18 @@ class GameTime extends Phaser.Scene {
             align: 'center'
         };
         
-        this.timeTextObj = this.add.text(gameWidth - 20, 20, "0", timerStyle);
+        this.timeTextObj = this.add.text(gameWidth - 15, 60, "0", timerStyle);
         this.timeTextObj.setOrigin(1, 0);
         this.timeTextObj.setStroke("#000", 10);
+
+        const highScoreStyle = {
+            ...timerStyle,
+            fontSize: `30px`
+        };
+        
+        this.highscoreTimeTextObj = this.add.text(gameWidth - 15, 20, `high score ${(this.previousHighscoreTime * 0.1).toFixed(1)}`, highScoreStyle);
+        this.highscoreTimeTextObj.setOrigin(1.0, 0.0);
+        this.highscoreTimeTextObj.setStroke("#000", 10);
     }
 
     createTimeContext() {
@@ -29,24 +42,55 @@ class GameTime extends Phaser.Scene {
             color: '#AAA',
             align: 'center'
         };
-        this.conTextTopObj = this.add.text(centerX, gameHeight * 0.45, "Survived for", conTextStyle);
+        this.conTextTopObj = this.add.text(centerX, gameHeight * 0.45, "survived for", conTextStyle);
         this.conTextTopObj.setOrigin(0.5);
         this.conTextTopObj.setStroke("#000", 10);
         this.conTextBottomObj = this.add.text(centerX, gameHeight * 0.6, "seconds", conTextStyle);
         this.conTextBottomObj.setOrigin(0.5);
         this.conTextBottomObj.setStroke("#000", 10);
+
+        if (this.hasNewHighscore) {
+            this.tweens.add({
+                targets: this.highscoreTimeTextObj,
+                y: -40,
+                duration: 1000,
+                ease: 'linear'
+            });
+            this.time.delayedCall(1000, this.createHighScoreText, null, this);
+        }
+    }
+
+    createHighScoreText() {
+        const highscoreStyle = {
+            fontFamily: 'aesymatt',
+            fontSize: `60px`,
+            color: '#FFF',
+            align: 'center'
+        };
+        this.highscoreTextObj = this.add.text(centerX, gameHeight * 0.36, "new high score!", highscoreStyle);
+        this.highscoreTextObj.setOrigin(0.5);
+        this.highscoreTextObj.setStroke("#000", 10);
     }
 
     update() {
         if (!this.stopTimer) {
-            this.playTime = this.time.now - this.time.startTime;
-            this.timeTextObj.text = (this.playTime * 0.001).toFixed(1);
+            this.playTime = Math.floor((this.time.now - this.time.startTime) * 0.01);
+            this.timeTextObj.text = (this.playTime * 0.1).toFixed(1);
+        }
+
+        if (this.highscoreTextObj) {
+            const colorHex = huetoHexCode(this.time.now * 0.00067);
+            this.highscoreTextObj.setColor(colorHex);
         }
     }
 
     stopTime() {
         this.stopTimer = true;
         this.centerText();
+        if (this.playTime > this.previousHighscoreTime) {
+            this.hasNewHighscore = true;
+            setTimeHighScore(this.playTime);
+        }
     }
 
     centerText() {

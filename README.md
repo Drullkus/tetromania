@@ -57,7 +57,7 @@ TODO
 TODO increase density of asteroid population over time
 
 ### Include some metric of accomplishment that a player can improve over time, e.g., score, survival time, etc.
-Player is given a time metric
+Player is given a time metric. A local session-persisting highscore is also displayed.
 
 ### Be theoretically endless
 Orbit.js initializes wrapBounds which is used by asteroids and tetrominos to wrap around the player's space. The bounds enclose an area that is several times bigger than the game window.
