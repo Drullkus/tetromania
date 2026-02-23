@@ -4,6 +4,12 @@ class MainMenu extends Phaser.Scene {
     }
 
     create() {
+        if (!this.musicTrack) {
+            this.musicTrack = this.sound.add('retro_music');
+            this.musicTrack.volume = 0.7;
+        }
+        this.musicTrack.play();
+
         this.createTitle();
         this.time.delayedCall(1000, this.createPlayButton, null, this);
         this.time.delayedCall(1000, this.createCreditsButton, null, this);
@@ -58,7 +64,7 @@ class MainMenu extends Phaser.Scene {
     }
 
     playButtonPressed() {
-        this.scene.start('planetSideScene');
+        this.scene.start('planetSideScene', { musicTrack: this.musicTrack });
     }
 
     creditsButtonPressed() {

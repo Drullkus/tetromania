@@ -4,7 +4,11 @@ class PlanetSide extends Phaser.Scene {
         super('planetSideScene');
     }
 
-    create() {
+    create({ musicTrack }) {
+        if (!this.musicTrack) {
+            this.musicTrack = musicTrack;
+        }
+
         const bg = this.add.image(centerX, centerY, '__WHITE');
         bg.setDisplaySize(gameWidth + 4, gameHeight + 4);
         const gradient = bg.postFX.addGradient(0x55_AA_00, 0x00_00_FF, 0);
@@ -103,6 +107,6 @@ class PlanetSide extends Phaser.Scene {
     exitTutorial() {
         this.scene.stop(this.controlUi);
         // TODO animation to properly transition between scenes
-        this.scene.start('orbitScene');
+        this.scene.start('orbitScene', { musicTrack: this.musicTrack });
     }
 }

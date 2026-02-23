@@ -4,12 +4,16 @@ class GameOver extends Phaser.Scene {
         super('gameOverScene');
     }
 
-    create({ parentScene }) {
+    create({ parentScene, musicTrack }) {
         this.time.delayedCall(4000, this.revealGameOver, null, this);
         this.time.delayedCall(5000, this.revealMenu, null, this);
         this.time.delayedCall(5000, this.revealStartOver, null, this);
 
         this.parentScene = parentScene
+
+        if (!this.musicTrack) {
+            this.musicTrack = musicTrack;
+        }
     }
 
     revealGameOver() {
@@ -50,6 +54,8 @@ class GameOver extends Phaser.Scene {
         this.scene.stop('gameTimeScene');
 
         this.scene.start('planetSideScene');
+
+        this.musicTrack.volume = 0.7;
     }
 
     revealMenu() {
@@ -64,6 +70,8 @@ class GameOver extends Phaser.Scene {
         this.scene.stop('gameTimeScene');
 
         this.scene.start('mainMenuScene');
+
+        this.musicTrack.volume = 0.7;
     }
 
     createButton(text, yPosition, style, onDown) {

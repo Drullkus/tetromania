@@ -33,12 +33,14 @@ class Initialize extends Phaser.Scene {
         this.load.json('tetromino_collision', 'collision/tetromino.json');
         this.load.json('technology_collision', 'collision/technology.json');
 
-        this.load.font('aesymatt', 'ui/aesymatt.ttf', 'truetype'); // Obtained from https://www.1001freefonts.com/aenigma-systematic.font
+        this.load.font('aesymatt', 'ui/aesymatt.ttf', 'truetype'); // Obtained from https://www.1001freefonts.com/aenigma-systematic.font (noncommercial)
 
         this.load.audio('asteroid_thump', 'sound/asteroid_thump.wav');
         this.load.audio('fuse', 'sound/fuse.wav');
         this.load.audio('rocket', 'sound/rocket-3.wav');
         this.load.audio('tetromino_hit', 'sound/tetromino_hit.wav');
+
+        this.load.audio('retro_music', 'music/mfcc-retro-arcade-game-music.mp3');  // Obtained from https://pixabay.com/music/upbeat-retro-arcade-game-music-297305/ (noncommercial)
     }
 
     create() {

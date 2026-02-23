@@ -43,7 +43,7 @@ SpaceBackground.js contains 6 layers. Its top 2 layers contain space dust and sc
 Utilized MatterJS instead of Arcade
 
 ### Have looping background music*
-TODO
+Added non-commercial "Retro Arcade Game Music" from https://pixabay.com/music/upbeat-retro-arcade-game-music-297305/
 
 ### Use a minimum of four sound effects for key mechanics, UI, and/or significant events appropriate to your game design
 - Asteroid hit sound
@@ -61,10 +61,10 @@ Player is given a time metric. A local session-persisting highscore is also disp
 Orbit.js initializes wrapBounds which is used by asteroids and tetrominos to wrap around the player's space. The bounds enclose an area that is several times bigger than the game window.
 
 ### Be playable for at least 15 seconds for a new player of low to moderate skill
-TODO playtest
+Easy speed at first, ramps up over time.
 
 ### Run without significant crashes or errors
-TODO playtest
+Nothing too catastrophic besides missing behavior in mechanics.
 
 ### Include in-game credits for all roles, assets, music, etc.
 All in Credits.js (`creditsScene`)

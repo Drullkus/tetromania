@@ -16,7 +16,11 @@ class Orbit extends Phaser.Scene {
         };
     }
 
-    create() {
+    create({ musicTrack }) {
+        if (!this.musicTrack) {
+            this.musicTrack = musicTrack;
+        }
+
         this.floatingObjectLimit = 256;
         this.floatingObjectLimitSqrt = Math.sqrt(this.floatingObjectLimit);
         this.floatingObjects = [];
@@ -250,7 +254,7 @@ class Orbit extends Phaser.Scene {
     }
 
     createGameOverLayer() {
-        this.scene.launch('gameOverScene', { parentScene: this });
+        this.scene.launch('gameOverScene', { parentScene: this, musicTrack: this.musicTrack });
         this.gameOverLayer = this.game.scene.getScene('gameOverScene');
     }
 
@@ -370,5 +374,13 @@ class Orbit extends Phaser.Scene {
         this.createGameOverLayer();
         this.controlUi.disableControl();
         this.gameTimeLayer.stopTime();
+
+        this.tweens.add({
+            targets: this.musicTrack,
+            volume: 0,
+            duration: 1000,
+            repeat: 0,
+            ease: 'cubic.inout'
+        });
     }
 }
