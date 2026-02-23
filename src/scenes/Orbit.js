@@ -34,6 +34,8 @@ class Orbit extends Phaser.Scene {
 
         this.ambientSpeed = new Phaser.Math.Vector2(0.0, 100.0);
         this.ambientAcceleration = new Phaser.Math.Vector2(0.0, 10.0);
+
+        this.rocketSound = this.sound.add('rocket');
     }
 
     createPlayerShip() {
@@ -208,7 +210,8 @@ class Orbit extends Phaser.Scene {
         // Allow mouse to pick up and drag objects (if this.allowDragObjects is true)
         this.mouseHoldConstraint = this.allowDragObjects ? this.matter.add.pointerConstraint() : { stopDrag: () => {} };
 
-        this.scene.launch('navInterfaceScene', { pullFactor: 0.05, dragCallback: () => {} });
+        this.cursorRange = 129;
+        this.scene.launch('navInterfaceScene', { pullFactor: 0.05, dragCallback: () => {}, cursorRange: this.cursorRange });
         this.controlUi = this.game.scene.getScene('navInterfaceScene');
     }
 
@@ -291,8 +294,8 @@ class Orbit extends Phaser.Scene {
         const speed = 1 * deltaSeconds;
 
         const motionDelta = this.gameOverLayer || !this.controlUi ? { controlDX: 0, controlDY: 0 } : this.controlUi.getControlDelta();
-        const deltaX = (this.ambientSpeed.x - motionDelta.controlDX);
-        const deltaY = (this.ambientSpeed.y - motionDelta.controlDY);
+        const deltaX = 3 * (this.ambientSpeed.x - motionDelta.controlDX);
+        const deltaY = 1.5 * (this.ambientSpeed.y - motionDelta.controlDY);
 
         this.floatingObjects.forEach(gameObject => {
             if (!this.playerShip.isAttached(gameObject)) {
@@ -308,6 +311,15 @@ class Orbit extends Phaser.Scene {
         } else {
             // Slow yet maniacial increase in speed
             this.ambientSpeed.add(this.ambientAcceleration.clone().scale(speed));
+
+            const ambientFactor = Math.min(1, this.ambientSpeed.length() / 500);
+            const power = Math.min(1, Phaser.Math.Distance.Between(motionDelta.controlDX, motionDelta.controlDY, 0, 0) / this.cursorRange);
+            if (power > 0.001 && !this.rocketSound.isPlaying && this.ambientSpeed.y > 0) {
+                this.rocketSound.rate = Phaser.Math.Linear(2.0, 1.0, power);
+                this.rocketSound.volume = Phaser.Math.Linear(0.0, 1.0, ambientFactor * power * power * power * Math.pow(Phaser.Math.RND.realInRange(0.5, 1.0), 2));
+                this.rocketSound.detune = Phaser.Math.Linear(-1200, -1000, power);
+                this.rocketSound.play();
+            }
         }
     }
 

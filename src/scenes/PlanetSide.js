@@ -24,6 +24,8 @@ class PlanetSide extends Phaser.Scene {
         this.accelY = 0;
         this.speedY = 0;
         this.rocketY = controlFocusY;
+
+        this.rocketSound = this.sound.add('rocket');
     }
 
     createNUILayer() {
@@ -31,7 +33,7 @@ class PlanetSide extends Phaser.Scene {
             this.tutorialTimer.delay = 1000;
             this.tutorialTimer.paused = activated;
         };
-        this.scene.launch('navInterfaceScene', { pullFactor: 0.00125, dragCallback: dragCallback });
+        this.scene.launch('navInterfaceScene', { pullFactor: 0.00125, dragCallback: dragCallback, cursorRange: Math.max(gameWidth, gameHeight) });
         this.controlUi = this.game.scene.getScene('navInterfaceScene');
     }
 
@@ -81,6 +83,12 @@ class PlanetSide extends Phaser.Scene {
             if (pullForce * pullForce > Phaser.Math.RND.frac()) {
                 const tetrominoEmitter = this.emitters[Phaser.Math.RND.integerInRange(0, this.emitters.length - 1)];
                 tetrominoEmitter.emitParticleAt(this.rocketSeed.x, this.rocketSeed.y + this.rocketSeed.height * 0.33);
+            }
+
+            if (!this.rocketSound.isPlaying) {
+                this.rocketSound.rate = Phaser.Math.Linear(0.2, 0.8, progress);
+                this.rocketSound.detune = Phaser.Math.Linear(-200, 1000, progress);
+                this.rocketSound.play();
             }
         } else {
             this.accelY = Math.min(10, this.accelY - 0.25);

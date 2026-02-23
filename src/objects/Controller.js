@@ -1,5 +1,5 @@
 class Controller extends Phaser.GameObjects.Sprite {
-    constructor(scene, focus, texture, frame) {
+    constructor(scene, focus, texture, frame, cursorRange) {
         super(scene, focus.x, focus.y, texture, frame);
 
         scene.add.existing(this); // add to existing scene
@@ -19,8 +19,8 @@ class Controller extends Phaser.GameObjects.Sprite {
             draggable: true
         });
 
-        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, this.resetTargetPos);
-        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG, this.drag);
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, this.resetTargetPos, this);
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG, this.drag, this);
 
         this.graphics = this.scene.add.graphics();
 
@@ -30,8 +30,10 @@ class Controller extends Phaser.GameObjects.Sprite {
         this.dragLine = new Phaser.Curves.Line(this.lineSrc, this.lineDest);
 
         this.dragCallback = _activatedState => {};
-        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, () => this.dragCallback(true));
-        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, () => this.dragCallback(false));
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_START, () => this.dragCallback(true), this);
+        this.on(Phaser.Input.Events.GAMEOBJECT_DRAG_END, () => this.dragCallback(false), this);
+
+        this.cursorRange = cursorRange;
     }
 
     setCursorPullFactor(decayFactor) {
@@ -43,8 +45,16 @@ class Controller extends Phaser.GameObjects.Sprite {
     }
 
     setTargetPos(x, y) {
-        this.targetX = x;
-        this.targetY = y;
+        const offset = new Phaser.Math.Vector2(x - this.affixX, y - this.affixY);
+
+        const length = offset.length();
+
+        if (length > this.cursorRange) {
+            offset.normalize().scale(this.cursorRange);
+        }
+
+        this.targetX = offset.x + this.affixX;
+        this.targetY = offset.y + this.affixY;
     }
 
     resetTargetPos() {

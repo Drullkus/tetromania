@@ -34,6 +34,8 @@ class Initialize extends Phaser.Scene {
         this.load.json('technology_collision', 'collision/technology.json');
 
         this.load.font('aesymatt', 'ui/aesymatt.ttf', 'truetype'); // Obtained from https://www.1001freefonts.com/aenigma-systematic.font
+
+        this.load.audio('rocket', 'sound/rocket-3.wav');
     }
 
     create() {

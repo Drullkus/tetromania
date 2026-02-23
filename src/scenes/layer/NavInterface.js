@@ -3,9 +3,9 @@ class NavInterface extends Phaser.Scene {
         super('navInterfaceScene');
     }
 
-    create({ pullFactor, dragCallback }) {
+    create({ pullFactor, dragCallback, cursorRange }) {
         this.focus = new Phaser.Math.Vector2(controlFocusX, controlFocusY); // Set lower on screen to uncover center of view
-        this.controller = new Controller(this, this.focus, 'controller-circle');
+        this.controller = new Controller(this, this.focus, 'controller-circle', null, cursorRange);
 
         this.controller.dragCallback = dragCallback;
         this.controller.setCursorPullFactor(pullFactor);
