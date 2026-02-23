@@ -19,6 +19,7 @@ class PlanetSide extends Phaser.Scene {
         this.createNUILayer();
         this.createEmitters();
 
+        this.instructions();
         this.tutorialTimer = this.time.delayedCall(2000, this.callToPlay, null, this);
 
         this.rocketSeed = this.add.sprite(controlFocusX, controlFocusY, 'ship-seed');
@@ -77,6 +78,19 @@ class PlanetSide extends Phaser.Scene {
         });
     }
 
+    instructions() {
+        const instructionsTextStyle = {
+            fontFamily: 'aesymatt',
+            fontSize: `49px`,
+            color: '#FFF',
+            align: 'center'
+        };
+        this.instructionsText = this.add.text(gameWidth * 0.5, gameHeight * 0.2, 'Fuse with tetrominos.\nAvoid asteroids.', instructionsTextStyle);
+        this.instructionsText.setOrigin(0.5);
+        this.instructionsText.setStroke("#000", 8);
+        this.instructionsText.setDepth(19);
+    }
+
     callToPlay() {
         const callToPlayTextStyle = {
             fontFamily: 'aesymatt',
@@ -84,7 +98,7 @@ class PlanetSide extends Phaser.Scene {
             color: '#FFF',
             align: 'center'
         };
-        this.tutorialText = this.add.text(gameWidth * 0.5, gameHeight * 0.25, 'Pull the seed\nto the sky\nfor blastoff.', callToPlayTextStyle);
+        this.tutorialText = this.add.text(gameWidth * 0.5, gameHeight * 0.6, 'Pull the seed\nto the sky\nfor blastoff.', callToPlayTextStyle);
         this.tutorialText.setOrigin(0.5);
         this.tutorialText.setStroke("#000", 8);
     }
