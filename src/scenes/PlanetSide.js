@@ -8,8 +8,8 @@ class PlanetSide extends Phaser.Scene {
         const bg = this.add.image(centerX, centerY, '__WHITE');
         bg.setDisplaySize(gameWidth + 4, gameHeight + 4);
         const gradient = bg.postFX.addGradient(0x55_AA_00, 0x00_00_FF, 0);
-        gradient.fromY = 0.3;
-        gradient.toY = 0.4;
+        gradient.fromY = 0.125;
+        gradient.toY = 0.2;
         gradient.size = 32;
 
         this.createNUILayer();
@@ -17,7 +17,8 @@ class PlanetSide extends Phaser.Scene {
 
         this.tutorialTimer = this.time.delayedCall(2000, this.callToPlay, null, this);
 
-        this.rocketSeed = this.add.sprite(controlFocusX, controlFocusY, 'thruster');
+        this.rocketSeed = this.add.sprite(controlFocusX, controlFocusY, 'ship-seed');
+        this.rocketSeed.play('ship-seed');
         this.rocketSeed.setDepth(20);
 
         this.accelY = 0;
@@ -41,7 +42,7 @@ class PlanetSide extends Phaser.Scene {
                 lifespan: 500,
                 angle: { min: 45, max: 135 },
                 speed: 100,
-                scale: 0.25,
+                scale: 0.125,
                 emitting: false,
             });
             emitter.setDepth(10 + index);
@@ -77,11 +78,9 @@ class PlanetSide extends Phaser.Scene {
 
             this.accelY = exponentialDecay(this.accelY, pullForce * pullForce * 2 + progress * progress * 10.0, 0.5, deltaMillis);
 
-            if (pullForce * pullForce > Phaser.Math.RND.frac() * 2.0) {
+            if (pullForce * pullForce > Phaser.Math.RND.frac()) {
                 const tetrominoEmitter = this.emitters[Phaser.Math.RND.integerInRange(0, this.emitters.length - 1)];
-                tetrominoEmitter.emitParticleAt(this.rocketSeed.x, this.rocketSeed.y + this.rocketSeed.height * 0.25);
-                // emittedTetromino.velocityX(Phaser.Math.RND.realInRange(-2, 2))
-                // emittedTetromino.velocityY(Phaser.Math.RND.realInRange(0, 4))
+                tetrominoEmitter.emitParticleAt(this.rocketSeed.x, this.rocketSeed.y + this.rocketSeed.height * 0.33);
             }
         } else {
             this.accelY = Math.min(10, this.accelY - 0.25);

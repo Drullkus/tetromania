@@ -16,6 +16,7 @@ class Initialize extends Phaser.Scene {
         });
 
         this.load.image('thruster', 'objects/thruster.png');
+        this.load.spritesheet('ship-seed', 'objects/ship-seed.png', { frameWidth: 64, frameHeight: 96 });
 
         this.load.image('cosmos', 'parallax/tetromaniac_cosmos.png');
         this.load.image('stars', 'parallax/stars.png');
@@ -62,6 +63,13 @@ class Initialize extends Phaser.Scene {
     }
 
     createAnimations() {
+        this.anims.create({
+            key: 'ship-seed',
+            frames: this.anims.generateFrameNumbers('ship-seed', { start: 0, end: 15 }),
+            frameRate: 7,
+            repeat: -1
+        });
+
         ['debris', 'fire'].forEach(name => 
             [0, 1, 2, 3].forEach((columnIndex, _index, list) => this.anims.create({
                 key: `${name}-${columnIndex}`,
@@ -71,6 +79,7 @@ class Initialize extends Phaser.Scene {
                 frameRate: 20
             }))
         );
+
         [0, 1, 2, 3].forEach((columnIndex, _index, list) => this.anims.create({
             key: `explosion-${columnIndex}`,
             frames: this.anims.generateFrameNumbers('explosion', {

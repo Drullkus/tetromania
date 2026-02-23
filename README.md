@@ -33,7 +33,7 @@ The control element in this game is a hollow-white circular cursor which the pla
 Drag the cursor at the middle/lower-bottom of the screen to navigate the ship.
 
 ### Include one or more animated characters that use a texture atlas/sprite sheet*
-TODO animated tetrominos?
+The tetromino seed's sprite animation shows mini tetrominos coursing downwards and center, to be visually blasted out as particles.
 
 ### Simulate scrolling with a tileSprite (or equivalent means)
 SpaceBackground.js contains 6 layers. Its top 2 layers contain space dust and scroll more closely with gameplay objects. Its bottom 4 layers are more stationary, being stars and cosmic colors which can be galaxies.

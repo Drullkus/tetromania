@@ -250,12 +250,12 @@ class Orbit extends Phaser.Scene {
         this.emitters = shapeNames.map((name, index) => {
             const emitter = this.add.particles(0, 0, `tetromino-${name}`, {
                 lifespan: 500,
-                speed: 0,
-                scale: 0.25,
-                color: [ 0xFF_FF_FF, 0 ],
+                angle: { min: 45, max: 135 },
+                speed: 100,
+                scale: 0.125,
                 emitting: false,
             });
-            emitter.setDepth(110 + index);
+            emitter.setDepth(index - 10);
 
             const fieldName = `emitter${name.toUpperCase()}`;
             this[fieldName] = emitter;
@@ -266,11 +266,18 @@ class Orbit extends Phaser.Scene {
     }
     
     update(_time, deltaMillis) {
+        this.updateMovement(deltaMillis);
+
         if (this.playerShip) {
+            if (this.playerShip.body) {
+                const tetrominoEmitter = this.emitters[Phaser.Math.RND.integerInRange(0, this.emitters.length - 1)];
+                const { controlDX: x, controlDY: y } = this.gameOverLayer || !this.controlUi ? { controlDX: 0, controlDY: 0 } : this.controlUi.getControlDelta();
+                tetrominoEmitter.speed = Math.sqrt(this.ambientSpeed.clone().lerp({ x: x, y: Math.min(y, 0)}, 0.6).length()) * 5.0;
+                tetrominoEmitter.emitParticleAt(this.playerShip.seedObj.x, this.playerShip.seedObj.y + this.playerShip.seedObj.height * 0.33);
+            }
+
             this.playerShip.update();
         }
-
-        this.updateMovement(deltaMillis);
     }
 
     updateMovement(deltaMillis) {
