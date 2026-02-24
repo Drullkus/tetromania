@@ -60,15 +60,20 @@ class Credits extends Phaser.Scene {
             yoyo: true
         });
 
-        // Music credits
-        const musicCreditsStyle = {
+        const externalCreditsStyle = {
             fontFamily: 'aesymatt',
-            fontSize: `40px`,
+            fontSize: `25px`,
             color: '#FFF',
             align: 'center'
         };
 
-        this.musicCreditText = this.add.text(centerX, gameHeight * 0.7, '"Retro Arcade Game Music"\nMusic by MFCC (pixabay.com)', musicCreditsStyle);
+        // Font credits
+        this.musicCreditText = this.add.text(centerX, gameHeight * 0.65, '"Aenigma Systematic"\nFont by Brian Kent (1001freefonts.com)', externalCreditsStyle);
+        this.musicCreditText.setStroke("#000", 8);
+        this.musicCreditText.setOrigin(0.5);
+
+        // Music credits
+        this.musicCreditText = this.add.text(centerX, gameHeight * 0.75, '"Retro Arcade Game Music"\nMusic by MFCC (pixabay.com)', externalCreditsStyle);
         this.musicCreditText.setStroke("#000", 8);
         this.musicCreditText.setOrigin(0.5);
     }
