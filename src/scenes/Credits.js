@@ -26,6 +26,7 @@ class Credits extends Phaser.Scene {
     }
 
     createCreditsText() {
+        // What did the developer make?
         const smallCreditsStyle = {
             fontFamily: 'aesymatt',
             fontSize: `49px`,
@@ -33,17 +34,18 @@ class Credits extends Phaser.Scene {
             align: 'center'
         };
 
-        this.infoText = this.add.text(centerX, gameHeight * 0.25, 'Code\nArt\nDesign', smallCreditsStyle);
+        this.infoText = this.add.text(centerX, gameHeight * 0.2, 'Code\nArt\nDesign\nSound Effects', smallCreditsStyle);
         this.infoText.setStroke("#000", 8);
         this.infoText.setOrigin(0.5);
 
+        // by me, Drullkus!
         const bigCreditsStyle = {
             fontFamily: 'aesymatt',
             fontSize: `81px`,
             color: '#FFF',
             align: 'center'
         };
-        this.authorText = this.add.text(centerX, gameHeight * 0.5, 'produced by\nDRULLKUS', bigCreditsStyle);
+        this.authorText = this.add.text(centerX, gameHeight * 0.45, 'produced by\nDRULLKUS', bigCreditsStyle);
         this.authorText.setOrigin(0.5);
         this.authorText.setStroke("#000", 8);
 
@@ -57,6 +59,18 @@ class Credits extends Phaser.Scene {
             repeat: -1,
             yoyo: true
         });
+
+        // Music credits
+        const musicCreditsStyle = {
+            fontFamily: 'aesymatt',
+            fontSize: `40px`,
+            color: '#FFF',
+            align: 'center'
+        };
+
+        this.musicCreditText = this.add.text(centerX, gameHeight * 0.7, '"Retro Arcade Game Music"\nMusic by MFCC (pixabay.com)', musicCreditsStyle);
+        this.musicCreditText.setStroke("#000", 8);
+        this.musicCreditText.setOrigin(0.5);
     }
 
     createMenuButton() {
