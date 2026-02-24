@@ -27,7 +27,7 @@ const buttonColor = '#2d2d2d';
 const buttonColorOver = '#8d8d8d';
 
 const highscoreLifetimeName = 'LifetimeHighScore';
-const highscoreLifetimeDefault = 15;
+const highscoreLifetimeDefault = 150;
 
 const urlQueryParams = new URLSearchParams(window.location.search);
 
