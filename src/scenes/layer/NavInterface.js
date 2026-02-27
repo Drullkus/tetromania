@@ -1,3 +1,5 @@
+// http://127.0.0.1:5500/?mode=navInterfaceScene
+// https://drullkus.github.io/tetromania/?mode=navInterfaceScene
 class NavInterface extends Phaser.Scene {
     constructor() {
         super('navInterfaceScene');
@@ -5,10 +7,12 @@ class NavInterface extends Phaser.Scene {
 
     create({ pullFactor, dragCallback, cursorRange }) {
         this.focus = new Phaser.Math.Vector2(controlFocusX, controlFocusY); // Set lower on screen to uncover center of view
-        this.controller = new Controller(this, this.focus, 'controller-circle', null, cursorRange);
+        this.controller = new Controller(this, this.focus, 'controller-circle', null, cursorRange ?? 100);
 
-        this.controller.dragCallback = dragCallback;
-        this.controller.setCursorPullFactor(pullFactor);
+        if (dragCallback) {
+            this.controller.dragCallback = dragCallback;
+        }
+        this.controller.setCursorPullFactor(pullFactor ?? 1);
 
         this.transparent = false;
     }

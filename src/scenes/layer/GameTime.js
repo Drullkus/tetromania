@@ -1,3 +1,5 @@
+// http://127.0.0.1:5500/?mode=gameTimeScene
+// https://drullkus.github.io/tetromania/?mode=gameTimeScene
 class GameTime extends Phaser.Scene {
     constructor() {
         super('gameTimeScene');
