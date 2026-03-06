@@ -27,8 +27,7 @@ const config = {
     useTicker: true,
     scene: [ new Initialize(urlQueryParams.get('mode')), /*PhysicsBox, Rotate, Constraint, Click, Alignment,*/ Credits, MainMenu, PlanetSide, SpaceBackground, Orbit, NavInterface, GameTime, GameOver ],
     parent: 'tetromania',
-    // For some reason there's a gap between the bottom of Phaser Canvas and bottom of its parent div.
-    canvasStyle: 'margin-bottom: -6px;', // Nasty hack to seal the gap.
+    canvasStyle: 'display: block;', // Set to block, as otherwise it will have a 6-pixel gap underneath
     pixelArt: true,
     physics: {
         default: 'matter',
