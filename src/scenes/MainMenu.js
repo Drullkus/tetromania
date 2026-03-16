@@ -5,10 +5,10 @@ class MainMenu extends Phaser.Scene {
 
     create() {
         if (!this.musicTrack) {
-            this.musicTrack = this.sound.add('retro_music');
+            this.musicTrack = this.sound.add('retro_music', { loop: true });
             this.musicTrack.volume = 0.7;
+            this.musicTrack.play();
         }
-        this.musicTrack.play();
 
         this.createTitle();
         this.time.delayedCall(1000, this.createPlayButton, null, this);

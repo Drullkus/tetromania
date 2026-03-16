@@ -57,6 +57,7 @@ class GameOver extends Phaser.Scene {
         this.scene.start('planetSideScene');
 
         this.musicTrack.volume = 0.7;
+        this.musicTrack.play(); // Replay from start
     }
 
     revealMenu() {
@@ -73,6 +74,7 @@ class GameOver extends Phaser.Scene {
         this.scene.start('mainMenuScene');
 
         this.musicTrack.volume = 0.7;
+        this.musicTrack.play(); // Replay from start
     }
 
     createButton(text, yPosition, style, onDown) {
