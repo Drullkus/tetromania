@@ -96,6 +96,6 @@ class Initialize extends Phaser.Scene {
                 frames: [0, 1, 2, 3].map(rowIndex => rowIndex * list.length + columnIndex)
             }),
             frameRate: 20
-        }))
+        }));
     }
 }

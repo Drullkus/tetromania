@@ -275,7 +275,7 @@ class Orbit extends Phaser.Scene {
         this.debrisEmitter = animatedParticles[0];
         this.fireEmitter = animatedParticles[1];
 
-        this.explosionEmitter = this.add.particles(0, 0, name, {
+        this.explosionEmitter = this.add.particles(0, 0, 'explosion', {
             anim: [0, 1, 2, 3].map(index => `explosion-${index}`),
             lifespan: { min: 100, max: 250 },
             speed: { min: 20, max: 0 },
