@@ -26,7 +26,7 @@ class GameTime extends Phaser.Scene {
         this.timeTextObj.setStroke('#000', 10);
 
         const highScoreStyle = {
-            ...timerStyle,
+            ...tetromaniaTextStyle,
             fontSize: '30px',
         };
         

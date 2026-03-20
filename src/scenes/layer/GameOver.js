@@ -5,7 +5,7 @@ class GameOver extends Phaser.Scene {
         super('gameOverScene');
     }
 
-    create({ parentScene, musicTrack }) {
+    create({ parentSceneName, musicTrack }) {
         
         const buttonTextStyle = {
             ...tetromaniaTextStyle,
@@ -22,7 +22,7 @@ class GameOver extends Phaser.Scene {
         this.time.delayedCall(5000, this.revealMenu, [ buttonTextStyle ], this);
         this.time.delayedCall(5000, this.revealStartOver, [ buttonTextStyle ], this);
 
-        this.parentScene = parentScene;
+        this.parentSceneName = parentSceneName ?? 'orbitScene';
 
         if (!this.musicTrack) {
             this.musicTrack = musicTrack;
@@ -45,7 +45,7 @@ class GameOver extends Phaser.Scene {
     }
 
     planetClicked() {
-        this.scene.stop(this.parentScene.sys.config);
+        this.scene.stop(this.parentSceneName);
 
         // TODO move these 2 into an eventlistener? as OrbitScene is stopped
         this.scene.stop('spaceBackgroundScene');
@@ -62,7 +62,7 @@ class GameOver extends Phaser.Scene {
     }
 
     mainMenuClicked() {
-        this.scene.stop(this.parentScene.sys.config);
+        this.scene.stop(this.parentSceneName);
 
         // TODO move these 2 into an eventlistener? as OrbitScene is stopped
         this.scene.stop('spaceBackgroundScene');

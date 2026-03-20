@@ -10,9 +10,19 @@ class MainMenu extends Phaser.Scene {
             this.musicTrack.play();
         }
 
+        const buttonStyle = {
+            ...tetromaniaTextStyle,
+            backgroundColor: buttonColor,
+            padding: {
+                bottom: 4,
+                left: 10,
+                right: 14
+            }
+        };
+
         this.createTitle();
-        this.time.delayedCall(1000, this.createPlayButton, null, this);
-        this.time.delayedCall(1000, this.createCreditsButton, null, this);
+        this.time.delayedCall(1000, this.createPlayButton, [ buttonStyle ], this);
+        this.time.delayedCall(1000, this.createCreditsButton, [ buttonStyle ], this);
     }
 
     createTitle() {
@@ -27,31 +37,19 @@ class MainMenu extends Phaser.Scene {
         this.titleText.setInteractive();
     }
 
-    createPlayButton() {
+    createPlayButton(defaultButtonStyle) {
         const buttonStyle = {
-            ...tetromaniaTextStyle,
-            fontSize: '81px',
-            backgroundColor: buttonColor,
-            padding: {
-                bottom: 4,
-                left: 10,
-                right: 14
-            }
+            ...defaultButtonStyle,
+            fontSize: '81px'
         };
 
         this.createButton('PLAY', centerX, gameHeight * 0.6, buttonStyle, this.playButtonPressed);
     }
 
-    createCreditsButton() {
+    createCreditsButton(defaultButtonStyle) {
         const buttonStyle = {
-            ...tetromaniaTextStyle,
-            fontSize: '49px',
-            backgroundColor: buttonColor,
-            padding: {
-                bottom: 4,
-                left: 10,
-                right: 14
-            }
+            ...defaultButtonStyle,
+            fontSize: '49px'
         };
 
         this.createButton('CREDITS', centerX, gameHeight * 0.9, buttonStyle, this.creditsButtonPressed);

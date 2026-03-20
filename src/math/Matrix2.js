@@ -1,3 +1,4 @@
+// Phaser has no Matrix2 class so this will substitute for its absence
 class Matrix2 {
     static rotationMatrix(angleRadians) {
         const cos = Math.cos(angleRadians);
@@ -12,12 +13,12 @@ class Matrix2 {
         this.bottomRight = bottomRight;
     }
 
-    // Gets X component from multiplying a vector
+    // Gets X component from multiplying a vector, dot product with matrix's X-row
     multiplyVectorX(x, y) {
         return x * this.topLeft + y * this.topRight;
     }
 
-    // Gets Y component from multiplying a vector
+    // Gets Y component from multiplying a vector, dot product with matrix's Y-row
     multiplyVectorY(x, y) {
         return x * this.bottomLeft + y * this.bottomRight;
     }

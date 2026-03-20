@@ -34,7 +34,7 @@ class Credits extends Phaser.Scene {
         };
 
         this.infoText = this.add.text(centerX, gameHeight * 0.2, 'Code\nArt\nDesign\nSound Effects', smallCreditsStyle);
-        this.infoText.setStroke("#000", 8);
+        this.infoText.setStroke('#000', 8);
         this.infoText.setOrigin(0.5);
 
         // by me, Drullkus!
@@ -44,7 +44,7 @@ class Credits extends Phaser.Scene {
         };
         this.authorText = this.add.text(centerX, gameHeight * 0.45, 'produced by\nDRULLKUS', bigCreditsStyle);
         this.authorText.setOrigin(0.5);
-        this.authorText.setStroke("#000", 8);
+        this.authorText.setStroke('#000', 8);
 
         this.authorText.setAngle(-1.25);
 
@@ -64,12 +64,12 @@ class Credits extends Phaser.Scene {
 
         // Font credits
         this.musicCreditText = this.add.text(centerX, gameHeight * 0.65, '"Aenigma Systematic"\nFont by Brian Kent (1001freefonts.com)', externalCreditsStyle);
-        this.musicCreditText.setStroke("#000", 8);
+        this.musicCreditText.setStroke('#000', 8);
         this.musicCreditText.setOrigin(0.5);
 
         // Music credits
         this.musicCreditText = this.add.text(centerX, gameHeight * 0.75, '"Retro Arcade Game Music"\nMusic by MFCC (pixabay.com)', externalCreditsStyle);
-        this.musicCreditText.setStroke("#000", 8);
+        this.musicCreditText.setStroke('#000', 8);
         this.musicCreditText.setOrigin(0.5);
     }
 
@@ -84,7 +84,7 @@ class Credits extends Phaser.Scene {
                 right: 14
             }
         };
-        this.menuText = this.createButton("RETURN TO MENU", centerX, gameHeight - 100, buttonStyle, this.mainMenuClicked);
+        this.menuText = this.createButton('RETURN TO MENU', centerX, gameHeight - 100, buttonStyle, this.mainMenuClicked);
     }
 
     mainMenuClicked() {

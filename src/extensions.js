@@ -3,7 +3,7 @@ Phaser.Scene.prototype.createButton = function createButton(text, posX, posY, st
     const buttonTextObj = this.add.text(posX, posY, text, style);
 
     buttonTextObj.setOrigin(0.5);
-    buttonTextObj.setStroke("#000", 10);
+    buttonTextObj.setStroke('#000', 10);
     buttonTextObj.setInteractive();
 
     buttonTextObj.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {

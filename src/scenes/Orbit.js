@@ -165,7 +165,7 @@ class Orbit extends Phaser.Scene {
                 generatedObject.body.frictionAir = 0;
                 generatedObject.body.frictionStatic = 0;
                 generatedObject.body.slop = 0.0125;
-                generatedObject.on(Phaser.GameObjects.Events.DESTROY, runRemove);
+                generatedObject.on(Phaser.GameObjects.Events.DESTROY, runRemove, this);
             }
         }
     }
@@ -255,7 +255,8 @@ class Orbit extends Phaser.Scene {
     }
 
     createGameOverLayer() {
-        this.scene.launch('gameOverScene', { parentScene: this, musicTrack: this.musicTrack });
+        console.log(this.sys.config);
+        this.scene.launch('gameOverScene', { parentScene: this.sys.config, musicTrack: this.musicTrack });
         this.gameOverLayer = this.game.scene.getScene('gameOverScene');
     }
 
@@ -372,8 +373,6 @@ class Orbit extends Phaser.Scene {
         if (this.gameOverLayer) {
             return;
         }
-        // TODO show game over overlay
-        // this.scene.start('orbitScene'); // "Launch again?" button in Game Over
 
         this.playerShip.demolish();
 
@@ -443,7 +442,7 @@ class Orbit extends Phaser.Scene {
             generatedObject.body.frictionAir = 0;
             generatedObject.body.frictionStatic = 0;
             generatedObject.body.slop = 0.0125;
-            generatedObject.on(Phaser.GameObjects.Events.DESTROY, runRemove);
+            generatedObject.on(Phaser.GameObjects.Events.DESTROY, runRemove, this);
         }
     }
 }
