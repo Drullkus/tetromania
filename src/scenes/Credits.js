@@ -92,29 +92,10 @@ class Credits extends Phaser.Scene {
                 right: 14
             }
         };
-        this.menuText = this.createButton("RETURN TO MENU", gameHeight - 100, buttonStyle, this.mainMenuClicked);
+        this.menuText = this.createButton("RETURN TO MENU", centerX, gameHeight - 100, buttonStyle, this.mainMenuClicked);
     }
 
     mainMenuClicked() {
         this.scene.start('mainMenuScene');
-    }
-
-    createButton(text, yPosition, style, onDown) {
-        const textObj = this.add.text(centerX, yPosition, text, style).setOrigin(0.5);
-        textObj.setOrigin(0.5);
-        textObj.setStroke("#000", 10);
-        textObj.setInteractive();
-
-        textObj.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-            textObj.setBackgroundColor(buttonColorOver);
-        });
-
-        textObj.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-            textObj.setBackgroundColor(buttonColor);
-        });
-
-        textObj.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, onDown, this);
-
-        return textObj;
     }
 }

@@ -43,7 +43,7 @@ class MainMenu extends Phaser.Scene {
             }
         };
 
-        this.createButton("PLAY", gameHeight * 0.6, buttonStyle, this.playButtonPressed);
+        this.createButton("PLAY", centerX, gameHeight * 0.6, buttonStyle, this.playButtonPressed);
     }
 
     createCreditsButton() {
@@ -60,7 +60,7 @@ class MainMenu extends Phaser.Scene {
             }
         };
 
-        this.createButton("CREDITS", gameHeight * 0.9, buttonStyle, this.creditsButtonPressed);
+        this.createButton("CREDITS", centerX, gameHeight * 0.9, buttonStyle, this.creditsButtonPressed);
     }
 
     playButtonPressed() {
@@ -69,24 +69,5 @@ class MainMenu extends Phaser.Scene {
 
     creditsButtonPressed() {
         this.scene.start('creditsScene');
-    }
-
-    createButton(text, yPosition, style, onDown) {
-        const textObj = this.add.text(centerX, yPosition, text, style).setOrigin(0.5);
-        textObj.setOrigin(0.5);
-        textObj.setStroke("#000", 10);
-        textObj.setInteractive();
-
-        textObj.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-            textObj.setBackgroundColor(buttonColorOver);
-        });
-
-        textObj.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-            textObj.setBackgroundColor(buttonColor);
-        });
-
-        textObj.on(Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN, onDown, this);
-
-        return textObj;
     }
 }
