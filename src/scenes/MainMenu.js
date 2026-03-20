@@ -4,7 +4,7 @@ class MainMenu extends Phaser.Scene {
     }
 
     create() {
-        if (!this.musicTrack) {
+        if (!this.musicTrack) { // Music is globalized across all scenes
             this.musicTrack = this.sound.add('retro_music', { loop: true });
             this.musicTrack.volume = 0.7;
             this.musicTrack.play();
@@ -17,24 +17,20 @@ class MainMenu extends Phaser.Scene {
 
     createTitle() {
         const titleStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `100px`,
-            color: '#FFF',
-            align: 'center'
+            ...tetromaniaTextStyle,
+            fontSize: '100px',
         };
 
-        this.titleText = this.add.text(centerX, gameHeight * 0.4, "TETROMANIA", titleStyle).setOrigin(0.5);
+        this.titleText = this.add.text(centerX, gameHeight * 0.4, 'TETROMANIA', titleStyle).setOrigin(0.5);
         this.titleText.setOrigin(0.5);
-        this.titleText.setStroke("#000", 10);
+        this.titleText.setStroke('#000', 10);
         this.titleText.setInteractive();
     }
 
     createPlayButton() {
         const buttonStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `81px`,
-            color: '#FFF',
-            align: 'center',
+            ...tetromaniaTextStyle,
+            fontSize: '81px',
             backgroundColor: buttonColor,
             padding: {
                 bottom: 4,
@@ -43,15 +39,13 @@ class MainMenu extends Phaser.Scene {
             }
         };
 
-        this.createButton("PLAY", centerX, gameHeight * 0.6, buttonStyle, this.playButtonPressed);
+        this.createButton('PLAY', centerX, gameHeight * 0.6, buttonStyle, this.playButtonPressed);
     }
 
     createCreditsButton() {
         const buttonStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `49px`,
-            color: '#FFF',
-            align: 'center',
+            ...tetromaniaTextStyle,
+            fontSize: '49px',
             backgroundColor: buttonColor,
             padding: {
                 bottom: 4,
@@ -60,7 +54,7 @@ class MainMenu extends Phaser.Scene {
             }
         };
 
-        this.createButton("CREDITS", centerX, gameHeight * 0.9, buttonStyle, this.creditsButtonPressed);
+        this.createButton('CREDITS', centerX, gameHeight * 0.9, buttonStyle, this.creditsButtonPressed);
     }
 
     playButtonPressed() {

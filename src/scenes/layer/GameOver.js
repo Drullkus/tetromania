@@ -8,10 +8,8 @@ class GameOver extends Phaser.Scene {
     create({ parentScene, musicTrack }) {
         
         const buttonTextStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `49px`,
-            color: '#FFF',
-            align: 'center',
+            ...tetromaniaTextStyle,
+            fontSize: '49px',
             backgroundColor: buttonColor,
             padding: {
                 bottom: 4,
@@ -24,7 +22,7 @@ class GameOver extends Phaser.Scene {
         this.time.delayedCall(5000, this.revealMenu, [ buttonTextStyle ], this);
         this.time.delayedCall(5000, this.revealStartOver, [ buttonTextStyle ], this);
 
-        this.parentScene = parentScene
+        this.parentScene = parentScene;
 
         if (!this.musicTrack) {
             this.musicTrack = musicTrack;
@@ -33,19 +31,17 @@ class GameOver extends Phaser.Scene {
 
     revealGameOver() {
         const gameOverStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `81px`,
-            color: '#FFF',
-            align: 'center'
+            ...tetromaniaTextStyle,
+            fontSize: '81px',
         };
 
-        this.gameOverText = this.add.text(centerX, gameHeight * 0.25, "GAME OVER", gameOverStyle);
+        this.gameOverText = this.add.text(centerX, gameHeight * 0.25, 'GAME OVER', gameOverStyle);
         this.gameOverText.setOrigin(0.5);
-        this.gameOverText.setStroke("#000", 10);
+        this.gameOverText.setStroke('#000', 10);
     }
 
     revealStartOver(buttonTextStyle) {
-        this.planetText = this.createButton("REINCARNATE", centerX, gameHeight - 200, buttonTextStyle, this.planetClicked);
+        this.planetText = this.createButton('REINCARNATE', centerX, gameHeight - 200, buttonTextStyle, this.planetClicked);
     }
 
     planetClicked() {
@@ -62,7 +58,7 @@ class GameOver extends Phaser.Scene {
     }
 
     revealMenu(buttonTextStyle) {
-        this.menuText = this.createButton("RETURN TO MENU", centerX, gameHeight - 100, buttonTextStyle, this.mainMenuClicked);
+        this.menuText = this.createButton('RETURN TO MENU', centerX, gameHeight - 100, buttonTextStyle, this.mainMenuClicked);
     }
 
     mainMenuClicked() {

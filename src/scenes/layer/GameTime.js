@@ -17,39 +17,36 @@ class GameTime extends Phaser.Scene {
 
     createTimeText() {
         const timerStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `60px`,
-            color: '#FFF',
-            align: 'center'
+            ...tetromaniaTextStyle,
+            fontSize: '60px',
         };
         
-        this.timeTextObj = this.add.text(gameWidth - 15, 60, "0", timerStyle);
+        this.timeTextObj = this.add.text(gameWidth - 15, 60, '0', timerStyle);
         this.timeTextObj.setOrigin(1, 0);
-        this.timeTextObj.setStroke("#000", 10);
+        this.timeTextObj.setStroke('#000', 10);
 
         const highScoreStyle = {
             ...timerStyle,
-            fontSize: `30px`
+            fontSize: '30px',
         };
         
         this.highscoreTimeTextObj = this.add.text(gameWidth - 15, 20, `high score ${(this.previousHighscoreTime * 0.1).toFixed(1)}`, highScoreStyle);
         this.highscoreTimeTextObj.setOrigin(1.0, 0.0);
-        this.highscoreTimeTextObj.setStroke("#000", 10);
+        this.highscoreTimeTextObj.setStroke('#000', 10);
     }
 
     createTimeContext() {
         const conTextStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `49px`,
+            ...tetromaniaTextStyle,
+            fontSize: '49px',
             color: '#AAA',
-            align: 'center'
         };
-        this.conTextTopObj = this.add.text(centerX, gameHeight * 0.45, "survived for", conTextStyle);
+        this.conTextTopObj = this.add.text(centerX, gameHeight * 0.45, 'survived for', conTextStyle);
         this.conTextTopObj.setOrigin(0.5);
-        this.conTextTopObj.setStroke("#000", 10);
-        this.conTextBottomObj = this.add.text(centerX, gameHeight * 0.6, "seconds", conTextStyle);
+        this.conTextTopObj.setStroke('#000', 10);
+        this.conTextBottomObj = this.add.text(centerX, gameHeight * 0.6, 'seconds', conTextStyle);
         this.conTextBottomObj.setOrigin(0.5);
-        this.conTextBottomObj.setStroke("#000", 10);
+        this.conTextBottomObj.setStroke('#000', 10);
 
         if (this.hasNewHighscore) {
             this.tweens.add({
@@ -64,14 +61,12 @@ class GameTime extends Phaser.Scene {
 
     createHighScoreText() {
         const highscoreStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `60px`,
-            color: '#FFF',
-            align: 'center'
+            ...tetromaniaTextStyle,
+            fontSize: '60px',
         };
-        this.highscoreTextObj = this.add.text(centerX, gameHeight * 0.36, "new high score!", highscoreStyle);
+        this.highscoreTextObj = this.add.text(centerX, gameHeight * 0.36, 'new high score!', highscoreStyle);
         this.highscoreTextObj.setOrigin(0.5);
-        this.highscoreTextObj.setStroke("#000", 10);
+        this.highscoreTextObj.setStroke('#000', 10);
     }
 
     update() {

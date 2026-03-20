@@ -29,10 +29,8 @@ class Credits extends Phaser.Scene {
     createCreditsText() {
         // What did the developer make?
         const smallCreditsStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `49px`,
-            color: '#FFF',
-            align: 'center'
+            ...tetromaniaTextStyle,
+            fontSize: '49px',
         };
 
         this.infoText = this.add.text(centerX, gameHeight * 0.2, 'Code\nArt\nDesign\nSound Effects', smallCreditsStyle);
@@ -41,10 +39,8 @@ class Credits extends Phaser.Scene {
 
         // by me, Drullkus!
         const bigCreditsStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `81px`,
-            color: '#FFF',
-            align: 'center'
+            ...tetromaniaTextStyle,
+            fontSize: '81px',
         };
         this.authorText = this.add.text(centerX, gameHeight * 0.45, 'produced by\nDRULLKUS', bigCreditsStyle);
         this.authorText.setOrigin(0.5);
@@ -62,10 +58,8 @@ class Credits extends Phaser.Scene {
         });
 
         const externalCreditsStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `25px`,
-            color: '#FFF',
-            align: 'center'
+            ...tetromaniaTextStyle,
+            fontSize: '25px',
         };
 
         // Font credits
@@ -81,10 +75,8 @@ class Credits extends Phaser.Scene {
 
     createMenuButton() {
         const buttonStyle = {
-            fontFamily: 'aesymatt',
-            fontSize: `49px`,
-            color: '#FFF',
-            align: 'center',
+            ...tetromaniaTextStyle,
+            fontSize: '49px',
             backgroundColor: buttonColor,
             padding: {
                 bottom: 4,

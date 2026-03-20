@@ -29,6 +29,12 @@ const buttonColorOver = '#8d8d8d';
 const highscoreLifetimeName = 'LifetimeHighScore';
 const highscoreLifetimeDefault = 150;
 
+const tetromaniaTextStyle = {
+    fontFamily: 'aesymatt',
+    color: '#FFF',
+    align: 'center',
+}
+
 const urlQueryParams = new URLSearchParams(window.location.search);
 
 /** "Lerp smoothing is broken" https://www.youtube.com/watch?v=LSNQuFEDOyQ&t=2982s */
