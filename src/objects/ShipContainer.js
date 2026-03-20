@@ -25,6 +25,11 @@ class ShipContainer extends Phaser.GameObjects.Container {
         this.x = x;
         this.y = y;
         this.reorient();
+
+        // Debug particle visualizers
+        this.hudShowGridUnits = false;
+        this.hudShowPieceCoords = false;
+        this.showGridUnitsOnShip = false;
     }
 
     shipConnectedWith(tetromino) {
@@ -148,7 +153,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
             this.scene.matter.world.add(gameObject.body);
 
-            if (skipRebuild) {
+            if (!skipRebuild) {
                 this.rebuildBody();
             }
 
@@ -254,7 +259,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
     }
 
     rebuildGrid() {
-        if (this.shipParts.length > 1) {
+        if (this.shipParts.length > 0) {
             this.shipParts = this.shipParts.map(part => {
                 const unitReplacement = getContainerGridCoords(this, part.object);
                 return {
