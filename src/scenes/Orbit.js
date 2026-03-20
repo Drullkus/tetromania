@@ -13,7 +13,7 @@ class Orbit extends Phaser.Scene {
                 y: -this.boundsExtraSpace
             },
             max: {
-                x: gameWidth +  this.boundsExtraSpace,
+                x: gameWidth + this.boundsExtraSpace,
                 y: gameHeight + this.boundsExtraSpace
             }
         };
@@ -255,7 +255,6 @@ class Orbit extends Phaser.Scene {
     }
 
     createGameOverLayer() {
-        console.log(this.sys.config);
         this.scene.launch('gameOverScene', { parentScene: this.sys.config, musicTrack: this.musicTrack });
         this.gameOverLayer = this.game.scene.getScene('gameOverScene');
     }
