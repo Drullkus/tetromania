@@ -34,7 +34,6 @@ class MainMenu extends Phaser.Scene {
         this.titleText = this.add.text(centerX, gameHeight * 0.4, 'TETROMANIA', titleStyle).setOrigin(0.5);
         this.titleText.setOrigin(0.5);
         this.titleText.setStroke('#000', 10);
-        this.titleText.setInteractive();
     }
 
     createPlayButton(defaultButtonStyle) {

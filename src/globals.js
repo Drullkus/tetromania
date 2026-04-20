@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const radiansFull = Math.PI * 2.0;
 const radiansHalf = Math.PI;
