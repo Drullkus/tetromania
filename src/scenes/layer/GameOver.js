@@ -1,6 +1,8 @@
+import * as globals from '@src/globals.js';
+
 // http://127.0.0.1:5500/?mode=gameOverScene
 // https://drullkus.github.io/tetromania/?mode=gameOverScene
-class GameOver extends Phaser.Scene {
+export class GameOver extends Phaser.Scene {
     constructor() {
         super('gameOverScene');
     }
@@ -8,9 +10,8 @@ class GameOver extends Phaser.Scene {
     create({ parentSceneName, musicTrack }) {
         
         const buttonTextStyle = {
-            ...tetromaniaTextStyle,
+            ...globals.tetromaniaTextStyle,
             fontSize: '49px',
-            backgroundColor: buttonColor,
             padding: {
                 bottom: 4,
                 left: 5,
@@ -24,24 +25,22 @@ class GameOver extends Phaser.Scene {
 
         this.parentSceneName = parentSceneName ?? 'orbitScene';
 
-        if (!this.musicTrack) {
-            this.musicTrack = musicTrack;
-        }
+        this.musicTrack = musicTrack;
     }
 
     revealGameOver() {
         const gameOverStyle = {
-            ...tetromaniaTextStyle,
+            ...globals.tetromaniaTextStyle,
             fontSize: '81px',
         };
 
-        this.gameOverText = this.add.text(centerX, gameHeight * 0.25, 'GAME OVER', gameOverStyle);
+        this.gameOverText = this.add.text(...globals.canvasPos(0.5, 0.25), 'GAME OVER', gameOverStyle);
         this.gameOverText.setOrigin(0.5);
         this.gameOverText.setStroke('#000', 10);
     }
 
     revealStartOver(buttonTextStyle) {
-        this.planetText = this.createButton('REINCARNATE', centerX, gameHeight - 200, buttonTextStyle, this.planetClicked);
+        this.planetText = this.createButton('REINCARNATE', globals.canvasX(0.5), globals.canvasY(1.0) - 200, buttonTextStyle, this.planetClicked);
     }
 
     planetClicked() {
@@ -58,7 +57,7 @@ class GameOver extends Phaser.Scene {
     }
 
     revealMenu(buttonTextStyle) {
-        this.menuText = this.createButton('RETURN TO MENU', centerX, gameHeight - 100, buttonTextStyle, this.mainMenuClicked);
+        this.menuText = this.createButton('RETURN TO MENU', globals.canvasX(0.5), globals.canvasY(1.0) - 100, buttonTextStyle, this.mainMenuClicked);
     }
 
     mainMenuClicked() {

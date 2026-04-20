@@ -1,6 +1,8 @@
+import * as globals from '@src/globals.js';
+
 // http://127.0.0.1:5500/?mode=gameTimeScene
 // https://drullkus.github.io/tetromania/?mode=gameTimeScene
-class GameTime extends Phaser.Scene {
+export class GameTime extends Phaser.Scene {
     constructor() {
         super('gameTimeScene');
     }
@@ -8,7 +10,7 @@ class GameTime extends Phaser.Scene {
     create() {
         this.stopTimer = false;
         this.playTime = 0; // Measured in tenths of seconds  (decisecond)
-        this.previousHighscoreTime = getTimeHighScore();
+        this.previousHighscoreTime = globals.getTimeHighScore();
         this.hasNewHighscore = false;
         this.highscoreTextObj = null;
 
@@ -17,34 +19,34 @@ class GameTime extends Phaser.Scene {
 
     createTimeText() {
         const timerStyle = {
-            ...tetromaniaTextStyle,
+            ...globals.tetromaniaTextStyle,
             fontSize: '60px',
         };
         
-        this.timeTextObj = this.add.text(gameWidth - 15, 60, '0', timerStyle);
+        this.timeTextObj = this.add.text(globals.canvasX(1.0) - 15, 60, '0', timerStyle);
         this.timeTextObj.setOrigin(1, 0);
         this.timeTextObj.setStroke('#000', 10);
 
         const highScoreStyle = {
-            ...tetromaniaTextStyle,
+            ...globals.tetromaniaTextStyle,
             fontSize: '30px',
         };
         
-        this.highscoreTimeTextObj = this.add.text(gameWidth - 15, 20, `high score ${(this.previousHighscoreTime * 0.1).toFixed(1)}`, highScoreStyle);
+        this.highscoreTimeTextObj = this.add.text(globals.canvasX(1.0) - 15, 20, `high score ${(this.previousHighscoreTime * 0.1).toFixed(1)}`, highScoreStyle);
         this.highscoreTimeTextObj.setOrigin(1.0, 0.0);
         this.highscoreTimeTextObj.setStroke('#000', 10);
     }
 
     createTimeContext() {
         const conTextStyle = {
-            ...tetromaniaTextStyle,
+            ...globals.tetromaniaTextStyle,
             fontSize: '49px',
             color: '#AAA',
         };
-        this.conTextTopObj = this.add.text(centerX, gameHeight * 0.45, 'survived for', conTextStyle);
+        this.conTextTopObj = this.add.text(...globals.canvasPos(0.5, 0.45), 'survived for', conTextStyle);
         this.conTextTopObj.setOrigin(0.5);
         this.conTextTopObj.setStroke('#000', 10);
-        this.conTextBottomObj = this.add.text(centerX, gameHeight * 0.6, 'seconds', conTextStyle);
+        this.conTextBottomObj = this.add.text(...globals.canvasPos(0.5, 0.6), 'seconds', conTextStyle);
         this.conTextBottomObj.setOrigin(0.5);
         this.conTextBottomObj.setStroke('#000', 10);
 
@@ -61,10 +63,10 @@ class GameTime extends Phaser.Scene {
 
     createHighScoreText() {
         const highscoreStyle = {
-            ...tetromaniaTextStyle,
+            ...globals.tetromaniaTextStyle,
             fontSize: '60px',
         };
-        this.highscoreTextObj = this.add.text(centerX, gameHeight * 0.36, 'new high score!', highscoreStyle);
+        this.highscoreTextObj = this.add.text(...globals.canvasPos(0.5, 0.36), 'new high score!', highscoreStyle);
         this.highscoreTextObj.setOrigin(0.5);
         this.highscoreTextObj.setStroke('#000', 10);
     }
@@ -76,7 +78,7 @@ class GameTime extends Phaser.Scene {
         }
 
         if (this.highscoreTextObj) {
-            const colorHex = huetoHexCode(this.time.now * 0.00067);
+            const colorHex = globals.huetoHexCode(this.time.now * 0.00067);
             this.highscoreTextObj.setColor(colorHex);
         }
     }
@@ -91,7 +93,7 @@ class GameTime extends Phaser.Scene {
         this.centerText();
         if (this.playTime > this.previousHighscoreTime) {
             this.hasNewHighscore = true;
-            setTimeHighScore(this.playTime);
+            globals.setTimeHighScore(this.playTime);
         }
     }
 
@@ -100,8 +102,8 @@ class GameTime extends Phaser.Scene {
             targets: this.timeTextObj,
 
             // Move to center of screen
-            x: centerX,
-            y: gameHeight * 0.53,
+            x: globals.canvasX(0.5),
+            y: globals.canvasY(0.53),
             // Also shift object origin
             originX: 0.5,
             originY: 0.5,

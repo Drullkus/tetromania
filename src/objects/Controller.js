@@ -1,4 +1,6 @@
-class Controller extends Phaser.GameObjects.Sprite {
+import * as globals from '@src/globals.js';
+
+export class Controller extends Phaser.GameObjects.Sprite {
     constructor(scene, focus, texture, frame, cursorRange) {
         super(scene, focus.x, focus.y, texture, frame);
 
@@ -64,13 +66,13 @@ class Controller extends Phaser.GameObjects.Sprite {
 
     update(deltaMillis) {
         if (this.isBeingHeld()) {
-            const expDecayX = exponentialDecay(this.x, this.targetX, this.pullFactor, deltaMillis);
-            const expDecayY = exponentialDecay(this.y, this.targetY, this.pullFactor, deltaMillis);
+            const expDecayX = globals.exponentialDecay(this.x, this.targetX, this.pullFactor, deltaMillis);
+            const expDecayY = globals.exponentialDecay(this.y, this.targetY, this.pullFactor, deltaMillis);
             this.setPosition(expDecayX, expDecayY);
         } else {
             const decayFactor = 0.005;
-            const expDecayX = exponentialDecay(this.x, this.affixX, decayFactor, deltaMillis);
-            const expDecayY = exponentialDecay(this.y, this.affixY, decayFactor, deltaMillis);
+            const expDecayX = globals.exponentialDecay(this.x, this.affixX, decayFactor, deltaMillis);
+            const expDecayY = globals.exponentialDecay(this.y, this.affixY, decayFactor, deltaMillis);
             this.setPosition(expDecayX, expDecayY);
         }
 

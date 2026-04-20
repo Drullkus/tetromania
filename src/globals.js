@@ -1,11 +1,14 @@
+import { Matrix2 } from '@src/math/Matrix2.js';
+import { game } from './main.js'
+
 'use strict';
 
 const radiansFull = Math.PI * 2.0;
 const radiansHalf = Math.PI;
-const radiansQuarter = Math.PI / 2.0; // 1/4 of a circle
-const radiansEigth = Math.PI / 4.0;
-const radiansSixteenth = Math.PI / 8.0;
-const radiansThirtySecond = Math.PI / 16.0; // 1/32 of a circle
+const radiansQuarter = Math.PI * 0.5; // 1/4 of a circle
+const radiansEigth = Math.PI * 0.25;
+const radiansSixteenth = Math.PI * 0.125;
+const radiansThirtySecond = Math.PI * 0.0625; // 1/32 of a circle
 
 const degreesFull = 360.0
 const degreesHalf = 180.0;
@@ -14,31 +17,29 @@ const degreesEigth = 45.0;
 const degreesSixteenth = 22.5;
 const degreesThirtySecond = 11.25;
 
-const radiansToDegrees = 180 / Math.PI;
-const degreesToRadians = Math.PI / 180;
+export const radiansToDegrees = 180 / Math.PI;
+export const degreesToRadians = Math.PI / 180;
 
-const shapeNames = [ 'i', 'j', 'l', 'o', 's', 't', 'z' ];
-const tetrominoNames = shapeNames.map(name => `tetromino-${name}`);
+export const controlFocusYLerp = 0.85;
+
+export const shapeNames = [ 'i', 'j', 'l', 'o', 's', 't', 'z' ];
+export const tetrominoNames = shapeNames.map(name => `tetromino-${name}`);
 const techNames = [ 'thruster' ];
-const partNames = [ ...tetrominoNames, ...techNames ];
+export const partNames = [ ...tetrominoNames, ...techNames ];
 
-const tetrominoUnitSize = 32;
-const buttonColor = '#2d2d2d';
-const buttonColorOver = '#8d8d8d';
+export const tetrominoUnitSize = 32;
 
 const highscoreLifetimeName = 'LifetimeHighScore';
 const highscoreLifetimeDefault = 150;
 
-const tetromaniaTextStyle = {
+export const tetromaniaTextStyle = {
     fontFamily: 'aesymatt',
     color: '#FFF',
     align: 'center',
 }
 
-const urlQueryParams = new URLSearchParams(window.location.search);
-
 /** "Lerp smoothing is broken" https://www.youtube.com/watch?v=LSNQuFEDOyQ&t=2982s */
-function exponentialDecay(a, target, decay, dt) {
+export function exponentialDecay(a, target, decay, dt) {
     return target + (a - target) * Math.exp(-decay * dt);
 }
 
@@ -48,7 +49,7 @@ function mod(a, b) {
 }
 
 /** Gets cardinal angle from object, returning 0, 90, 180, 270 */
-function snapCardinalAngleDegrees(degrees) {
+export function snapCardinalAngleDegrees(degrees) {
     return mod(Math.round(degrees / degreesQuarter) * degreesQuarter, degreesFull);
 }
 
@@ -58,21 +59,21 @@ function snapCardinalAngleRadians(radians) {
 }
 
 /** Determines if the tetromino is elible to connect with ship */
-function angleAcceptable(body) {
+export function angleAcceptable(body) {
     if (!body) return 0;
     const radiansInsideQuarter = mod(body.angle + radiansEigth, radiansQuarter) - radiansEigth;
     return Math.abs(radiansInsideQuarter) <= radiansThirtySecond;
 }
 
 /** Remove element from array: https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript */
-function removeArrayElement(list, element) {
+export function removeArrayElement(list, element) {
     const index = list.indexOf(element);
     if (index >= 0) {
         return list.splice(index, 1)[0];
     }
 }
 
-function removeIf(list, predicate) {
+export function removeIf(list, predicate) {
     const index = list.findIndex(predicate);
     if (index >= 0) {
         return list.splice(index, 1)[0];
@@ -83,7 +84,7 @@ function removeIf(list, predicate) {
  * Gets scene-space XY position for given UV coordinate in given sprite's texture space.
  * Useful for calculating relative positioning between rotatable bodies.
  */
-function getSpriteXYFromLerpUV(gameObject, lerpU = 0, lerpV = 0) {
+export function getSpriteXYFromLerpUV(gameObject, lerpU = 0, lerpV = 0) {
     const center = new Phaser.Math.Vector2(
         gameObject.body.centerOfMass.x,
         gameObject.body.centerOfMass.y
@@ -116,7 +117,7 @@ function getSpriteXYFromLerpUV(gameObject, lerpU = 0, lerpV = 0) {
     );
 }
 
-function getCoordinatesOfMassCenter(gameObject) {
+export function getCoordinatesOfMassCenter(gameObject) {
     return getSpriteXYFromLerpUV(
         gameObject,
         gameObject.body.centerOffset.x,
@@ -128,7 +129,7 @@ function getCoordinatesOfMassCenter(gameObject) {
  * Extract units of a tetromino body. Registers a point for every center of 32-wide units in the body.
  * Returns a list of grid-cell center positions, all located in scene space.
  * */
-function getBlockLattice(tetromino, gridX = 0, gridY = 0) {
+export function getBlockLattice(tetromino, gridX = 0, gridY = 0) {
     // Get angle
     const angle = mod(tetromino.angle + degreesEigth, degreesQuarter) - degreesEigth;
     const switchAxis = Math.round(snapCardinalAngleDegrees(tetromino.angle) / 90) % 2 == 1;
@@ -169,7 +170,7 @@ function getBlockLattice(tetromino, gridX = 0, gridY = 0) {
 /**
  * Grid placement information to snap tetromino into
  */
-function getContainerGridCoords(shipContainer, tetromino) {
+export function getContainerGridCoords(shipContainer, tetromino) {
 
     const degreesSnapped = snapCardinalAngleDegrees(tetromino.angle);
 
@@ -185,7 +186,7 @@ function getContainerGridCoords(shipContainer, tetromino) {
 }
 
 /** Snaps tetromino to the ship-container grid */
-function snapToContainerGrid(unitPlacement, scenePosGridOrigin, tetromino) {
+export function snapToContainerGrid(unitPlacement, scenePosGridOrigin, tetromino) {
     tetromino.angle = unitPlacement.rotationDegrees;
     // copy grid placement data to use as vector in positioning the tetromino
     const offset = new Phaser.Math.Vector2(unitPlacement).scale(tetrominoUnitSize);
@@ -224,7 +225,7 @@ function snapToContainerGrid(unitPlacement, scenePosGridOrigin, tetromino) {
     tetromino.body.positionPrev.y = offset.y;
 }
 
-function roundVector(vector2) {
+export function roundVector(vector2) {
     vector2.x = Math.round(vector2.x);
     vector2.y = Math.round(vector2.y);
 }
@@ -257,19 +258,19 @@ function randomRangeAroundCenter(minRadius, maxRadius, center) {
  * 
  * Copied from https://stackoverflow.com/a/39776893
  */
-function inverseLerp(val, min, max) {
+export function inverseLerp(val, min, max) {
     return (val - min) / (max - min);
 }
 
-function getTimeHighScore() {
+export function getTimeHighScore() {
     return localStorage.getItem(highscoreLifetimeName) ?? highscoreLifetimeDefault;
 }
 
-function setTimeHighScore(score) {
+export function setTimeHighScore(score) {
     return localStorage.setItem(highscoreLifetimeName, score);
 }
 
-function huetoHexCode(h) {
+export function huetoHexCode(h) {
   const colorHex = huetoRGBInteger(h).toString(16).padStart(6, '0');
   return `#${colorHex}`;
 }
@@ -291,4 +292,20 @@ function huetoRGBInteger(h) {
   }
 
   return (Math.round(red * 255) << 16) | (Math.round(green * 255) << 8) | (Math.round(blue * 255));
+}
+
+export function canvasX(fractX) {
+    return game.config.width * (fractX ?? 1.0);
+}
+
+export function canvasY(fractY) {
+    return game.config.height * (fractY ?? 1.0);
+}
+
+export function canvasPos(fractX, fractY) {
+    if (fractY == null) {
+        fractY = fractX;
+    }
+
+    return [canvasX(fractX), canvasY(fractY)]
 }

@@ -1,4 +1,6 @@
-class Initialize extends Phaser.Scene {
+import * as globals from '@src/globals.js';
+
+export class Initialize extends Phaser.Scene {
     constructor(queryMode) {
         super('initializeScene');
         this.queryMode = queryMode ?? 'mainMenuScene';
@@ -11,7 +13,7 @@ class Initialize extends Phaser.Scene {
 
         this.load.image('penrose-triangle', 'penrose_triangle_icon.png');
 
-        tetrominoNames.forEach(tetrominoName => {
+        globals.tetrominoNames.forEach(tetrominoName => {
             this.load.image(tetrominoName, `objects/${tetrominoName}.png`);
         });
 
@@ -54,7 +56,7 @@ class Initialize extends Phaser.Scene {
 
         const partCentroids = {};
 
-        partNames.forEach(tetrominoName => {
+        globals.partNames.forEach(tetrominoName => {
             // Unknown when and where centerOfMass is set within lifecycle of this.matter.add.sprite
             const tetromino = this.matter.add.sprite(0, 0, tetrominoName, 0, {
                 shape: collisions[tetrominoName]

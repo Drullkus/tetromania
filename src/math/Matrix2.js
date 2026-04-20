@@ -1,5 +1,5 @@
 // Phaser has no Matrix2 class so this will substitute for its absence
-class Matrix2 {
+export class Matrix2 {
     static rotationMatrix(angleRadians) {
         const cos = Math.cos(angleRadians);
         const sin = Math.sin(angleRadians);

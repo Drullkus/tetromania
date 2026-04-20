@@ -1,6 +1,8 @@
+import * as globals from '@src/globals.js';
+
 // http://127.0.0.1:5500/?mode=creditsScene
 // https://drullkus.github.io/tetromania/?mode=creditsScene
-class Credits extends Phaser.Scene {
+export class Credits extends Phaser.Scene {
     constructor() {
         super('creditsScene');
     }
@@ -12,7 +14,7 @@ class Credits extends Phaser.Scene {
     }
 
     createLogo() {
-        const logo = this.add.image(gameWidth * 0.4, gameHeight * 0.4 , 'penrose-triangle');
+        const logo = this.add.image(...globals.canvasPos(0.4), 'penrose-triangle');
         logo.setOrigin(0.425, 0.5);
         logo.setScale(3);
         logo.setTint(0xFF_AF_00);
@@ -29,20 +31,20 @@ class Credits extends Phaser.Scene {
     createCreditsText() {
         // What did the developer make?
         const smallCreditsStyle = {
-            ...tetromaniaTextStyle,
+            ...globals.tetromaniaTextStyle,
             fontSize: '49px',
         };
 
-        this.infoText = this.add.text(centerX, gameHeight * 0.2, 'Code\nArt\nDesign\nSound Effects', smallCreditsStyle);
+        this.infoText = this.add.text(...globals.canvasPos(0.5, 0.2), 'Code\nArt\nDesign\nSound Effects', smallCreditsStyle);
         this.infoText.setStroke('#000', 8);
         this.infoText.setOrigin(0.5);
 
         // by me, Drullkus!
         const bigCreditsStyle = {
-            ...tetromaniaTextStyle,
+            ...globals.tetromaniaTextStyle,
             fontSize: '81px',
         };
-        this.authorText = this.add.text(centerX, gameHeight * 0.45, 'produced by\nDRULLKUS', bigCreditsStyle);
+        this.authorText = this.add.text(...globals.canvasPos(0.5, 0.45), 'produced by\nDRULLKUS', bigCreditsStyle);
         this.authorText.setOrigin(0.5);
         this.authorText.setStroke('#000', 8);
 
@@ -58,33 +60,32 @@ class Credits extends Phaser.Scene {
         });
 
         const externalCreditsStyle = {
-            ...tetromaniaTextStyle,
+            ...globals.tetromaniaTextStyle,
             fontSize: '25px',
         };
 
         // Font credits
-        this.musicCreditText = this.add.text(centerX, gameHeight * 0.65, '"Aenigma Systematic"\nFont by Brian Kent (1001freefonts.com)', externalCreditsStyle);
+        this.musicCreditText = this.add.text(...globals.canvasPos(0.5, 0.65), '"Aenigma Systematic"\nFont by Brian Kent (1001freefonts.com)', externalCreditsStyle);
         this.musicCreditText.setStroke('#000', 8);
         this.musicCreditText.setOrigin(0.5);
 
         // Music credits
-        this.musicCreditText = this.add.text(centerX, gameHeight * 0.75, '"Retro Arcade Game Music"\nMusic by MFCC (pixabay.com)', externalCreditsStyle);
+        this.musicCreditText = this.add.text(...globals.canvasPos(0.5, 0.75), '"Retro Arcade Game Music"\nMusic by MFCC (pixabay.com)', externalCreditsStyle);
         this.musicCreditText.setStroke('#000', 8);
         this.musicCreditText.setOrigin(0.5);
     }
 
     createMenuButton() {
         const buttonStyle = {
-            ...tetromaniaTextStyle,
+            ...globals.tetromaniaTextStyle,
             fontSize: '49px',
-            backgroundColor: buttonColor,
             padding: {
                 bottom: 4,
                 left: 10,
                 right: 14
             }
         };
-        this.menuText = this.createButton('RETURN TO MENU', centerX, gameHeight - 100, buttonStyle, this.mainMenuClicked);
+        this.menuText = this.createButton('RETURN TO MENU', globals.canvasX(0.5), globals.canvasY(1.0) - 100, buttonStyle, this.mainMenuClicked);
     }
 
     mainMenuClicked() {

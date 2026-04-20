@@ -1,24 +1,16 @@
-/*
-Name: Drullkus
+import { Initialize } from "./scenes/Initialize.js";
+import { MainMenu } from "./scenes/MainMenu.js";
+import { Credits } from "./scenes/Credits.js";
+import { PlanetSide } from "./scenes/PlanetSide.js";
+import { SpaceBackground } from "./scenes/layer/SpaceBackground.js";
+import { Orbit } from "./scenes/Orbit.js";
+import { NavInterface } from "./scenes/layer/NavInterface.js";
+import { GameTime } from "./scenes/layer/GameTime.js";
+import { GameOver } from "./scenes/layer/GameOver.js";
 
-Game Title: Tetromania
+'use strict';
 
-Estimate time spent: 30h
-
-Citations:
-    aenigma-systematic (aesymatt.ttf) Free Non-commercial https://www.1001freefonts.com/aenigma-systematic.font
-    Expoential Decay function "Lerp smoothing is broken" https://www.youtube.com/watch?v=LSNQuFEDOyQ&t=2982s
-    Favicon https://www.w3schools.com/html/html_favicon.asp
-    huetoRGBInteger https://stackoverflow.com/a/17243070
-    Inverse Lerp https://stackoverflow.com/a/39776893
-    jsconfig https://code.visualstudio.com/docs/languages/jsconfig
-    PhysicsEditor tutorial https://www.codeandweb.com/physicseditor/tutorials/how-to-create-physics-shapes-for-phaser-3-and-matterjs
-    Phaser Matter example (with permission from Nick) https://github.com/Nick-Marigo/Matter-Physics/tree/main
-    "Retro Arcade Game Music" (no-commercial) https://pixabay.com/music/upbeat-retro-arcade-game-music-297305/
-    Tetrominos https://en.wikipedia.org/wiki/Tetromino
-
-Additional notes for grader written inside README.md in root directory
-*/
+const urlQueryParams = new URLSearchParams(window.location.search);
 
 const config = {
     type: Phaser.WEBGL,
@@ -37,14 +29,11 @@ const config = {
     }
 };
 
-const game = new Phaser.Game(config);
+export const game = new Phaser.Game(config);
 
-const { height: gameHeight, width: gameWidth } = game.config;
-const centerX = gameWidth * 0.5;
-const centerY = gameHeight * 0.5;
-
-const controlFocusX = centerX;
-const controlFocusY = gameHeight * 0.85;
-
-// For easy access via terminal. Access scenes without typing `game.scene.keys.` every time
+// Allow all scenes to be accessible via browser console
 game.events.once('ready', () => Object.assign(window, game.scene.keys));
+
+// Add the phaser game object to window as well, so that it can be accessed via browser console,
+//  despite js moding for modules instead of globals
+window.game = game;

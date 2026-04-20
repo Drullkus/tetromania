@@ -9,28 +9,20 @@
         MIME types: https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types/Common_types
         -->
         <link rel="icon" type="image/png" href="./assets/penrose_triangle_icon.png">
-        <script src="./src/globals.js"></script>
-        <script src="./lib/datgui.js"></script>
-        <script src="./src/math/Matrix2.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.90.0/phaser.js"></script><!--Use remote phaser.js to go under git's default upload limit. Link from https://phaser.io/download/stable -->
-        <script src="./src/extensions.js"></script>
 
-        <script src="./src/objects/Controller.js"></script>
-        <script src="./src/objects/ShipContainer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.90.0/phaser.js"></script>
+        <script type="importmap">
+        {
+            "imports": {
+                "@lib/": "/lib/",
+                "@src/": "/src/"
+            }
+        }
+        </script>
+        <script type = "module" src="./src/extensions.js"></script>
+        <script type = "module" src="./src/main.js"></script>
 
-        <script src="./src/scenes/layer/GameTime.js"></script>
-        <script src="./src/scenes/layer/GameOver.js"></script>
-        <script src="./src/scenes/layer/NavInterface.js"></script>
-        <script src="./src/scenes/layer/SpaceBackground.js"></script>
-
-        <script src="./src/scenes/Credits.js"></script>
-        <script src="./src/scenes/Orbit.js"></script>
-        <script src="./src/scenes/PlanetSide.js"></script>
-        <script src="./src/scenes/Initialize.js"></script>
-        <script src="./src/scenes/MainMenu.js"></script>
-
-        <script src="./src/main.js"></script>
-        <style>
+<style>
             body {
                 width: 100%;
                 display: inline-flex;

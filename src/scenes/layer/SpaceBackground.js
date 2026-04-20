@@ -1,6 +1,8 @@
+import * as globals from '@src/globals.js';
+
 // http://127.0.0.1:5500/?mode=spaceBackgroundScene
 // https://drullkus.github.io/tetromania/?mode=spaceBackgroundScene
-class SpaceBackground extends Phaser.Scene {
+export class SpaceBackground extends Phaser.Scene {
     constructor() {
         super('spaceBackgroundScene');
         this.imageLayers = [];
@@ -21,8 +23,8 @@ class SpaceBackground extends Phaser.Scene {
         const cosmosBig = this.addLayer('cosmos', 0.1);
         cosmosBig.setAlpha(0.2);
         cosmosBig.setScale(1.1);
-        cosmosBig.tilePositionX += centerX;
-        cosmosBig.tilePositionY += centerX;
+        cosmosBig.tilePositionX += globals.canvasX(0.5);
+        cosmosBig.tilePositionY += globals.canvasX(0.5);
 
         // 3. distant stars
         const distantStars = this.addLayer('stars', 0.075);
@@ -49,7 +51,7 @@ class SpaceBackground extends Phaser.Scene {
 
     addLayer(imageName, pixelsPerSecond) {
         // blending modes: https://docs.phaser.io/phaser/blend-mode
-        const layer = this.add.tileSprite(0, 0, gameWidth, gameHeight, imageName).setOrigin(0, 0).setBlendMode(Phaser.BlendModes.SCREEN);
+        const layer = this.add.tileSprite(0, 0, ...globals.canvasPos(1.0), imageName).setOrigin(0, 0).setBlendMode(Phaser.BlendModes.SCREEN);
         this.imageLayers.push({pixelsPerSecond, layer});
         return layer; // For any additional configuration
     }

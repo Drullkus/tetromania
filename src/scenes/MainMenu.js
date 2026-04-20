@@ -1,4 +1,6 @@
-class MainMenu extends Phaser.Scene {
+import * as globals from '@src/globals.js';
+
+export class MainMenu extends Phaser.Scene {
     constructor() {
         super('mainMenuScene');
     }
@@ -11,8 +13,7 @@ class MainMenu extends Phaser.Scene {
         }
 
         const buttonStyle = {
-            ...tetromaniaTextStyle,
-            backgroundColor: buttonColor,
+            ...globals.tetromaniaTextStyle,
             padding: {
                 bottom: 4,
                 left: 10,
@@ -27,11 +28,11 @@ class MainMenu extends Phaser.Scene {
 
     createTitle() {
         const titleStyle = {
-            ...tetromaniaTextStyle,
+            ...globals.tetromaniaTextStyle,
             fontSize: '100px',
         };
 
-        this.titleText = this.add.text(centerX, gameHeight * 0.4, 'TETROMANIA', titleStyle).setOrigin(0.5);
+        this.titleText = this.add.text(...globals.canvasPos(0.5, 0.4), 'TETROMANIA', titleStyle).setOrigin(0.5);
         this.titleText.setOrigin(0.5);
         this.titleText.setStroke('#000', 10);
     }
@@ -42,7 +43,7 @@ class MainMenu extends Phaser.Scene {
             fontSize: '81px'
         };
 
-        this.createButton('PLAY', centerX, gameHeight * 0.6, buttonStyle, this.playButtonPressed);
+        this.createButton('PLAY', ...globals.canvasPos(0.5, 0.6), buttonStyle, this.playButtonPressed);
     }
 
     createCreditsButton(defaultButtonStyle) {
@@ -51,7 +52,7 @@ class MainMenu extends Phaser.Scene {
             fontSize: '49px'
         };
 
-        this.createButton('CREDITS', centerX, gameHeight * 0.9, buttonStyle, this.creditsButtonPressed);
+        this.createButton('CREDITS', ...globals.canvasPos(0.5, 0.9), buttonStyle, this.creditsButtonPressed);
     }
 
     playButtonPressed() {

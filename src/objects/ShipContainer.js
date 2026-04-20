@@ -1,4 +1,6 @@
-class ShipContainer extends Phaser.GameObjects.Container {
+import * as globals from '@src/globals.js';
+
+export class ShipContainer extends Phaser.GameObjects.Container {
     constructor(scene, x, y, thrusterShape) {
         x = Math.round(x);
         y = Math.round(y);
@@ -33,7 +35,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
     }
 
     shipConnectedWith(tetromino) {
-        if (tetromino.broken == false && angleAcceptable(tetromino.body) && !this.isAttached(tetromino)) {
+        if (tetromino.broken == false && globals.angleAcceptable(tetromino.body) && !this.isAttached(tetromino)) {
             return this.attachPart(tetromino);
         }
 
@@ -61,7 +63,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         this.reorient();
 
-        const unitPlacement = getContainerGridCoords(this, gameObject);
+        const unitPlacement = globals.getContainerGridCoords(this, gameObject);
 
         if (!this.canAttach(gameObject, unitPlacement)) {
             return false;
@@ -72,7 +74,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
         gameObject.body.parts.forEach(b => b.originalBeforeShip = gameObject);
 
         gameObject.onShip = true;
-        snapToContainerGrid(unitPlacement, new Phaser.Math.Vector2(this).subtract(this.body.centerOffset), gameObject);
+        globals.snapToContainerGrid(unitPlacement, new Phaser.Math.Vector2(this).subtract(this.body.centerOffset), gameObject);
         gameObject.body.velocity = { x: 0, y: 0 };
 
         const shipPartData = {
@@ -117,7 +119,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
     }
 
     reorient() {
-        roundVector(this);
+        globals.roundVector(this);
         this.angle = 0;
         this.body.position.x = this.x;
         this.body.position.y = this.y;
@@ -133,7 +135,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
         removed.tint = 0x55_44_33; // The piece is toasted
         // TODO switch to destroyed sprite
 
-        getBlockLattice(removed).forEach(({ x, y }) => {
+        globals.getBlockLattice(removed).forEach(({ x, y }) => {
             this.explosionEmitter.emitParticleAt(x, y, 1);
         });
 
@@ -141,7 +143,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
     }
 
     removePart(gameObject, skipRebuild) {
-        const extractedPart = removeIf(this.shipParts, part => part.object === gameObject);
+        const extractedPart = globals.removeIf(this.shipParts, part => part.object === gameObject);
         if (extractedPart && extractedPart.object) {
             const extractedObject = extractedPart.object;
 
@@ -182,11 +184,11 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         this.shipParts.forEach(({ object, tileX, tileY, rotationDegrees }) => {
             // Important or else the sprites will not rotate
-            const rotationRadians = degreesToRadians * (this.angle + rotationDegrees);
+            const rotationRadians = globals.degreesToRadians * (this.angle + rotationDegrees);
             object.body.angle = rotationRadians;
 
             if (this.showGridUnitsOnShip) {
-                getBlockLattice(object).forEach(({ x, y, tileX: gridX, tileY: gridY }) => {
+                globals.getBlockLattice(object).forEach(({ x, y, tileX: gridX, tileY: gridY }) => {
                     const shift = 8;
                     this.emitters[mod(gridX + tileX, 7)].emitParticleAt(x - shift, y, 1);
                     this.emitters[mod(gridY + tileY, 7)].emitParticleAt(x + shift, y, 1);
@@ -237,7 +239,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
         // FIXME This will scan entire grid inside ship's boundaries against the tetromino grid
         //  Future optimization will have to minimize the search-space to the point of collision
         const shipLattice = this.shipGrid.map(p => ({ x: p.tileX, y: p.tileY }));
-        const partLattice = getBlockLattice(gameObject, unitPlacement.tileX, unitPlacement.tileY).map(p => ({ x: p.tileX + unitPlacement.x, y: p.tileY + unitPlacement.y }));
+        const partLattice = globals.getBlockLattice(gameObject, unitPlacement.tileX, unitPlacement.tileY).map(p => ({ x: p.tileX + unitPlacement.x, y: p.tileY + unitPlacement.y }));
 
         const hasOverlap = shipLattice.some(gridPoint => partLattice.some(unitPoint => gridPoint.x == unitPoint.x && gridPoint.y == unitPoint.y));
 
@@ -261,7 +263,7 @@ class ShipContainer extends Phaser.GameObjects.Container {
     rebuildGrid() {
         if (this.shipParts.length > 0) {
             this.shipParts = this.shipParts.map(part => {
-                const unitReplacement = getContainerGridCoords(this, part.object);
+                const unitReplacement = globals.getContainerGridCoords(this, part.object);
                 return {
                     object: part.object,
                     tileX: unitReplacement.x,
@@ -273,10 +275,10 @@ class ShipContainer extends Phaser.GameObjects.Container {
 
         this.shipGrid = this.shipParts.flatMap(({ object, tileX, tileY, rotationDegrees }) => {
             // Important or else the sprites will not rotate
-            const rotationRadians = degreesToRadians * (this.angle + rotationDegrees);
+            const rotationRadians = globals.degreesToRadians * (this.angle + rotationDegrees);
             object.body.angle = rotationRadians;
 
-            return getBlockLattice(object).map(({ tileX: gridX, tileY: gridY }) => ({
+            return globals.getBlockLattice(object).map(({ tileX: gridX, tileY: gridY }) => ({
                 tileX: gridX + tileX, tileY: gridY + tileY
             }));
         });

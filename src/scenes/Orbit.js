@@ -1,20 +1,23 @@
+import * as globals from '@src/globals.js';
+import { ShipContainer } from '@src/objects/ShipContainer.js';
+
 // http://127.0.0.1:5500/?mode=orbitScene
 // https://drullkus.github.io/tetromania/?mode=orbitScene
-class Orbit extends Phaser.Scene {
+export class Orbit extends Phaser.Scene {
     constructor() {
         super('orbitScene');
     }
 
     create({ musicTrack }) {
-        this.boundsExtraSpace = Math.min(gameWidth, gameHeight) * 5;
+        this.boundsExtraSpace = Math.min(...globals.canvasPos(1.0)) * 5;
         this.wrapBounds = {
             min: {
                 x: -this.boundsExtraSpace,
                 y: -this.boundsExtraSpace
             },
             max: {
-                x: gameWidth + this.boundsExtraSpace,
-                y: gameHeight + this.boundsExtraSpace
+                x: globals.canvasX(1.0) + this.boundsExtraSpace,
+                y: globals.canvasY(1.0) + this.boundsExtraSpace
             }
         };
 
@@ -49,7 +52,7 @@ class Orbit extends Phaser.Scene {
     createPlayerShip() {
         const technologyCollisions = this.cache.json.get('technology_collision');
 
-        this.playerShip = new ShipContainer(this, controlFocusX, controlFocusY, technologyCollisions['thruster']);
+        this.playerShip = new ShipContainer(this, ...globals.canvasPos(0.5, globals.controlFocusYLerp), technologyCollisions['thruster']);
         this.playerShip.isShip = true;
 
         this.matter.world.on(Phaser.Physics.Matter.Events.COLLISION_START, event => {
@@ -105,7 +108,7 @@ class Orbit extends Phaser.Scene {
 
         if (gameObjectA.isShip && gameObjectB.tetromino) {
             if (gameObjectA.shipConnectedWith(gameObjectB)) {
-                if (removeArrayElement(this.floatingObjects, gameObjectB)) {
+                if (globals.removeArrayElement(this.floatingObjects, gameObjectB)) {
                     this.playFuseSound();
                 }
                 this.mouseHoldConstraint.stopDrag();
@@ -114,7 +117,7 @@ class Orbit extends Phaser.Scene {
             }
         } else if (gameObjectB.isShip && gameObjectA.tetromino) {
             if (gameObjectB.shipConnectedWith(gameObjectA)) {
-                if (removeArrayElement(this.floatingObjects, gameObjectA)) {
+                if (globals.removeArrayElement(this.floatingObjects, gameObjectA)) {
                     this.playFuseSound();
                 }
                 this.mouseHoldConstraint.stopDrag();
@@ -145,7 +148,7 @@ class Orbit extends Phaser.Scene {
 
         const encounterFactories = [ this.createSmallAsteroid, this.createTetromino, this.createMediumAsteroid ];
 
-        const runRemove = obj => removeArrayElement(this.floatingObjects, obj);
+        const runRemove = obj => globals.removeArrayElement(this.floatingObjects, obj);
 
         for (let yLerp = 0; yLerp < 1; yLerp += limitInv) {
             const worldY = Phaser.Math.Linear(this.wrapBounds.min.y, this.wrapBounds.max.y, yLerp);
@@ -175,12 +178,12 @@ class Orbit extends Phaser.Scene {
             return; // Skip to next loop interation instead of placing piece at this lerp pos
         }
 
-        const tetrominoName = Phaser.Math.RND.pick(tetrominoNames);
+        const tetrominoName = Phaser.Math.RND.pick(globals.tetrominoNames);
 
         const tetromino = scene.matter.add.sprite(placeCoord.x, placeCoord.y, tetrominoName, 0, {
             shape: scene.tetrominoCollisions[tetrominoName],
             wrapBounds: scene.wrapBounds
-        }).setDepth(10).setAngle(snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
+        }).setDepth(10).setAngle(globals.snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
 
         tetromino.asteroid = false; // Signal to checkPairStartedCollision
         tetromino.tetromino = true; // Signal to checkPairActiveCollision
@@ -290,7 +293,7 @@ class Orbit extends Phaser.Scene {
         this.playerShip.fireEmitter = this.fireEmitter;
 
         // Tetromino emitters
-        this.emitters = shapeNames.map((name, index) => {
+        this.emitters = globals.shapeNames.map((name, index) => {
             const emitter = this.add.particles(0, 0, `tetromino-${name}`, {
                 lifespan: 500,
                 angle: { min: 45, max: 135 },
@@ -395,7 +398,7 @@ class Orbit extends Phaser.Scene {
             if (floater.broken == true && this.isObjectCloseToBounds(floater)) {
                 floater.broken = false;
                 floater.tint = 0xFF_FF_FF;
-                floater.setAngle(snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
+                floater.setAngle(globals.snapCardinalAngleDegrees(Phaser.Math.RND.angle()));
                 floater.x = Phaser.Math.RND.realInRange(this.wrapBounds.min.x + 300, this.wrapBounds.max.x - 300);
             }
         }
@@ -422,7 +425,7 @@ class Orbit extends Phaser.Scene {
     }
 
     generateNewFloaters() {
-        const runRemove = obj => removeArrayElement(this.floatingObjects, obj);
+        const runRemove = obj => globals.removeArrayElement(this.floatingObjects, obj);
         const secondsSinceStart = this.getTimeSinceStart() * 0.001;
         const encounterFactories = [ this.createSmallAsteroid, this.createTetromino, this.createMediumAsteroid ];
 
