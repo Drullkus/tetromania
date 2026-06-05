@@ -1,7 +1,7 @@
+'use strict';
+
 import { Matrix2 } from '@src/math/Matrix2.js';
 import { game } from './main.js'
-
-'use strict';
 
 const radiansFull = Math.PI * 2.0;
 const radiansHalf = Math.PI;

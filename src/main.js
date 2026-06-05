@@ -1,3 +1,5 @@
+'use strict';
+
 import { Initialize } from "./scenes/Initialize.js";
 import { MainMenu } from "./scenes/MainMenu.js";
 import { Credits } from "./scenes/Credits.js";
@@ -7,8 +9,6 @@ import { Orbit } from "./scenes/Orbit.js";
 import { NavInterface } from "./scenes/layer/NavInterface.js";
 import { GameTime } from "./scenes/layer/GameTime.js";
 import { GameOver } from "./scenes/layer/GameOver.js";
-
-'use strict';
 
 const urlQueryParams = new URLSearchParams(window.location.search);
 
